@@ -1,0 +1,307 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		D820FB061C4452A9000899DB /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D820FB051C4452A9000899DB /* main.m */; };
+		D820FB091C4452A9000899DB /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D820FB081C4452A9000899DB /* AppDelegate.m */; };
+		D820FB0C1C4452A9000899DB /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D820FB0B1C4452A9000899DB /* ViewController.m */; };
+		D820FB0F1C4452A9000899DB /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D820FB0D1C4452A9000899DB /* Main.storyboard */; };
+		D820FB111C4452A9000899DB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D820FB101C4452A9000899DB /* Assets.xcassets */; };
+		D820FB141C4452A9000899DB /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D820FB121C4452A9000899DB /* LaunchScreen.storyboard */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		D820FB011C4452A9000899DB /* LiveRosary.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LiveRosary.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		D820FB051C4452A9000899DB /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		D820FB071C4452A9000899DB /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		D820FB081C4452A9000899DB /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		D820FB0A1C4452A9000899DB /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		D820FB0B1C4452A9000899DB /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		D820FB0E1C4452A9000899DB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		D820FB101C4452A9000899DB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		D820FB131C4452A9000899DB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		D820FB151C4452A9000899DB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		D820FAFE1C4452A9000899DB /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		D820FAF81C4452A9000899DB = {
+			isa = PBXGroup;
+			children = (
+				D820FB031C4452A9000899DB /* LiveRosary */,
+				D820FB021C4452A9000899DB /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		D820FB021C4452A9000899DB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D820FB011C4452A9000899DB /* LiveRosary.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		D820FB031C4452A9000899DB /* LiveRosary */ = {
+			isa = PBXGroup;
+			children = (
+				D820FB071C4452A9000899DB /* AppDelegate.h */,
+				D820FB081C4452A9000899DB /* AppDelegate.m */,
+				D820FB0A1C4452A9000899DB /* ViewController.h */,
+				D820FB0B1C4452A9000899DB /* ViewController.m */,
+				D820FB0D1C4452A9000899DB /* Main.storyboard */,
+				D820FB101C4452A9000899DB /* Assets.xcassets */,
+				D820FB121C4452A9000899DB /* LaunchScreen.storyboard */,
+				D820FB151C4452A9000899DB /* Info.plist */,
+				D820FB041C4452A9000899DB /* Supporting Files */,
+			);
+			path = LiveRosary;
+			sourceTree = "<group>";
+		};
+		D820FB041C4452A9000899DB /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				D820FB051C4452A9000899DB /* main.m */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		D820FB001C4452A9000899DB /* LiveRosary */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D820FB181C4452A9000899DB /* Build configuration list for PBXNativeTarget "LiveRosary" */;
+			buildPhases = (
+				D820FAFD1C4452A9000899DB /* Sources */,
+				D820FAFE1C4452A9000899DB /* Frameworks */,
+				D820FAFF1C4452A9000899DB /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = LiveRosary;
+			productName = LiveRosary;
+			productReference = D820FB011C4452A9000899DB /* LiveRosary.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		D820FAF91C4452A9000899DB /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0720;
+				ORGANIZATIONNAME = "Software Logix LLC";
+				TargetAttributes = {
+					D820FB001C4452A9000899DB = {
+						CreatedOnToolsVersion = 7.2;
+					};
+				};
+			};
+			buildConfigurationList = D820FAFC1C4452A9000899DB /* Build configuration list for PBXProject "LiveRosary" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = D820FAF81C4452A9000899DB;
+			productRefGroup = D820FB021C4452A9000899DB /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				D820FB001C4452A9000899DB /* LiveRosary */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		D820FAFF1C4452A9000899DB /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D820FB141C4452A9000899DB /* LaunchScreen.storyboard in Resources */,
+				D820FB111C4452A9000899DB /* Assets.xcassets in Resources */,
+				D820FB0F1C4452A9000899DB /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		D820FAFD1C4452A9000899DB /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D820FB0C1C4452A9000899DB /* ViewController.m in Sources */,
+				D820FB091C4452A9000899DB /* AppDelegate.m in Sources */,
+				D820FB061C4452A9000899DB /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		D820FB0D1C4452A9000899DB /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				D820FB0E1C4452A9000899DB /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		D820FB121C4452A9000899DB /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				D820FB131C4452A9000899DB /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		D820FB161C4452A9000899DB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		D820FB171C4452A9000899DB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		D820FB191C4452A9000899DB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = LiveRosary/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.pocketcake.LiveRosary;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		D820FB1A1C4452A9000899DB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = LiveRosary/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.pocketcake.LiveRosary;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		D820FAFC1C4452A9000899DB /* Build configuration list for PBXProject "LiveRosary" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D820FB161C4452A9000899DB /* Debug */,
+				D820FB171C4452A9000899DB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D820FB181C4452A9000899DB /* Build configuration list for PBXNativeTarget "LiveRosary" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D820FB191C4452A9000899DB /* Debug */,
+				D820FB1A1C4452A9000899DB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = D820FAF91C4452A9000899DB /* Project object */;
+}
