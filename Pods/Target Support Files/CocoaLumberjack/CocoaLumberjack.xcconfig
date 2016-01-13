@@ -1,0 +1,4 @@
+GCC_PREPROCESSOR_DEFINITIONS = $(inherited) COCOAPODS=1
+HEADER_SEARCH_PATHS = "${PODS_ROOT}/Headers/Private" "${PODS_ROOT}/Headers/Private/CocoaLumberjack" "${PODS_ROOT}/Headers/Public" "${PODS_ROOT}/Headers/Public/AFNetworking" "${PODS_ROOT}/Headers/Public/AWSCognito" "${PODS_ROOT}/Headers/Public/AWSCore" "${PODS_ROOT}/Headers/Public/AWSDynamoDB" "${PODS_ROOT}/Headers/Public/AWSS3" "${PODS_ROOT}/Headers/Public/BlocksKit" "${PODS_ROOT}/Headers/Public/CocoaLumberjack" "${PODS_ROOT}/Headers/Public/MBProgressHUD" "${PODS_ROOT}/Headers/Public/MMDrawerController" "${PODS_ROOT}/Headers/Public/TheAmazingAudioEngine" "${PODS_ROOT}/Headers/Public/libextobjc"
+PODS_ROOT = ${SRCROOT}
+SKIP_INSTALL = YES

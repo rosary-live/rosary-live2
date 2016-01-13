@@ -7,16 +7,47 @@
 //
 
 #import "AppDelegate.h"
+#import "MMDrawerController.h"
+#import "LRDrawerViewController.h"
+#import "LRListenMainViewController.h"
 
 @interface AppDelegate ()
+
+@property (nonatomic,strong) MMDrawerController* drawerController;
 
 @end
 
 @implementation AppDelegate
 
+-(BOOL)application:(UIApplication *)application willFinishLaunchingWithOptions:(NSDictionary *)launchOptions{
+    [DDLog addLogger:[DDTTYLogger sharedInstance]];
+    [[DDTTYLogger sharedInstance] setColorsEnabled:YES];
+    
+    DDLogInfo(@"App Startup");
+    
+    UIViewController* drawerViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"DrawerViewController"];
+    
+    UINavigationController* listenMainViewController = (UINavigationController*)[[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateInitialViewController];
+    
+    self.drawerController = [[MMDrawerController alloc]
+                             initWithCenterViewController:listenMainViewController
+                             leftDrawerViewController:drawerViewController
+                             rightDrawerViewController:nil];
+    [self.drawerController setShowsShadow:NO];
+    [self.drawerController setMaximumRightDrawerWidth:200.0];
+    [self.drawerController setOpenDrawerGestureModeMask:MMOpenDrawerGestureModeAll];
+    [self.drawerController setCloseDrawerGestureModeMask:MMCloseDrawerGestureModeAll];
+    
+    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    [self.window setRootViewController:self.drawerController];
+    
+    return YES;
+}
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    // Override point for customization after application launch.
+    self.window.backgroundColor = [UIColor whiteColor];
+    [self.window makeKeyAndVisible];
+    
     return YES;
 }
 
@@ -40,6 +71,13 @@
 
 - (void)applicationWillTerminate:(UIApplication *)application {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+}
+
+- (IBAction)onMenu:(id)sender
+{
+    [self.drawerController toggleDrawerSide:MMDrawerSideLeft animated:YES completion:^(BOOL finished) {
+        DDLogDebug(@"Drawer Toggle");
+    }];
 }
 
 @end

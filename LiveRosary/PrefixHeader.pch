@@ -1,0 +1,17 @@
+//
+//  PrefixHeader.pch
+//  LiveRosary
+//
+//  Created by richardtaylor on 1/13/16.
+//  Copyright © 2016 PocketCake. All rights reserved.
+//
+
+#ifndef PrefixHeader_pch
+#define PrefixHeader_pch
+
+#define LOG_LEVEL_DEF ddLogLevel
+#import <CocoaLumberjack/CocoaLumberjack.h>
+
+static const DDLogLevel ddLogLevel = DDLogLevelDebug;
+
+#endif /* PrefixHeader_pch */
