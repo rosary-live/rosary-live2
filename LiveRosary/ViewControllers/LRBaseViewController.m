@@ -7,6 +7,7 @@
 //
 
 #import "LRBaseViewController.h"
+#import "MMDrawerBarButtonItem.h"
 
 @interface LRBaseViewController ()
 
@@ -33,5 +34,11 @@
     // Pass the selected object to the new view controller.
 }
 */
+
+- (void)addDrawerButton
+{
+    MMDrawerBarButtonItem* button = [[MMDrawerBarButtonItem alloc] initWithTarget:[[UIApplication sharedApplication] delegate] action:@selector(onDrawerButton:)];
+    [self.navigationItem setLeftBarButtonItem:button];
+}
 
 @end

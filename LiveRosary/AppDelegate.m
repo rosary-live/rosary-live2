@@ -3,7 +3,7 @@
 //  LiveRosary
 //
 //  Created by richardtaylor on 1/11/16.
-//  Copyright © 2016 Software Logix LLC. All rights reserved.
+//  Copyright © 2016 Pocket Cake. All rights reserved.
 //
 
 #import "AppDelegate.h"
@@ -31,8 +31,7 @@
     
     self.drawerController = [[MMDrawerController alloc]
                              initWithCenterViewController:listenMainViewController
-                             leftDrawerViewController:drawerViewController
-                             rightDrawerViewController:nil];
+                             leftDrawerViewController:drawerViewController];
     [self.drawerController setShowsShadow:NO];
     [self.drawerController setMaximumRightDrawerWidth:200.0];
     [self.drawerController setOpenDrawerGestureModeMask:MMOpenDrawerGestureModeAll];
@@ -73,10 +72,10 @@
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
 
-- (IBAction)onMenu:(id)sender
+- (IBAction)onDrawerButton:(id)sender
 {
     [self.drawerController toggleDrawerSide:MMDrawerSideLeft animated:YES completion:^(BOOL finished) {
-        DDLogDebug(@"Drawer Toggle");
+        DDLogDebug(@"Drawer Toggle now %@", self.drawerController.openSide == MMDrawerSideNone ? @"Closed" : @"Open");
     }];
 }
 

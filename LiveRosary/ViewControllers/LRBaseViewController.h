@@ -7,10 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "MMDrawerController.h"
+
+@protocol DrawerButtonDelegate<NSObject>
+
+- (IBAction)onDrawerButton:(id)sender;
+
+@end
 
 @interface LRBaseViewController : UIViewController
 
-@property (nonatomic, weak) MMDrawerController* drawerController;
+- (void)addDrawerButton;
 
 @end

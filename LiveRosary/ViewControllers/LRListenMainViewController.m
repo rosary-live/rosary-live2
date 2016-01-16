@@ -17,8 +17,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    UIBarButtonItem* menuButton = [[UIBarButtonItem alloc] initWithTitle:@"Menu" style:UIBarButtonItemStylePlain target:[[UIApplication sharedApplication] delegate] action:@selector(onMenu:)];
-    [self.navigationItem setLeftBarButtonItem:menuButton];
+    [self addDrawerButton];
 }
 
 - (void)didReceiveMemoryWarning {
