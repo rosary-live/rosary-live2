@@ -25,14 +25,17 @@
     
     DDLogInfo(@"App Startup");
     
-    UIViewController* drawerViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"DrawerViewController"];
+    LRDrawerViewController* drawerViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"DrawerViewController"];
     
-    UINavigationController* listenMainViewController = (UINavigationController*)[[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateInitialViewController];
+    drawerViewController.listenMainViewController = (UINavigationController*)[[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"Listen"];
+    drawerViewController.broadcastMainViewController = (UINavigationController*)[[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"Broadcast"];
+    drawerViewController.adminMainViewController = (UINavigationController*)[[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"Admin"];
+    drawerViewController.userProfileMainMainViewController = (UINavigationController*)[[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"UserProfile"];
     
     self.drawerController = [[MMDrawerController alloc]
-                             initWithCenterViewController:listenMainViewController
+                             initWithCenterViewController:drawerViewController.listenMainViewController
                              leftDrawerViewController:drawerViewController];
-    [self.drawerController setShowsShadow:NO];
+    [self.drawerController setShowsShadow:YES];
     [self.drawerController setMaximumRightDrawerWidth:200.0];
     [self.drawerController setOpenDrawerGestureModeMask:MMOpenDrawerGestureModeAll];
     [self.drawerController setCloseDrawerGestureModeMask:MMCloseDrawerGestureModeAll];

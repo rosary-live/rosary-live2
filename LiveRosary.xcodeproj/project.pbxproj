@@ -14,9 +14,11 @@
 		D820FB111C4452A9000899DB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D820FB101C4452A9000899DB /* Assets.xcassets */; };
 		D820FB141C4452A9000899DB /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D820FB121C4452A9000899DB /* LaunchScreen.storyboard */; };
 		D83F6A971C47054C005F07E0 /* LRBroadcastMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D83F6A961C47054C005F07E0 /* LRBroadcastMainViewController.m */; };
-		D83F6A9A1C470561005F07E0 /* LRAdminMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D83F6A991C470561005F07E0 /* LRAdminMainViewController.m */; };
 		D885FA671C446F49002904AC /* LRDrawerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D885FA661C446F49002904AC /* LRDrawerViewController.m */; };
 		D885FA6A1C446FA2002904AC /* LRListenMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D885FA691C446FA2002904AC /* LRListenMainViewController.m */; };
+		D8A0EFD51C4C130C0006B910 /* DrawerCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D8A0EFD41C4C130C0006B910 /* DrawerCell.m */; };
+		D8A0EFD81C4C21E80006B910 /* LRUserProfileMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8A0EFD71C4C21E80006B910 /* LRUserProfileMainViewController.m */; };
+		D8A0EFDB1C4C220A0006B910 /* LRAdminMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8A0EFDA1C4C220A0006B910 /* LRAdminMainViewController.m */; };
 		E9E80094D216F82DAF5B13F5 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F67958F927E045E478D94BB5 /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -36,12 +38,16 @@
 		D83F6A941C46D2A2005F07E0 /* PrefixHeader.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
 		D83F6A951C47054C005F07E0 /* LRBroadcastMainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LRBroadcastMainViewController.h; path = ViewControllers/LRBroadcastMainViewController.h; sourceTree = "<group>"; };
 		D83F6A961C47054C005F07E0 /* LRBroadcastMainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LRBroadcastMainViewController.m; path = ViewControllers/LRBroadcastMainViewController.m; sourceTree = "<group>"; };
-		D83F6A981C470561005F07E0 /* LRAdminMainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LRAdminMainViewController.h; sourceTree = "<group>"; };
-		D83F6A991C470561005F07E0 /* LRAdminMainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LRAdminMainViewController.m; sourceTree = "<group>"; };
 		D885FA651C446F49002904AC /* LRDrawerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LRDrawerViewController.h; path = ViewControllers/LRDrawerViewController.h; sourceTree = "<group>"; };
 		D885FA661C446F49002904AC /* LRDrawerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LRDrawerViewController.m; path = ViewControllers/LRDrawerViewController.m; sourceTree = "<group>"; };
 		D885FA681C446FA2002904AC /* LRListenMainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LRListenMainViewController.h; path = ViewControllers/LRListenMainViewController.h; sourceTree = "<group>"; };
 		D885FA691C446FA2002904AC /* LRListenMainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LRListenMainViewController.m; path = ViewControllers/LRListenMainViewController.m; sourceTree = "<group>"; };
+		D8A0EFD31C4C130C0006B910 /* DrawerCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DrawerCell.h; path = Cells/DrawerCell.h; sourceTree = "<group>"; };
+		D8A0EFD41C4C130C0006B910 /* DrawerCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DrawerCell.m; path = Cells/DrawerCell.m; sourceTree = "<group>"; };
+		D8A0EFD61C4C21E80006B910 /* LRUserProfileMainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LRUserProfileMainViewController.h; path = ViewControllers/LRUserProfileMainViewController.h; sourceTree = "<group>"; };
+		D8A0EFD71C4C21E80006B910 /* LRUserProfileMainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LRUserProfileMainViewController.m; path = ViewControllers/LRUserProfileMainViewController.m; sourceTree = "<group>"; };
+		D8A0EFD91C4C220A0006B910 /* LRAdminMainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LRAdminMainViewController.h; path = ViewControllers/LRAdminMainViewController.h; sourceTree = "<group>"; };
+		D8A0EFDA1C4C220A0006B910 /* LRAdminMainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LRAdminMainViewController.m; path = ViewControllers/LRAdminMainViewController.m; sourceTree = "<group>"; };
 		F67958F927E045E478D94BB5 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -95,6 +101,7 @@
 		D820FB031C4452A9000899DB /* LiveRosary */ = {
 			isa = PBXGroup;
 			children = (
+				D8A0EFD21C4C12F20006B910 /* Cells */,
 				D885FA641C446EBF002904AC /* View Controllers */,
 				D820FB071C4452A9000899DB /* AppDelegate.h */,
 				D820FB081C4452A9000899DB /* AppDelegate.m */,
@@ -127,10 +134,21 @@
 				D885FA691C446FA2002904AC /* LRListenMainViewController.m */,
 				D83F6A951C47054C005F07E0 /* LRBroadcastMainViewController.h */,
 				D83F6A961C47054C005F07E0 /* LRBroadcastMainViewController.m */,
-				D83F6A981C470561005F07E0 /* LRAdminMainViewController.h */,
-				D83F6A991C470561005F07E0 /* LRAdminMainViewController.m */,
+				D8A0EFD91C4C220A0006B910 /* LRAdminMainViewController.h */,
+				D8A0EFDA1C4C220A0006B910 /* LRAdminMainViewController.m */,
+				D8A0EFD61C4C21E80006B910 /* LRUserProfileMainViewController.h */,
+				D8A0EFD71C4C21E80006B910 /* LRUserProfileMainViewController.m */,
 			);
 			name = "View Controllers";
+			sourceTree = "<group>";
+		};
+		D8A0EFD21C4C12F20006B910 /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				D8A0EFD31C4C130C0006B910 /* DrawerCell.h */,
+				D8A0EFD41C4C130C0006B910 /* DrawerCell.m */,
+			);
+			name = Cells;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -254,12 +272,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D8A0EFD81C4C21E80006B910 /* LRUserProfileMainViewController.m in Sources */,
 				D81AAF7C1C45E29C00B46544 /* LRBaseViewController.m in Sources */,
 				D885FA671C446F49002904AC /* LRDrawerViewController.m in Sources */,
+				D8A0EFDB1C4C220A0006B910 /* LRAdminMainViewController.m in Sources */,
 				D820FB091C4452A9000899DB /* AppDelegate.m in Sources */,
 				D885FA6A1C446FA2002904AC /* LRListenMainViewController.m in Sources */,
+				D8A0EFD51C4C130C0006B910 /* DrawerCell.m in Sources */,
 				D820FB061C4452A9000899DB /* main.m in Sources */,
-				D83F6A9A1C470561005F07E0 /* LRAdminMainViewController.m in Sources */,
 				D83F6A971C47054C005F07E0 /* LRBroadcastMainViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

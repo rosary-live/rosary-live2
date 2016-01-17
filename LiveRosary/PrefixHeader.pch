@@ -11,7 +11,11 @@
 
 #define LOG_LEVEL_DEF ddLogLevel
 #import <CocoaLumberjack/CocoaLumberjack.h>
-
 static const DDLogLevel ddLogLevel = DDLogLevelDebug;
+
+#import <BlocksKit/BlocksKit.h>
+//#import "extobjc.h"
+#import <extobjc.h>
+#import <EXTScope.h>
 
 #endif /* PrefixHeader_pch */

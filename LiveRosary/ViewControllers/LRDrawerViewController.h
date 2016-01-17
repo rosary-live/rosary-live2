@@ -10,4 +10,9 @@
 
 @interface LRDrawerViewController : UIViewController
 
+@property (nonatomic, strong) UINavigationController* listenMainViewController;
+@property (nonatomic, strong) UINavigationController* broadcastMainViewController;
+@property (nonatomic, strong) UINavigationController* adminMainViewController;
+@property (nonatomic, strong) UINavigationController* userProfileMainMainViewController;
+
 @end
