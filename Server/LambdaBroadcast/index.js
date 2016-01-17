@@ -15,8 +15,10 @@ var s3 = new AWS.S3();
 // "version": 1,
 // "bid": "12345-67890",
 // "start": 1,
-// "user": "test@test.com",
 // "language": "en",
+// "user": "test@test.com",
+// "name": "john doe",
+// "avatar": "URL",
 // "lat": "1.2",
 // "lon": "3.4",
 // "city": "Olathe",
@@ -35,10 +37,9 @@ function process(bucket, key, bid, seq, callback) {
 	if(seq == 0) {
 		s3.getObject({ Bucket: bucket, Key: key}, function(err, data) {
 			if(err) {
-				callback(err);
+				callback(err, null);
 			} else {
 				var json = JSON.parse(data.Body.toString());
-				console.log('json: ' + util.inspect(json));
 
 				var now = moment().utc().format('X');
 				// Add DDB record
@@ -63,10 +64,11 @@ function process(bucket, key, bid, seq, callback) {
 						compression: { S: json.compression },
 						segment_duration: { N: json.segment_duration.toString() }
 					},
-					ConditionExpression: 'attribute_not_exists (bid)'
+					ConditionExpression: 'attribute_not_exists (bid)',
+					ReturnValues: 'ALL_OLD'
 				}, function(err, data) {
-					if(err) callback(err);
-					else callback();
+					if(err) callback(err, null);
+					else callback(null, data);
 				});		
 			}
 		});		
@@ -84,8 +86,8 @@ function process(bucket, key, bid, seq, callback) {
 							  },
 			ReturnValues: 'ALL_NEW'
 		}, function(err, data) {
-			if(err) callback(err);
-			else callback();
+			if(err) callback(err, null);
+			else callback(null, data);
 		});	
 	}
 }
@@ -101,9 +103,9 @@ exports.handler = function(event, context) {
 
     var parts = key.split('/');
     if(parts.length == 2) {
-    	process(bucket, key, parts[0], parts[1], function(err) {
+    	process(bucket, key, parts[0], parts[1], function(err, result) {
     		if(err) context.fail(err);
-    		else context.succeed();
+    		else context.succeed(result);
     	});
     } else {
     	context.fail('Invalid file name: ' + key);
