@@ -87,9 +87,9 @@ NSString * const KeyToken = @"KeyToken";
 - (AWSTask *)login:(NSString*)email password:(NSString*)password {
     
     // If the key is already set, the login already succeeeded
-    if (self.identityId) {
-        return [AWSTask taskWithResult:self.identityId];
-    }
+//    if (self.identityId) {
+//        return [AWSTask taskWithResult:self.identityId];
+//    }
     
     AWSLambdaInvoker* lambdaInvoker = [AWSLambdaInvoker defaultLambdaInvoker];
     return [[lambdaInvoker invokeFunction:@"LambdAuthLogin" JSONObject:@{ @"email": email, @"password": password }] continueWithBlock:^id _Nullable(AWSTask * _Nonnull task) {

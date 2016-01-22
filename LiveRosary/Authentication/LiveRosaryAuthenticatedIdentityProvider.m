@@ -22,6 +22,9 @@
 
 @implementation LiveRosaryAuthenticatedIdentityProvider
 
+@synthesize providerName = _providerName;
+@synthesize token;
+
 - (instancetype)initWithRegionType:(AWSRegionType)regionType
                         identityId:(NSString *)identityId
                     identityPoolId:(NSString *)identityPoolId
@@ -42,7 +45,7 @@
 
 - (AWSTask *)getIdentityId {
     // already cached the identity id, return it
-    if (self.identityId) {
+    if (NO) {//self.identityId) {
         return [AWSTask taskWithResult:nil];
     }
 //    // not authenticated with our developer provider
@@ -52,9 +55,9 @@
     // authenticated with our developer provider, use refresh logic to get id/token pair
     else {
         return [[AWSTask taskWithResult:nil] continueWithBlock:^id(AWSTask *task) {
-            if (!self.identityId) {
+            //if (!self.identityId) {
                 return [self refresh];
-            }
+            //}
             return [AWSTask taskWithResult:self.identityId];
         }];
     }

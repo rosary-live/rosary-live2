@@ -10,7 +10,7 @@
 #import "UserManager.h"
 #import "AudioManager.h"
 
-@interface LRListenMainViewController () <AudioManagerDelegate>
+@interface LRListenMainViewController ()
 
 @end
 
@@ -23,12 +23,6 @@
     
     [[UserManager sharedManager] loginWithEmail:@"richard@softwarelogix.com" password:@"qwerty" completion:^(NSError *error) {
     }];
-    
-    [AudioManager sharedManager].delegate = self;
-    
-    [AudioManager sharedManager].sampleRate = 44100.0;
-    [AudioManager sharedManager].channels = 1;
-    [[AudioManager sharedManager] startRecording];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -45,16 +39,5 @@
     // Pass the selected object to the new view controller.
 }
 */
-
-
-- (void)audioError:(NSError*)error
-{
-    DDLogError(@"AudioManager error: %@", error);
-}
-
-- (void)capturedAudioData:(NSData*)audio
-{
-    DDLogDebug(@"Audio captured %d", (int)audio.length);
-}
 
 @end

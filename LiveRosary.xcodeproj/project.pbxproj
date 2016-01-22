@@ -25,6 +25,8 @@
 		D8A0EFEB1C4C707B0006B910 /* LiveRosaryAuthenticatedIdentityProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = D8A0EFEA1C4C707B0006B910 /* LiveRosaryAuthenticatedIdentityProvider.m */; };
 		D8A0EFEE1C4C70ED0006B910 /* LiveRosaryAuthenticationClient.m in Sources */ = {isa = PBXBuildFile; fileRef = D8A0EFED1C4C70ED0006B910 /* LiveRosaryAuthenticationClient.m */; };
 		D8A0EFF91C4F2B1F0006B910 /* AudioManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D8A0EFF81C4F2B1F0006B910 /* AudioManager.m */; };
+		D8C23FD61C51D3D10043F8BE /* TransferManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D8C23FD51C51D3D10043F8BE /* TransferManager.m */; };
+		D8C23FDB1C51E23D0043F8BE /* NSString+Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = D8C23FDA1C51E23D0043F8BE /* NSString+Utilities.m */; };
 		E9E80094D216F82DAF5B13F5 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F67958F927E045E478D94BB5 /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -66,6 +68,10 @@
 		D8A0EFED1C4C70ED0006B910 /* LiveRosaryAuthenticationClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LiveRosaryAuthenticationClient.m; path = Authentication/LiveRosaryAuthenticationClient.m; sourceTree = "<group>"; };
 		D8A0EFF71C4F2B1F0006B910 /* AudioManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AudioManager.h; path = Managers/AudioManager.h; sourceTree = "<group>"; };
 		D8A0EFF81C4F2B1F0006B910 /* AudioManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AudioManager.m; path = Managers/AudioManager.m; sourceTree = "<group>"; };
+		D8C23FD41C51D3D10043F8BE /* TransferManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TransferManager.h; path = Managers/TransferManager.h; sourceTree = "<group>"; };
+		D8C23FD51C51D3D10043F8BE /* TransferManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TransferManager.m; path = Managers/TransferManager.m; sourceTree = "<group>"; };
+		D8C23FD91C51E23D0043F8BE /* NSString+Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+Utilities.h"; path = "Categories/NSString+Utilities.h"; sourceTree = "<group>"; };
+		D8C23FDA1C51E23D0043F8BE /* NSString+Utilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+Utilities.m"; path = "Categories/NSString+Utilities.m"; sourceTree = "<group>"; };
 		F67958F927E045E478D94BB5 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -119,6 +125,7 @@
 		D820FB031C4452A9000899DB /* LiveRosary */ = {
 			isa = PBXGroup;
 			children = (
+				D8C23FD81C51E1EC0043F8BE /* Categories */,
 				D8A0EFE81C4C704B0006B910 /* Authentication */,
 				D8A0EFE01C4C30C90006B910 /* Models */,
 				D8A0EFDC1C4C2EED0006B910 /* Managers */,
@@ -179,6 +186,8 @@
 				D8A0EFDE1C4C2F1E0006B910 /* UserManager.m */,
 				D8A0EFF71C4F2B1F0006B910 /* AudioManager.h */,
 				D8A0EFF81C4F2B1F0006B910 /* AudioManager.m */,
+				D8C23FD41C51D3D10043F8BE /* TransferManager.h */,
+				D8C23FD51C51D3D10043F8BE /* TransferManager.m */,
 			);
 			name = Managers;
 			sourceTree = "<group>";
@@ -203,6 +212,15 @@
 				D8A0EFED1C4C70ED0006B910 /* LiveRosaryAuthenticationClient.m */,
 			);
 			name = Authentication;
+			sourceTree = "<group>";
+		};
+		D8C23FD81C51E1EC0043F8BE /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				D8C23FD91C51E23D0043F8BE /* NSString+Utilities.h */,
+				D8C23FDA1C51E23D0043F8BE /* NSString+Utilities.m */,
+			);
+			name = Categories;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -338,6 +356,8 @@
 				D820FB091C4452A9000899DB /* AppDelegate.m in Sources */,
 				D885FA6A1C446FA2002904AC /* LRListenMainViewController.m in Sources */,
 				D8A0EFEB1C4C707B0006B910 /* LiveRosaryAuthenticatedIdentityProvider.m in Sources */,
+				D8C23FDB1C51E23D0043F8BE /* NSString+Utilities.m in Sources */,
+				D8C23FD61C51D3D10043F8BE /* TransferManager.m in Sources */,
 				D8A0EFD51C4C130C0006B910 /* DrawerCell.m in Sources */,
 				D820FB061C4452A9000899DB /* main.m in Sources */,
 				D83F6A971C47054C005F07E0 /* LRBroadcastMainViewController.m in Sources */,
