@@ -10,6 +10,7 @@
 
 @protocol AudioManagerDelegate <NSObject>
 
+@optional
 - (void)audioError:(NSError*)error;
 - (void)capturedAudioData:(NSData*)audio secondsOfAudio:(double)seconds;
 
@@ -21,13 +22,17 @@
 @property (nonatomic) double sampleRate;
 @property (nonatomic) NSInteger channels;
 @property (nonatomic, readonly, getter=isRecording) BOOL recording;
+@property (nonatomic, readonly, getter=isPlaying) BOOL playing;
+@property (nonatomic, readonly) NSInteger playBufferCount;
 
 + (instancetype)sharedManager;
 
 - (void)startRecording;
 - (void)stopRecording;
 
+- (void)prepareToPlay;
 - (void)startPlaying;
 - (void)stopPlaying;
+- (void)addAudioDataToPlay:(NSData*)data;
 
 @end

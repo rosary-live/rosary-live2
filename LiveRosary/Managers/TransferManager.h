@@ -10,6 +10,7 @@
 
 @protocol TransferManagerDelegate <NSObject>
 
+@optional
 - (void)receivedData:(NSData*)data forSequence:(NSInteger)sequence;
 - (void)sendError:(NSError*)error;
 - (void)receiveError:(NSError*)error;

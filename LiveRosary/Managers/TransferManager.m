@@ -11,7 +11,7 @@
 #import "UserManager.h"
 #import <AFNetworking/AFNetworking.h>
 
-@interface TransferManager ()
+@interface TransferManager () <AFURLResponseSerialization>
 
 @property (nonatomic, strong) NSMutableArray<NSData*>* sendQueue;
 @property (nonatomic, strong) NSCondition* sendCondition;
@@ -150,14 +150,84 @@
 
 - (void)receiveThread
 {
+    DDLogInfo(@"TransferManager receiveThread starting");
+    
+    NSCondition* condition = [NSCondition new];
+    __block NSDate* lastSuccessfulReceiveDate = nil;
+    __block NSError* lastError;
+    
     while(self.isReceiving)
     {
+        NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
+        AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];
+        manager.responseSerializer = self;
+        
+        NSURL *URL = [NSURL URLWithString:[self URLForBroadcastId:self.broadcastId andSequence:self.sequence]];
+        NSURLRequest *request = [NSURLRequest requestWithURL:URL];
+        
+        NSURLSessionDataTask *dataTask = [manager dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+            if (error)
+            {
+                DDLogError(@"TransferManager receive error: %@", error);
+                lastError = error;
+            }
+            else
+            {
+                NSData* data = (NSData*)responseObject;
+                //DDLogDebug(@"TransferManager downloaded sequence %d with %d bytes", (int)self.sequence, (int)data.length);
+                lastSuccessfulReceiveDate = [NSDate date];
+                lastError = nil;
+                if(self.delegate && [self.delegate respondsToSelector:@selector(receivedData:forSequence:)])
+                {
+                    [self.delegate receivedData:data forSequence:self.sequence];
+                    ++_sequence;
+                }
+            }
+            
+            [condition lock];
+            [condition broadcast];
+            [condition unlock];
+            
+        }];
+        [dataTask resume];
+
+        [condition lock];
+        [condition wait];
+        [condition unlock];
+        
+        if(lastError != nil)
+        {
+            if([[NSDate date] timeIntervalSinceDate:lastSuccessfulReceiveDate] > 30)
+            {
+                _receiving = NO;
+            }
+            else
+            {
+                [NSThread sleepForTimeInterval:1];
+            }
+        }
     }
+    
+    DDLogInfo(@"TransferManager receiveThread stopping");
+
+}
+
+- (nullable id)responseObjectForResponse:(nullable NSURLResponse *)response
+                                    data:(nullable NSData *)data
+                                   error:(NSError * _Nullable __autoreleasing *)error
+{
+    NSHTTPURLResponse* httpResponse = (NSHTTPURLResponse*)response;
+    if(httpResponse.statusCode != 200)
+    {
+        *error = [NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorFileDoesNotExist userInfo:nil];
+    }
+    
+    return data;
 }
 
 - (NSString*)URLForBroadcastId:(NSString*)bid andSequence:(NSInteger)sequence
 {
-    return [NSstring stringWithFormat:@"https://s3.amazonaws.com/liverosarybroadcast/%@/%06d", bid, (int)sequence];
+    return [NSString stringWithFormat:@"https://s3.amazonaws.com/liverosarybroadcast/%@/%06d", bid, (int)sequence];
 }
 
 @end

@@ -17,6 +17,7 @@
 @property (nonatomic, weak) IBOutlet UILabel* infoLabel;
 @property (nonatomic, strong) NSMutableData* audioData;
 @property (nonatomic) double totalSeconds;
+@property (nonatomic) NSInteger packetCount;
 
 @end
 
@@ -55,6 +56,11 @@
         [self.startStopButton setTitle:@"Stop" forState:UIControlStateNormal];
         self.audioData = [NSMutableData new];
         self.totalSeconds = 0;
+        self.packetCount = 0;
+        
+        // Packet count placeholder
+        unsigned short packets = 0;
+        [self.audioData appendBytes:&packets length:sizeof(packets)];
         
         NSString* broadcastId = [NSString UUID];
         [[TransferManager sharedManager] startSending:broadcastId];
@@ -101,16 +107,25 @@
 
 - (void)capturedAudioData:(NSData*)audio secondsOfAudio:(double)seconds
 {
+    unsigned short length = (unsigned short)audio.length;
+    [self.audioData appendBytes:&length length:sizeof(length)];
     [self.audioData appendData:audio];
     self.totalSeconds += seconds;
+    ++self.packetCount;
     NSInteger bytesPerSecond = self.audioData.length / self.totalSeconds;
-    //DDLogDebug(@"Audio captured %d %g  %d", (int)audio.length, seconds, (int)bytesPerSecond);
     
     if(self.totalSeconds >= 10.0)
     {
+        unsigned short packets = (unsigned short)self.packetCount;
+        DDLogDebug(@"Number of packets in sequence: %d", (int)self.packetCount);
+        
+        [self.audioData replaceBytesInRange:NSMakeRange(0, 2) withBytes:&packets];
         [[TransferManager sharedManager] addSequenceData:self.audioData];
         self.audioData = [NSMutableData new];
+        packets = 0;
+        [self.audioData appendBytes:&packets length:sizeof(packets)];
         self.totalSeconds = 0.0;
+        self.packetCount = 0;
         
         DDLogDebug(@"Added buffer to send");
     }
