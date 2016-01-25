@@ -8,9 +8,12 @@
 
 #import <Foundation/Foundation.h>
 
+@class AWSServiceConfiguration;
+
 @interface UserManager : NSObject
 
 @property (nonatomic, getter=isLoggedIn) BOOL loggedIn;
+@property (nonatomic, strong) AWSServiceConfiguration* configuration;
 
 + (instancetype)sharedManager;
 

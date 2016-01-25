@@ -65,7 +65,7 @@ function process(bucket, key, bid, seq, callback) {
 						segment_duration: { N: json.segment_duration.toString() }
 					},
 					ConditionExpression: 'attribute_not_exists (bid)',
-					ReturnValues: 'ALL_OLD'
+					ReturnValues: 'NONE'
 				}, function(err, data) {
 					if(err) callback(err, null);
 					else callback(null, data);
@@ -84,7 +84,7 @@ function process(bucket, key, bid, seq, callback) {
 								sequence: { Action: 'PUT',
 											Value: { N: seq.toString() } }
 							  },
-			ReturnValues: 'ALL_NEW'
+			ReturnValues: 'NONE'
 		}, function(err, data) {
 			if(err) callback(err, null);
 			else callback(null, data);

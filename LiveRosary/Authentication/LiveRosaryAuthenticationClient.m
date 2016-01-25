@@ -10,6 +10,7 @@
 #import <AWSCore/AWSCore.h>
 #import <AWSLambda/AWSLambda.h>
 #import <UICKeyChainStore/UICKeyChainStore.h>
+#import <AFNetworking/AFNetworking.h>
 
 NSString *const LiveRosaryAuthenticationClientDomain = @"LiveRosaryAuthenticationClientDomain";
 
@@ -66,6 +67,11 @@ NSString * const KeyToken = @"KeyToken";
         //self.endpoint = endpoint;
         
         self.keychain = _keychain = [UICKeyChainStore keyChainStoreWithService:[NSString stringWithFormat:@"%@.%@.%@", [NSBundle mainBundle].bundleIdentifier, [LiveRosaryAuthenticationClient class], self.appname]];
+
+//        self.keychain[KeyEmail] = nil;
+//        self.keychain[KeyPassword] = nil;
+//        self.keychain[KeyIdentityId] = nil;
+//        self.keychain[KeyToken] = nil;
         
         self.email = self.keychain[KeyEmail];
         self.password = self.keychain[KeyPassword];
@@ -132,13 +138,80 @@ NSString * const KeyToken = @"KeyToken";
         return [AWSTask taskWithResult:authResponse];
     }];
     
+    
+    
+    
 //    if (self.uid == nil) {
 //        // generate a session id for communicating with backend
 //        self.uid = [Crypto generateRandomString];
 //    }
 //    
 //    return [[AWSTask taskWithResult:nil] continueWithBlock:^id(AWSTask *task) {
-//        NSURL *request = [NSURL URLWithString:[self buildLoginRequestUrl:username password:password]];
+//        
+//
+//        __block id response = nil;
+//        __block NSError* responseError = nil;
+//        
+////        NSCondition* condition = [NSCondition new];
+//        
+//        AFHTTPSessionManager* manager = [AFHTTPSessionManager manager];
+//        manager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"application/json"];
+//        [manager POST:@"http://liverosaryweb.s3-website-us-east-1.amazonaws.com/login.html" parameters:@{ @"email": email, @"password": password } progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+//            response = responseObject;
+//            
+////            [condition lock];
+////            [condition signal];
+////            [condition unlock];
+//
+//        } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+//            responseError = error;
+//            
+////            [condition lock];
+////            [condition signal];
+////            [condition unlock];
+//        }];
+//        
+////        [condition lock];
+////        [condition wait];
+////        [condition unlock];
+//        
+//        LiveRosaryAuthenticationResponse* authResponse;
+//
+//        if(responseError != nil)
+//        {
+//            NSLog(@"error %@", responseError);
+//            return [AWSTask taskWithError:[NSError errorWithDomain:LiveRosaryAuthenticationClientDomain
+//                                                              code:LiveRosaryAuthenticationClientLoginError
+//                                                          userInfo:nil]];
+//        }
+//        else
+//        {
+//            NSLog(@"response %@", response);
+//            DDLogDebug(@"login result: %@", task.result);
+//            
+//            //            self.email = email;
+//            //            self.password = password;
+//            
+//            if([(NSNumber*)task.result[@"login"] boolValue])
+//            {
+//                self.keychain[KeyEmail] = self.email = email;
+//                self.keychain[KeyPassword] = self.password = password;
+//                self.keychain[KeyIdentityId] = self.identityId = task.result[@"identityId"];
+//                self.keychain[KeyToken] = self.token = task.result[@"token"];
+//            }
+//            
+//            authResponse = [LiveRosaryAuthenticationResponse new];
+//            authResponse.identityId = self.identityId;
+//            authResponse.token = self.token;
+//            
+//        }
+//        
+//        return [AWSTask taskWithResult:authResponse];
+    
+//        [[AFJSONRequestSerializer serializer] requestWithMethod:@"POST" URLString:@"https://qo288sv2ff.execute-api.us-east-1.amazonaws.com/prod/Login" parameters:@{} error:&error];
+        
+//        NSString* loginUrl = [NSString stringWithFormat:@"https://rpmim224o0.execute-api.us-east-1.amazonaws.com/prod/LambdAuthLogin?email=%@&password=%@", email, password];
+//        NSURL *request = [NSURL URLWithString:loginUrl];
 //        NSData *rawResponse = [NSData dataWithContentsOfURL:request];
 //        if (!rawResponse) {
 //            return [AWSTask taskWithError:[NSError errorWithDomain:LiveRosaryAuthenticationClientDomain

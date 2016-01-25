@@ -89,6 +89,7 @@ NSInteger const ErrorCodeUserManager_Exception = 1;
     self.authClient = [LiveRosaryAuthenticationClient identityProviderWithAppname:@"LiveRosary"];
     
     [[self.authClient login:email password:password] continueWithBlock:^id _Nullable(AWSTask * _Nonnull task) {
+        LiveRosaryAuthenticationResponse* authResponse = task.result;
         NSDictionary* logins = @{ @"login.liverosary": email };
         id<AWSCognitoIdentityProvider> identityProvider = [[LiveRosaryAuthenticatedIdentityProvider alloc] initWithRegionType:AWSRegionUSEast1
                                                                                                                    identityId:nil
@@ -102,13 +103,35 @@ NSInteger const ErrorCodeUserManager_Exception = 1;
                                                                                unauthRoleArn:nil
                                                                                  authRoleArn:nil];
         
-        AWSServiceConfiguration *configuration = [[AWSServiceConfiguration alloc] initWithRegion:AWSRegionUSEast1
+        self.configuration = [[AWSServiceConfiguration alloc] initWithRegion:AWSRegionUSEast1
                                                                              credentialsProvider:self.credentialsProvider];
-        AWSServiceManager.defaultServiceManager.defaultServiceConfiguration = configuration;
-        return[[self.credentialsProvider getIdentityId] continueWithBlock:^id _Nullable(AWSTask * _Nonnull task) {
+        return [[self.credentialsProvider getIdentityId] continueWithBlock:^id _Nullable(AWSTask * _Nonnull task) {
             NSLog(@"%@", task.result);
             
-            return [AWSTask taskWithResult:nil];
+            return [[self.configuration.credentialsProvider refresh] continueWithBlock:^id _Nullable(AWSTask * _Nonnull task) {
+                AWSServiceManager.defaultServiceManager.defaultServiceConfiguration = self.configuration;
+                
+                return [AWSTask taskWithResult:nil];
+            }];
+            
+
+//            [AWSSTS registerSTSWithConfiguration:self.configuration forKey:@"STS"];
+//            AWSSTS* sts = [AWSSTS STSForKey:@"STS"];
+//            AWSSTSAssumeRoleWithWebIdentityRequest* req = [[AWSSTSAssumeRoleWithWebIdentityRequest alloc] init];
+//            req.webIdentityToken = authResponse.token;
+//            return [[sts assumeRoleWithWebIdentity:req] continueWithBlock:^id _Nullable(AWSTask * _Nonnull task) {
+//                return [AWSTask taskWithResult:nil];
+//            }];
+            
+//            AWSCognitoIdentityGetCredentialsForIdentityInput* get = [[AWSCognitoIdentityGetCredentialsForIdentityInput alloc] init];
+//            get.identityId = authResponse.identityId;
+//            get.logins = logins;
+//            
+//            return [[[AWSCognitoIdentity defaultCognitoIdentity] getCredentialsForIdentity:get] continueWithBlock:^id _Nullable(AWSTask * _Nonnull task) {
+//                return [AWSTask taskWithResult:nil];
+//            }];
+            
+            //return [AWSTask taskWithResult:nil];
         }];
     }];
 }

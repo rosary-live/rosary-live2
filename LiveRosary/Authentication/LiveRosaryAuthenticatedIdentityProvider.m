@@ -22,18 +22,18 @@
 
 @implementation LiveRosaryAuthenticatedIdentityProvider
 
-@synthesize providerName = _providerName;
-@synthesize token;
+@synthesize providerName=_providerName;
+@synthesize token=_token;
 
 - (instancetype)initWithRegionType:(AWSRegionType)regionType
                         identityId:(NSString *)identityId
                     identityPoolId:(NSString *)identityPoolId
                             logins:(NSDictionary *)logins
-                      providerName:(NSString *)providerName
+                      providerName:(NSString *)pName
                         authClient:(LiveRosaryAuthenticationClient *)client {
     if (self = [super initWithRegionType:regionType identityId:identityId accountId:nil identityPoolId:identityPoolId logins:logins]) {
         self.client = client;
-        self.providerName = providerName;
+        self.providerName = pName;
     }
     return self;
 }
