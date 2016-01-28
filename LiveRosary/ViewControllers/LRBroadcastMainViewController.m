@@ -65,7 +65,7 @@
         NSString* broadcastId = [NSString UUID];
         [[TransferManager sharedManager] startSending:broadcastId];
         //[[TransferManager sharedManager] addSequenceData:[self infoDataForBroadcastId:broadcastId]];
-        NSString* filename = [NSTemporaryDirectory() stringByAppendingPathComponent:[NSString stringWithFormat: @"%06d", 0]];
+        NSString* filename = [NSString filenameForBroadcastId:broadcastId andSequence:0];
         [[self infoDataForBroadcastId:broadcastId] writeToFile:filename atomically:NO];
         [[TransferManager sharedManager] addSequenceFile:filename];
         
@@ -73,7 +73,7 @@
 //        [AudioManager sharedManager].sampleRate = 44100.0;
         [AudioManager sharedManager].sampleRate = 11025.0;
         [AudioManager sharedManager].channels = 1;
-        [[AudioManager sharedManager] startRecording];
+        [[AudioManager sharedManager] startRecording:broadcastId];
     }
 }
 

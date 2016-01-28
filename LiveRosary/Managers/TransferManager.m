@@ -184,7 +184,7 @@
                 
                 if(self.delegate != nil && [self.delegate respondsToSelector:@selector(receivedFile:forSequence:)])
                 {
-                    NSString* filename = [NSTemporaryDirectory() stringByAppendingPathComponent:[NSString stringWithFormat: @"%06d", (int)self.sequence]];
+                    NSString* filename = [NSString filenameForBroadcastId:self.broadcastId andSequence:self.sequence];
                     [data writeToFile:filename atomically:NO];
                     [self.delegate receivedFile:filename forSequence:self.sequence];
                     ++_sequence;

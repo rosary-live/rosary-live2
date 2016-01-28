@@ -42,8 +42,6 @@ NSString * const KeyToken = @"KeyToken";
 //@property (nonatomic, strong) NSString* identityPoolId;
 @property (nonatomic, strong) NSString* email;
 @property (nonatomic, strong) NSString* password;
-@property (nonatomic, strong) NSString* identityId;
-@property (nonatomic, strong) NSString* token;
 
 //// used for internal encryption
 //@property (nonatomic, strong) NSString* uid;

@@ -16,9 +16,9 @@
 static const DDLogLevel ddLogLevel = DDLogLevelDebug;
 
 #import <BlocksKit/BlocksKit.h>
-//#import "extobjc.h"
 #import <extobjc.h>
 #import <EXTScope.h>
+#import "NSString+Utilities.h"
 
 #endif
 

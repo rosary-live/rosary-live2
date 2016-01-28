@@ -18,4 +18,9 @@
     return (__bridge_transfer NSString *)uuidStringRef;
 }
 
++ (NSString*)filenameForBroadcastId:(NSString*)bid andSequence:(NSInteger)sequence
+{
+    return [NSTemporaryDirectory() stringByAppendingPathComponent:[NSString stringWithFormat: @"%@-%06d", bid, (int)sequence]];
+}
+
 @end

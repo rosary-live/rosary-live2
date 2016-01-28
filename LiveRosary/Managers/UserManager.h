@@ -19,6 +19,8 @@
 
 - (void)createUserWithEmail:(NSString*)email password:(NSString*)password completion:(void (^)(NSError* error))completion;
 - (void)loginWithEmail:(NSString*)email password:(NSString*)password completion:(void (^)(NSError* error))completion;
+- (BOOL)credentialsExpired;
+- (void)refreshCredentialsWithCompletion:(void (^)(NSError* error))completion;
 - (void)updateUserInfoWithDictionary:(NSDictionary*)info;
 
 @end

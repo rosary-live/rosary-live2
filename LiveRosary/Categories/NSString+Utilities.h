@@ -11,5 +11,6 @@
 @interface NSString (Utilities)
 
 + (NSString*)UUID;
++ (NSString*)filenameForBroadcastId:(NSString*)bid andSequence:(NSInteger)sequence;
 
 @end

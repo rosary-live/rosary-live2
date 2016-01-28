@@ -24,8 +24,19 @@
     
     [self addDrawerButton];
     
-    [[UserManager sharedManager] loginWithEmail:@"richard@softwarelogix.com" password:@"qwerty" completion:^(NSError *error) {
-    }];
+    if([UserManager sharedManager].isLoggedIn)
+    {
+        if([[UserManager sharedManager] credentialsExpired])
+        {
+            [[UserManager sharedManager] refreshCredentialsWithCompletion:^(NSError* error) {
+            }];
+        }
+    }
+    else
+    {
+        [[UserManager sharedManager] loginWithEmail:@"richard@softwarelogix.com" password:@"qwerty" completion:^(NSError *error) {
+        }];
+    }
 }
 
 - (void)didReceiveMemoryWarning {

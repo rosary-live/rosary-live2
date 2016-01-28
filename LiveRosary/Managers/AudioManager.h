@@ -29,7 +29,7 @@
 
 + (instancetype)sharedManager;
 
-- (void)startRecording;
+- (void)startRecording:(NSString*)broadcastId;
 - (void)stopRecording;
 
 - (void)prepareToPlay;

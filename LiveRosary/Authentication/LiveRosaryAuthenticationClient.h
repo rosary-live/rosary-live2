@@ -32,6 +32,8 @@ typedef NS_ENUM(NSInteger, DeveloperAuthenticationClientErrorType) {
 
 @property (nonatomic, strong) NSString* appname;
 //@property (nonatomic, strong) NSString* endpoint;
+@property (nonatomic, strong) NSString* identityId;
+@property (nonatomic, strong) NSString* token;
 
 + (instancetype)identityProviderWithAppname:(NSString*)appname;// endpoint:(NSString*)endpoint;
 - (instancetype)initWithAppname:(NSString*)appname;// endpoint:(NSString*)endpoint;

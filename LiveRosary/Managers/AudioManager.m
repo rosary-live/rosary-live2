@@ -51,6 +51,7 @@ static Boolean IsAACEncoderAvailable(void);
 @property (nonatomic) NSInteger sequence;
 @property (nonatomic) NSInteger totalFramesForFile;
 @property (nonatomic, strong) NSString* currentFileName;
+@property (nonatomic, strong) NSString* broadcastId;
 
 @property (nonatomic, strong) AEBlockChannel* audioPlayChannel;
 @property (nonatomic, strong) NSCondition* decompressCondition;
@@ -90,13 +91,13 @@ static Boolean IsAACEncoderAvailable(void);
     return self.playQueue.count;
 }
 
-- (void)initializeAudio
+- (void)initializeAudio:(BOOL)record
 {
     IsAACEncoderAvailable();
     
     rawFormat = AEAudioStreamBasicDescriptionMake(AEAudioStreamBasicDescriptionSampleTypeInt16, NO, (int)self.channels, self.sampleRate);
     compressedFormat = [self AACFormat];
-    self.audioController = [[AEAudioController alloc] initWithAudioDescription:rawFormat inputEnabled:NO];
+    self.audioController = [[AEAudioController alloc] initWithAudioDescription:rawFormat inputEnabled:record];
     
     NSError *error = NULL;
     if(![self.audioController start:&error])
@@ -115,11 +116,11 @@ static Boolean IsAACEncoderAvailable(void);
     self.audioController = nil;
 }
 
-- (void)startRecording
+- (void)startRecording:(NSString*)broadcastId
 {
     if(self.isRecording) return;
     
-    [self initializeAudio];
+    [self initializeAudio:YES];
     
 //    AudioConverterNew(&rawFormat, &compressedFormat, &compressor);
 //    
@@ -131,6 +132,7 @@ static Boolean IsAACEncoderAvailable(void);
 //    UInt32 propSize = sizeof(outputBitRate);
 //    error = AudioConverterGetProperty(compressor, kAudioConverterEncodeBitRate, &propSize, &outputBitRate);
     
+    self.broadcastId = broadcastId;
     self.sequence = 1;
     [self startNewRecordFile];
     
@@ -157,7 +159,7 @@ static Boolean IsAACEncoderAvailable(void);
 {
     self.totalFramesForFile = 0;
     self.fileWriter = [[AEAudioFileWriter alloc] initWithAudioDescription:rawFormat];
-    self.currentFileName = [NSTemporaryDirectory() stringByAppendingPathComponent:[NSString stringWithFormat: @"%06d", (int)self.sequence]];
+    self.currentFileName = [NSString filenameForBroadcastId:self.broadcastId andSequence:self.sequence];
     [self.fileWriter beginWritingToFileAtPath:self.currentFileName fileType:kAudioFileM4AType error:nil];
 }
 
@@ -191,7 +193,7 @@ static Boolean IsAACEncoderAvailable(void);
 {
     if(self.isPreparedToPlay) return;
     
-    [self initializeAudio];
+    [self initializeAudio:NO];
     
     //AudioConverterNew(&compressedFormat, &rawFormat, &decompressor);
     
