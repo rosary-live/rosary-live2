@@ -13,7 +13,7 @@
 
 @interface TransferManager () <AFURLResponseSerialization>
 
-@property (nonatomic, strong) NSMutableArray<NSData*>* sendQueue;
+@property (nonatomic, strong) NSMutableArray<NSString*>* sendQueue;
 @property (nonatomic, strong) NSCondition* sendCondition;
 
 @end
@@ -54,13 +54,13 @@
     _sending = NO;
 }
 
-- (void)addSequenceData:(NSData*)data
+- (void)addSequenceFile:(NSString *)filename
 {
     [self.sendCondition lock];
     
     @synchronized(self.sendQueue)
     {
-        [self.sendQueue addObject:data];
+        [self.sendQueue addObject:filename];
     }
     
     [self.sendCondition broadcast];
@@ -85,16 +85,18 @@
             [self.sendCondition wait];
         }
         
-        NSData* data = nil;
+        NSString* filename = nil;
         @synchronized(self.sendQueue)
         {
-            data = [self.sendQueue objectAtIndex:0];
+            filename = [self.sendQueue objectAtIndex:0];
             [self.sendQueue removeObjectAtIndex:0];
         }
         
         [self.sendCondition unlock];
         
-        DDLogInfo(@"Sending sequence %d  %d bytes", (int)self.sequence, (int)data.length);
+        NSData* data = [NSData dataWithContentsOfFile:filename];
+        
+        DDLogInfo(@"Sending sequence %d  %@  %d bytes", (int)self.sequence, filename, (int)data.length);
         AWSS3PutObjectRequest* putRequest = [AWSS3PutObjectRequest new];
         putRequest.bucket = @"liverosarybroadcast";
         putRequest.key = [NSString stringWithFormat:@"%@/%06d", self.broadcastId, (int)self.sequence];
@@ -162,9 +164,11 @@
         AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];
         manager.responseSerializer = self;
         
-        NSURL *URL = [NSURL URLWithString:[self URLForBroadcastId:self.broadcastId andSequence:self.sequence]];
+        NSString* URLString = [self URLForBroadcastId:self.broadcastId andSequence:self.sequence];
+        NSURL *URL = [NSURL URLWithString:URLString];
         NSURLRequest *request = [NSURLRequest requestWithURL:URL];
         
+        DDLogDebug(@"Downloading sequence %d from from %@", (int)self.sequence, URLString);
         NSURLSessionDataTask *dataTask = [manager dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
             if (error)
             {
@@ -174,14 +178,23 @@
             else
             {
                 NSData* data = (NSData*)responseObject;
-                //DDLogDebug(@"TransferManager downloaded sequence %d with %d bytes", (int)self.sequence, (int)data.length);
+                DDLogDebug(@"TransferManager downloaded sequence %d with %d bytes", (int)self.sequence, (int)data.length);
                 lastSuccessfulReceiveDate = [NSDate date];
                 lastError = nil;
-                if(self.delegate && [self.delegate respondsToSelector:@selector(receivedData:forSequence:)])
+                
+                if(self.delegate != nil && [self.delegate respondsToSelector:@selector(receivedFile:forSequence:)])
                 {
-                    [self.delegate receivedData:data forSequence:self.sequence];
+                    NSString* filename = [NSTemporaryDirectory() stringByAppendingPathComponent:[NSString stringWithFormat: @"%06d", (int)self.sequence]];
+                    [data writeToFile:filename atomically:NO];
+                    [self.delegate receivedFile:filename forSequence:self.sequence];
                     ++_sequence;
                 }
+                
+//                if(self.delegate && [self.delegate respondsToSelector:@selector(receivedData:forSequence:)])
+//                {
+//                    [self.delegate receivedData:data forSequence:self.sequence];
+//                    ++_sequence;
+//                }
             }
             
             [condition lock];

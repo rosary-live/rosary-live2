@@ -37,7 +37,7 @@ NSInteger const ErrorCodeUserManager_Exception = 1;
 {
     if(self = [super init])
     {
-        [AWSLogger defaultLogger].logLevel = AWSLogLevelVerbose;
+        //[AWSLogger defaultLogger].logLevel = AWSLogLevelVerbose;
         [self initializeCognito];
     }
     return self;

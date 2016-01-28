@@ -11,9 +11,11 @@
 @protocol TransferManagerDelegate <NSObject>
 
 @optional
-- (void)receivedData:(NSData*)data forSequence:(NSInteger)sequence;
-- (void)sendError:(NSError*)error;
-- (void)receiveError:(NSError*)error;
+//- (void)receivedData:(NSData*)data forSequence:(NSInteger)sequence;
+//- (void)sendError:(NSError*)error;
+//- (void)receiveError:(NSError*)error;
+
+- (void)receivedFile:(NSString*)filename forSequence:(NSInteger)sequence;
 
 @end
 
@@ -29,7 +31,8 @@
 
 - (void)startSending:(NSString*)broadcastId;
 - (void)stopSending;
-- (void)addSequenceData:(NSData*)data;
+//- (void)addSequenceData:(NSData*)data;
+- (void)addSequenceFile:(NSString*)filename;
 
 - (void)startReceiving:(NSString*)broadcastId atSequence:(NSInteger)sequence;
 - (void)stopReceiving;

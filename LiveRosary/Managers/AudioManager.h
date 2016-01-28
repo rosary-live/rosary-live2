@@ -12,7 +12,8 @@
 
 @optional
 - (void)audioError:(NSError*)error;
-- (void)capturedAudioData:(NSData*)audio secondsOfAudio:(double)seconds;
+//- (void)capturedAudioData:(NSData*)audio secondsOfAudio:(double)seconds;
+- (void)capturedAudioFile:(NSString*)filename sequence:(NSInteger)sequence secondsOfAudio:(double)seconds;
 
 @end
 
@@ -23,6 +24,7 @@
 @property (nonatomic) NSInteger channels;
 @property (nonatomic, readonly, getter=isRecording) BOOL recording;
 @property (nonatomic, readonly, getter=isPlaying) BOOL playing;
+@property (nonatomic, readonly, getter=isPreparedToPlay) BOOL preparedToPlay;
 @property (nonatomic, readonly) NSInteger playBufferCount;
 
 + (instancetype)sharedManager;
@@ -33,6 +35,7 @@
 - (void)prepareToPlay;
 - (void)startPlaying;
 - (void)stopPlaying;
-- (void)addAudioDataToPlay:(NSData*)data;
+//- (void)addAudioDataToPlay:(NSData*)data;
+- (void)addAudioFileToPlay:(NSString*)filename;
 
 @end
