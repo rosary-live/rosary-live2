@@ -16,6 +16,8 @@
 //- (void)receiveError:(NSError*)error;
 
 - (void)receivedFile:(NSString*)filename forSequence:(NSInteger)sequence;
+- (void)sentFile:(NSString*)filename forSequence:(NSInteger)sequence lastFile:(BOOL)lastFile;
+- (void)sendError:(NSError*)error forFile:(NSString*)filename sequence:(NSInteger)sequence;
 
 @end
 
@@ -31,8 +33,7 @@
 
 - (void)startSending:(NSString*)broadcastId;
 - (void)stopSending;
-//- (void)addSequenceData:(NSData*)data;
-- (void)addSequenceFile:(NSString*)filename;
+- (void)addSequenceFile:(NSString*)filename lastFile:(BOOL)lastFile;
 
 - (void)startReceiving:(NSString*)broadcastId atSequence:(NSInteger)sequence;
 - (void)stopReceiving;

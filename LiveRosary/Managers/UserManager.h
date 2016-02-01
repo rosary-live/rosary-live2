@@ -22,5 +22,6 @@
 - (BOOL)credentialsExpired;
 - (void)refreshCredentialsWithCompletion:(void (^)(NSError* error))completion;
 - (void)updateUserInfoWithDictionary:(NSDictionary*)info;
+- (void)refreshTokenWithCompletion:(void (^)(NSError* error))completion;
 
 @end

@@ -14,6 +14,12 @@
 		D820FB111C4452A9000899DB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D820FB101C4452A9000899DB /* Assets.xcassets */; };
 		D820FB141C4452A9000899DB /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D820FB121C4452A9000899DB /* LaunchScreen.storyboard */; };
 		D83F6A971C47054C005F07E0 /* LRBroadcastMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D83F6A961C47054C005F07E0 /* LRBroadcastMainViewController.m */; };
+		D86372701C5AD58A00D02DC3 /* BroadcastManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D863726F1C5AD58A00D02DC3 /* BroadcastManager.m */; };
+		D86372731C5ADEF900D02DC3 /* BroadcastModel.m in Sources */ = {isa = PBXBuildFile; fileRef = D86372721C5ADEF900D02DC3 /* BroadcastModel.m */; };
+		D86372761C5AE6BA00D02DC3 /* NSDictionary+Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = D86372751C5AE6BA00D02DC3 /* NSDictionary+Utilities.m */; };
+		D863727A1C5AFEC400D02DC3 /* DBBase.m in Sources */ = {isa = PBXBuildFile; fileRef = D86372791C5AFEC400D02DC3 /* DBBase.m */; };
+		D863727D1C5AFED900D02DC3 /* DBBroadcast.m in Sources */ = {isa = PBXBuildFile; fileRef = D863727C1C5AFED900D02DC3 /* DBBroadcast.m */; };
+		D86372811C5B1FFB00D02DC3 /* NSNumber+Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = D86372801C5B1FFB00D02DC3 /* NSNumber+Utilities.m */; };
 		D885FA671C446F49002904AC /* LRDrawerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D885FA661C446F49002904AC /* LRDrawerViewController.m */; };
 		D885FA6A1C446FA2002904AC /* LRListenMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D885FA691C446FA2002904AC /* LRListenMainViewController.m */; };
 		D8A0EFD51C4C130C0006B910 /* DrawerCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D8A0EFD41C4C130C0006B910 /* DrawerCell.m */; };
@@ -27,6 +33,8 @@
 		D8A0EFF91C4F2B1F0006B910 /* AudioManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D8A0EFF81C4F2B1F0006B910 /* AudioManager.m */; };
 		D8C23FD61C51D3D10043F8BE /* TransferManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D8C23FD51C51D3D10043F8BE /* TransferManager.m */; };
 		D8C23FDB1C51E23D0043F8BE /* NSString+Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = D8C23FDA1C51E23D0043F8BE /* NSString+Utilities.m */; };
+		D8EAFEBE1C5D0EB300C38EBA /* BroadcastCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D8EAFEBD1C5D0EB300C38EBA /* BroadcastCell.m */; };
+		D8EAFEC11C5D29E100C38EBA /* LRListenViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8EAFEC01C5D29E100C38EBA /* LRListenViewController.m */; };
 		E9E80094D216F82DAF5B13F5 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F67958F927E045E478D94BB5 /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -46,6 +54,18 @@
 		D83F6A941C46D2A2005F07E0 /* PrefixHeader.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
 		D83F6A951C47054C005F07E0 /* LRBroadcastMainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LRBroadcastMainViewController.h; path = ViewControllers/LRBroadcastMainViewController.h; sourceTree = "<group>"; };
 		D83F6A961C47054C005F07E0 /* LRBroadcastMainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LRBroadcastMainViewController.m; path = ViewControllers/LRBroadcastMainViewController.m; sourceTree = "<group>"; };
+		D863726E1C5AD58A00D02DC3 /* BroadcastManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BroadcastManager.h; path = Managers/BroadcastManager.h; sourceTree = "<group>"; };
+		D863726F1C5AD58A00D02DC3 /* BroadcastManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BroadcastManager.m; path = Managers/BroadcastManager.m; sourceTree = "<group>"; };
+		D86372711C5ADEF900D02DC3 /* BroadcastModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BroadcastModel.h; path = Models/BroadcastModel.h; sourceTree = "<group>"; };
+		D86372721C5ADEF900D02DC3 /* BroadcastModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BroadcastModel.m; path = Models/BroadcastModel.m; sourceTree = "<group>"; };
+		D86372741C5AE6BA00D02DC3 /* NSDictionary+Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSDictionary+Utilities.h"; path = "Categories/NSDictionary+Utilities.h"; sourceTree = "<group>"; };
+		D86372751C5AE6BA00D02DC3 /* NSDictionary+Utilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSDictionary+Utilities.m"; path = "Categories/NSDictionary+Utilities.m"; sourceTree = "<group>"; };
+		D86372781C5AFEC400D02DC3 /* DBBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DBBase.h; path = Database/DBBase.h; sourceTree = "<group>"; };
+		D86372791C5AFEC400D02DC3 /* DBBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DBBase.m; path = Database/DBBase.m; sourceTree = "<group>"; };
+		D863727B1C5AFED900D02DC3 /* DBBroadcast.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DBBroadcast.h; path = Database/DBBroadcast.h; sourceTree = "<group>"; };
+		D863727C1C5AFED900D02DC3 /* DBBroadcast.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DBBroadcast.m; path = Database/DBBroadcast.m; sourceTree = "<group>"; };
+		D863727F1C5B1FFB00D02DC3 /* NSNumber+Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSNumber+Utilities.h"; path = "Categories/NSNumber+Utilities.h"; sourceTree = "<group>"; };
+		D86372801C5B1FFB00D02DC3 /* NSNumber+Utilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSNumber+Utilities.m"; path = "Categories/NSNumber+Utilities.m"; sourceTree = "<group>"; };
 		D885FA651C446F49002904AC /* LRDrawerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LRDrawerViewController.h; path = ViewControllers/LRDrawerViewController.h; sourceTree = "<group>"; };
 		D885FA661C446F49002904AC /* LRDrawerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LRDrawerViewController.m; path = ViewControllers/LRDrawerViewController.m; sourceTree = "<group>"; };
 		D885FA681C446FA2002904AC /* LRListenMainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LRListenMainViewController.h; path = ViewControllers/LRListenMainViewController.h; sourceTree = "<group>"; };
@@ -72,6 +92,10 @@
 		D8C23FD51C51D3D10043F8BE /* TransferManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TransferManager.m; path = Managers/TransferManager.m; sourceTree = "<group>"; };
 		D8C23FD91C51E23D0043F8BE /* NSString+Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+Utilities.h"; path = "Categories/NSString+Utilities.h"; sourceTree = "<group>"; };
 		D8C23FDA1C51E23D0043F8BE /* NSString+Utilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+Utilities.m"; path = "Categories/NSString+Utilities.m"; sourceTree = "<group>"; };
+		D8EAFEBC1C5D0EB300C38EBA /* BroadcastCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BroadcastCell.h; path = Cells/BroadcastCell.h; sourceTree = "<group>"; };
+		D8EAFEBD1C5D0EB300C38EBA /* BroadcastCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BroadcastCell.m; path = Cells/BroadcastCell.m; sourceTree = "<group>"; };
+		D8EAFEBF1C5D29E100C38EBA /* LRListenViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LRListenViewController.h; path = ViewControllers/LRListenViewController.h; sourceTree = "<group>"; };
+		D8EAFEC01C5D29E100C38EBA /* LRListenViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LRListenViewController.m; path = ViewControllers/LRListenViewController.m; sourceTree = "<group>"; };
 		F67958F927E045E478D94BB5 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -125,6 +149,7 @@
 		D820FB031C4452A9000899DB /* LiveRosary */ = {
 			isa = PBXGroup;
 			children = (
+				D86372771C5AFEA800D02DC3 /* Database */,
 				D8C23FD81C51E1EC0043F8BE /* Categories */,
 				D8A0EFE81C4C704B0006B910 /* Authentication */,
 				D8A0EFE01C4C30C90006B910 /* Models */,
@@ -151,15 +176,36 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		D86372771C5AFEA800D02DC3 /* Database */ = {
+			isa = PBXGroup;
+			children = (
+				D86372781C5AFEC400D02DC3 /* DBBase.h */,
+				D86372791C5AFEC400D02DC3 /* DBBase.m */,
+				D863727B1C5AFED900D02DC3 /* DBBroadcast.h */,
+				D863727C1C5AFED900D02DC3 /* DBBroadcast.m */,
+			);
+			name = Database;
+			sourceTree = "<group>";
+		};
+		D863727E1C5B1E6C00D02DC3 /* Authentication */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Authentication;
+			sourceTree = "<group>";
+		};
 		D885FA641C446EBF002904AC /* View Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				D863727E1C5B1E6C00D02DC3 /* Authentication */,
 				D885FA651C446F49002904AC /* LRDrawerViewController.h */,
 				D885FA661C446F49002904AC /* LRDrawerViewController.m */,
 				D81AAF7A1C45E29C00B46544 /* LRBaseViewController.h */,
 				D81AAF7B1C45E29C00B46544 /* LRBaseViewController.m */,
 				D885FA681C446FA2002904AC /* LRListenMainViewController.h */,
 				D885FA691C446FA2002904AC /* LRListenMainViewController.m */,
+				D8EAFEBF1C5D29E100C38EBA /* LRListenViewController.h */,
+				D8EAFEC01C5D29E100C38EBA /* LRListenViewController.m */,
 				D83F6A951C47054C005F07E0 /* LRBroadcastMainViewController.h */,
 				D83F6A961C47054C005F07E0 /* LRBroadcastMainViewController.m */,
 				D8A0EFD91C4C220A0006B910 /* LRAdminMainViewController.h */,
@@ -175,6 +221,8 @@
 			children = (
 				D8A0EFD31C4C130C0006B910 /* DrawerCell.h */,
 				D8A0EFD41C4C130C0006B910 /* DrawerCell.m */,
+				D8EAFEBC1C5D0EB300C38EBA /* BroadcastCell.h */,
+				D8EAFEBD1C5D0EB300C38EBA /* BroadcastCell.m */,
 			);
 			name = Cells;
 			sourceTree = "<group>";
@@ -188,6 +236,8 @@
 				D8A0EFF81C4F2B1F0006B910 /* AudioManager.m */,
 				D8C23FD41C51D3D10043F8BE /* TransferManager.h */,
 				D8C23FD51C51D3D10043F8BE /* TransferManager.m */,
+				D863726E1C5AD58A00D02DC3 /* BroadcastManager.h */,
+				D863726F1C5AD58A00D02DC3 /* BroadcastManager.m */,
 			);
 			name = Managers;
 			sourceTree = "<group>";
@@ -199,6 +249,8 @@
 				D8A0EFE51C4C32290006B910 /* BaseModel.m */,
 				D8A0EFE11C4C30E40006B910 /* UserModel.h */,
 				D8A0EFE21C4C30E40006B910 /* UserModel.m */,
+				D86372711C5ADEF900D02DC3 /* BroadcastModel.h */,
+				D86372721C5ADEF900D02DC3 /* BroadcastModel.m */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -219,6 +271,10 @@
 			children = (
 				D8C23FD91C51E23D0043F8BE /* NSString+Utilities.h */,
 				D8C23FDA1C51E23D0043F8BE /* NSString+Utilities.m */,
+				D86372741C5AE6BA00D02DC3 /* NSDictionary+Utilities.h */,
+				D86372751C5AE6BA00D02DC3 /* NSDictionary+Utilities.m */,
+				D863727F1C5B1FFB00D02DC3 /* NSNumber+Utilities.h */,
+				D86372801C5B1FFB00D02DC3 /* NSNumber+Utilities.m */,
 			);
 			name = Categories;
 			sourceTree = "<group>";
@@ -345,6 +401,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D8A0EFD81C4C21E80006B910 /* LRUserProfileMainViewController.m in Sources */,
+				D863727A1C5AFEC400D02DC3 /* DBBase.m in Sources */,
 				D81AAF7C1C45E29C00B46544 /* LRBaseViewController.m in Sources */,
 				D8A0EFDF1C4C2F1E0006B910 /* UserManager.m in Sources */,
 				D8A0EFF91C4F2B1F0006B910 /* AudioManager.m in Sources */,
@@ -354,11 +411,18 @@
 				D8A0EFEE1C4C70ED0006B910 /* LiveRosaryAuthenticationClient.m in Sources */,
 				D8A0EFE61C4C32290006B910 /* BaseModel.m in Sources */,
 				D820FB091C4452A9000899DB /* AppDelegate.m in Sources */,
+				D863727D1C5AFED900D02DC3 /* DBBroadcast.m in Sources */,
+				D86372731C5ADEF900D02DC3 /* BroadcastModel.m in Sources */,
 				D885FA6A1C446FA2002904AC /* LRListenMainViewController.m in Sources */,
 				D8A0EFEB1C4C707B0006B910 /* LiveRosaryAuthenticatedIdentityProvider.m in Sources */,
+				D86372761C5AE6BA00D02DC3 /* NSDictionary+Utilities.m in Sources */,
+				D86372811C5B1FFB00D02DC3 /* NSNumber+Utilities.m in Sources */,
+				D8EAFEC11C5D29E100C38EBA /* LRListenViewController.m in Sources */,
 				D8C23FDB1C51E23D0043F8BE /* NSString+Utilities.m in Sources */,
 				D8C23FD61C51D3D10043F8BE /* TransferManager.m in Sources */,
 				D8A0EFD51C4C130C0006B910 /* DrawerCell.m in Sources */,
+				D86372701C5AD58A00D02DC3 /* BroadcastManager.m in Sources */,
+				D8EAFEBE1C5D0EB300C38EBA /* BroadcastCell.m in Sources */,
 				D820FB061C4452A9000899DB /* main.m in Sources */,
 				D83F6A971C47054C005F07E0 /* LRBroadcastMainViewController.m in Sources */,
 			);

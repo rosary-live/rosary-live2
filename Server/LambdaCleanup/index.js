@@ -16,7 +16,7 @@ function process(bucket, key, bid, seq, callback) {
 		dynamodb.deleteItem({
 			TableName: config.DDB_BROADCAST_TABLE,
 			Key: { bid: { S: bid }},
-			ReturnValues: 'ALL_OLD'
+			ReturnValues: 'NONE'
 		}, function(err, data) {
 			if(err) callback(err);
 			else callback();
@@ -37,11 +37,16 @@ exports.handler = function(event, context) {
 
     var parts = key.split('/');
     if(parts.length == 2) {
-    	process(bucket, key, parts[0], parts[1], function(err) {
-    		if(err) context.fail(err);
-    		else context.succeed();
-    	});
+    	var seqparts = parts[1].split('-');
+    	if(seqparts.length == 2) {
+	    	process(bucket, key, parts[0], seqparts[1], function(err) {
+	    		if(err) context.fail({success:false, error:err});
+	    		else context.succeed({success: true});
+	    	});
+	    } else {
+	    	context.fail({success:false, error:'Invalid file name: ' + key});
+	    }
     } else {
-    	context.fail('Invalid file name: ' + key);
+	    context.fail({success:false, error:'Invalid file name: ' + key});
     }
 }

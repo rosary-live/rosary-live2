@@ -94,47 +94,101 @@ NSString * const KeyToken = @"KeyToken";
 //    if (self.identityId) {
 //        return [AWSTask taskWithResult:self.identityId];
 //    }
-    
-    AWSLambdaInvoker* lambdaInvoker = [AWSLambdaInvoker defaultLambdaInvoker];
-    return [[lambdaInvoker invokeFunction:@"LambdAuthLogin" JSONObject:@{ @"email": email, @"password": password }] continueWithBlock:^id _Nullable(AWSTask * _Nonnull task) {
+
+    return [[AWSTask taskWithResult:nil] continueWithBlock:^id _Nullable(AWSTask * _Nonnull task) {
+        NSString* post =[NSString stringWithFormat:@"{\"email\":\"%@\",\"password\":\"%@\"}", email, password];
+        NSData* postData = [post dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:NO];
+        NSString* postLength = [NSString stringWithFormat:@"%d", (int)postData.length];
         
-        LiveRosaryAuthenticationResponse* authResponse;
+        NSMutableURLRequest *request = [NSMutableURLRequest new];
+        [request setURL:[NSURL URLWithString:@"https://9wwr7dvesk.execute-api.us-east-1.amazonaws.com/prod/Login"]];
+        [request setHTTPMethod:@"POST"];
+        [request setValue:postLength forHTTPHeaderField:@"Content-Length"];
+        [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+        [request setValue:@"hhpm1l5N771l3eZf7V4Lk8AjWyYgZbPM7XPPU8Jw" forHTTPHeaderField:@"x-api-key"];
+        [request setHTTPBody:postData];
         
-        if(task.error)
+        NSError *error;
+        NSURLResponse *response;
+        NSData* responseData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+        if(error == nil)
         {
-            DDLogError(@"login error %@", task.error);
-            return [AWSTask taskWithError:[NSError errorWithDomain:LiveRosaryAuthenticationClientDomain
-                                                              code:LiveRosaryAuthenticationClientLoginError
-                                                          userInfo:nil]];
-        }
-        else if(task.exception)
-        {
-            DDLogError(@"login exception: %@", task.exception);
-            return [AWSTask taskWithError:[NSError errorWithDomain:LiveRosaryAuthenticationClientDomain
-                                                              code:LiveRosaryAuthenticationClientLoginError
-                                                          userInfo:nil]];
-        }
-        else if(task.result) {
-            DDLogDebug(@"login result: %@", task.result);
-            
-//            self.email = email;
-//            self.password = password;
-            
-            if([(NSNumber*)task.result[@"login"] boolValue])
+            NSDictionary* responseDict = [NSJSONSerialization JSONObjectWithData:responseData options:0 error:&error];
+            if(error == nil)
             {
-                self.keychain[KeyEmail] = self.email = email;
-                self.keychain[KeyPassword] = self.password = password;
-                self.keychain[KeyIdentityId] = self.identityId = task.result[@"identityId"];
-                self.keychain[KeyToken] = self.token = task.result[@"token"];
+                NSLog(@"Response: %@", responseDict);
+                
+                NSNumber* login = responseDict[@"login"];
+                if(login != nil && [login boolValue])
+                {
+                    self.keychain[KeyEmail] = self.email = email;
+                    self.keychain[KeyPassword] = self.password = password;
+                    self.keychain[KeyIdentityId] = self.identityId = responseDict[@"identityId"];
+                    self.keychain[KeyToken] = self.token = responseDict[@"token"];
+                    
+                    LiveRosaryAuthenticationResponse* authResponse;
+                    authResponse = [LiveRosaryAuthenticationResponse new];
+                    authResponse.identityId = self.identityId;
+                    authResponse.token = self.token;
+                    
+                    return [AWSTask taskWithResult:authResponse];
+                }
+                else
+                {
+                    return [AWSTask taskWithError:[NSError errorWithDomain:LiveRosaryAuthenticationClientDomain code:-1 userInfo:nil]];
+                }
             }
-            
-            authResponse = [LiveRosaryAuthenticationResponse new];
-            authResponse.identityId = self.identityId;
-            authResponse.token = self.token;
+            else
+            {
+                return [AWSTask taskWithError:error];
+            }
         }
-        
-        return [AWSTask taskWithResult:authResponse];
+        else
+        {
+            return [AWSTask taskWithError:error];
+        }
     }];
+    
+//    AWSLambdaInvoker* lambdaInvoker = [AWSLambdaInvoker defaultLambdaInvoker];
+//    return [[lambdaInvoker invokeFunction:@"LambdAuthLogin" JSONObject:@{ @"email": email, @"password": password }] continueWithBlock:^id _Nullable(AWSTask * _Nonnull task) {
+//        
+//        LiveRosaryAuthenticationResponse* authResponse;
+//        
+//        if(task.error)
+//        {
+//            DDLogError(@"login error %@", task.error);
+//            return [AWSTask taskWithError:[NSError errorWithDomain:LiveRosaryAuthenticationClientDomain
+//                                                              code:LiveRosaryAuthenticationClientLoginError
+//                                                          userInfo:nil]];
+//        }
+//        else if(task.exception)
+//        {
+//            DDLogError(@"login exception: %@", task.exception);
+//            return [AWSTask taskWithError:[NSError errorWithDomain:LiveRosaryAuthenticationClientDomain
+//                                                              code:LiveRosaryAuthenticationClientLoginError
+//                                                          userInfo:nil]];
+//        }
+//        else if(task.result) {
+//            DDLogDebug(@"login result: %@", task.result);
+//            
+////            self.email = email;
+////            self.password = password;
+//            
+//            if([(NSNumber*)task.result[@"login"] boolValue])
+//            {
+//                self.keychain[KeyEmail] = self.email = email;
+//                self.keychain[KeyPassword] = self.password = password;
+//                self.keychain[KeyIdentityId] = self.identityId = task.result[@"identityId"];
+//                self.keychain[KeyToken] = self.token = task.result[@"token"];
+//            }
+//            
+//            authResponse = [LiveRosaryAuthenticationResponse new];
+//            authResponse.identityId = self.identityId;
+//            authResponse.token = self.token;
+//        }
+//        
+//        return [AWSTask taskWithResult:authResponse];
+//    }];
     
     
     
@@ -255,7 +309,8 @@ NSString * const KeyToken = @"KeyToken";
 }
 
 // call gettoken and set our values from returned result
-- (AWSTask *)getToken:(NSString *)identityId logins:(NSDictionary *)logins {
+- (AWSTask *)getToken
+{
     
     // make sure we've authenticated
     if (![self isAuthenticated]) {

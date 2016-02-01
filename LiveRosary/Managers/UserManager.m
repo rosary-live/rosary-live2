@@ -41,7 +41,9 @@ NSString * const UserDefaultPassword = @"UserDefaultPassword";
 {
     if(self = [super init])
     {
-        [AWSLogger defaultLogger].logLevel = AWSLogLevelVerbose;
+        self.authClient = [LiveRosaryAuthenticationClient identityProviderWithAppname:@"LiveRosary"];
+
+        //[AWSLogger defaultLogger].logLevel = AWSLogLevelVerbose;
         [self initializeCognitoWithCompletion:^(NSError *error) {
         }];
     }
@@ -94,27 +96,27 @@ NSString * const UserDefaultPassword = @"UserDefaultPassword";
         
         self.configuration = [[AWSServiceConfiguration alloc] initWithRegion:AWSRegionUSEast1
                                                          credentialsProvider:self.credentialsProvider];
+        AWSServiceManager.defaultServiceManager.defaultServiceConfiguration = self.configuration;
         [[self.credentialsProvider getIdentityId] continueWithBlock:^id _Nullable(AWSTask * _Nonnull task) {
             NSLog(@"%@", task.result);
             
             return [[self.configuration.credentialsProvider refresh] continueWithBlock:^id _Nullable(AWSTask * _Nonnull task) {
-                AWSServiceManager.defaultServiceManager.defaultServiceConfiguration = self.configuration;
                 
                 if(completion) completion(nil);
                 return [AWSTask taskWithResult:nil];
             }];
         }];
     }
-    else
-    {
-        AWSCognitoCredentialsProvider* credentialsProvider = [[AWSCognitoCredentialsProvider alloc]
-                                                              initWithRegionType:AWSRegionUSEast1
-                                                              identityPoolId:@"us-east-1:e071f60e-332c-4883-a4f0-f8bc27c46173"];
-    
-        AWSServiceConfiguration* configuration = [[AWSServiceConfiguration alloc] initWithRegion:AWSRegionUSEast1 credentialsProvider:credentialsProvider];
-    
-        [AWSServiceManager defaultServiceManager].defaultServiceConfiguration = configuration;
-    }
+//    else
+//    {
+//        AWSCognitoCredentialsProvider* credentialsProvider = [[AWSCognitoCredentialsProvider alloc]
+//                                                              initWithRegionType:AWSRegionUSEast1
+//                                                              identityPoolId:@"us-east-1:e071f60e-332c-4883-a4f0-f8bc27c46173"];
+//    
+//        AWSServiceConfiguration* configuration = [[AWSServiceConfiguration alloc] initWithRegion:AWSRegionUSEast1 credentialsProvider:credentialsProvider];
+//    
+//        [AWSServiceManager defaultServiceManager].defaultServiceConfiguration = configuration;
+//    }
 }
 
 - (void)createUserWithEmail:(NSString*)email password:(NSString*)password completion:(void (^)(NSError* error))completion
@@ -144,8 +146,6 @@ NSString * const UserDefaultPassword = @"UserDefaultPassword";
 
 - (void)loginWithEmail:(NSString*)email password:(NSString*)password completion:(void (^)(NSError* error))completion
 {
-    self.authClient = [LiveRosaryAuthenticationClient identityProviderWithAppname:@"LiveRosary"];
-    
     [[self.authClient login:email password:password] continueWithBlock:^id _Nullable(AWSTask * _Nonnull task) {
         self.email = email;
         self.password = password;
@@ -172,6 +172,20 @@ NSString * const UserDefaultPassword = @"UserDefaultPassword";
 
 - (void)updateUserInfoWithDictionary:(NSDictionary*)info
 {
+}
+
+- (void)refreshTokenWithCompletion:(void (^)(NSError* error))completion
+{
+    [[self.credentialsProvider.identityProvider refresh] continueWithBlock:^id _Nullable(AWSTask * _Nonnull task) {
+        NSLog(@"%@", task.result);
+        
+        return [[self.configuration.credentialsProvider refresh] continueWithBlock:^id _Nullable(AWSTask * _Nonnull task) {
+            AWSServiceManager.defaultServiceManager.defaultServiceConfiguration = self.configuration;
+            
+            if(completion) completion(nil);
+            return [AWSTask taskWithResult:nil];
+        }];
+    }];
 }
 
 @end

@@ -10,16 +10,12 @@
 
 @implementation BaseModel
 
-+ (NSDictionary *)JSONKeyPathsByPropertyKey {
-    return @{
-             @"URL": @"url",
-             @"HTMLURL": @"html_url",
-             @"number": @"number",
-             @"state": @"state",
-             @"reporterLogin": @"user.login",
-             @"assignee": @"assignee",
-             @"updatedAt": @"updated_at"
-             };
++ (NSString *)dynamoDBTableName {
+    return @"";
+}
+
++ (NSString *)hashKeyAttribute {
+    return @"";
 }
 
 @end

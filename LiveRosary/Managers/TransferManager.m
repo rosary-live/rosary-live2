@@ -11,9 +11,18 @@
 #import "UserManager.h"
 #import <AFNetworking/AFNetworking.h>
 
+@interface SendWrapper : NSObject
+@property (nonatomic, strong) NSString* filename;
+@property (nonatomic) BOOL lastFile;
+@end
+
+@implementation SendWrapper
+@end
+
+
 @interface TransferManager () <AFURLResponseSerialization>
 
-@property (nonatomic, strong) NSMutableArray<NSString*>* sendQueue;
+@property (nonatomic, strong) NSMutableArray<SendWrapper*>* sendQueue;
 @property (nonatomic, strong) NSCondition* sendCondition;
 
 @end
@@ -52,15 +61,21 @@
 - (void)stopSending
 {
     _sending = NO;
+    [self.sendCondition lock];
+    [self.sendCondition broadcast];
+    [self.sendCondition unlock];
 }
 
-- (void)addSequenceFile:(NSString *)filename
+- (void)addSequenceFile:(NSString *)filename lastFile:(BOOL)lastFile
 {
     [self.sendCondition lock];
     
     @synchronized(self.sendQueue)
     {
-        [self.sendQueue addObject:filename];
+        SendWrapper* wrapper = [SendWrapper new];
+        wrapper.filename = filename;
+        wrapper.lastFile = lastFile;
+        [self.sendQueue addObject:wrapper];
     }
     
     [self.sendCondition broadcast];
@@ -82,26 +97,29 @@
         
         if(self.sendQueue.count == 0)
         {
+            DDLogInfo(@"TransferManager sendThread waiting to send");
             [self.sendCondition wait];
         }
         
-        NSString* filename = nil;
+        DDLogInfo(@"Sending");
+        SendWrapper* wrapper = nil;
         @synchronized(self.sendQueue)
         {
-            filename = [self.sendQueue objectAtIndex:0];
+            wrapper = [self.sendQueue objectAtIndex:0];
             [self.sendQueue removeObjectAtIndex:0];
         }
         
         [self.sendCondition unlock];
         
-        NSData* data = [NSData dataWithContentsOfFile:filename];
+        NSData* data = [NSData dataWithContentsOfFile:wrapper.filename];
         
-        DDLogInfo(@"Sending sequence %d  %@  %d bytes", (int)self.sequence, filename, (int)data.length);
+        DDLogInfo(@"Sending sequence %d  %@  %d bytes", (int)self.sequence, wrapper.filename, (int)data.length);
         AWSS3PutObjectRequest* putRequest = [AWSS3PutObjectRequest new];
         putRequest.bucket = @"liverosarybroadcast";
-        putRequest.key = [NSString stringWithFormat:@"%@/%06d", self.broadcastId, (int)self.sequence];
+        putRequest.key = [NSString stringWithFormat:@"%@/%06d",  self.broadcastId, (int)self.sequence];
         putRequest.contentLength = @(data.length);
         putRequest.ACL = AWSS3BucketCannedACLPublicRead;
+        putRequest.metadata = @{ @"Last-File": wrapper.lastFile ? @"1" : @"0" };
         
         if(_sequence == 0)
         {
@@ -128,6 +146,11 @@
         else
         {
             DDLogInfo(@"Send sequence %d  %d bytes", (int)self.sequence, (int)data.length);
+            if(self.delegate && [self.delegate respondsToSelector:@selector(sentFile:forSequence:lastFile:)])
+            {
+                [self.delegate sentFile:wrapper.filename forSequence:_sequence lastFile:wrapper.lastFile];
+            }
+            
             ++_sequence;
         }
     }
@@ -189,12 +212,6 @@
                     [self.delegate receivedFile:filename forSequence:self.sequence];
                     ++_sequence;
                 }
-                
-//                if(self.delegate && [self.delegate respondsToSelector:@selector(receivedData:forSequence:)])
-//                {
-//                    [self.delegate receivedData:data forSequence:self.sequence];
-//                    ++_sequence;
-//                }
             }
             
             [condition lock];
@@ -202,6 +219,7 @@
             [condition unlock];
             
         }];
+        
         [dataTask resume];
 
         [condition lock];

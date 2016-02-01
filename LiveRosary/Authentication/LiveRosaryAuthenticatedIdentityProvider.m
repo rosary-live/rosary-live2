@@ -50,7 +50,7 @@
 
 - (AWSTask *)refresh
 {
-    return [[self.client getToken:self.identityId logins:self.logins] continueWithSuccessBlock:^id(AWSTask *task) {
+    return [[self.client getToken] continueWithSuccessBlock:^id(AWSTask *task) {
         if(task.error != nil)
         {
             return task;

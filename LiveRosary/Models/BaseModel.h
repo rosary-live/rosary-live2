@@ -6,8 +6,8 @@
 //  Copyright © 2016 PocketCake. All rights reserved.
 //
 
-#import <Mantle/Mantle.h>
+#import <AWSDynamoDB/AWSDynamoDB.h>
 
-@interface BaseModel : MTLModel <MTLJSONSerializing>
+@interface BaseModel : AWSDynamoDBObjectModel <AWSDynamoDBModeling>
 
 @end

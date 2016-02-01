@@ -1,24 +1,33 @@
 //
-//  LRUserProfileViewController.m
+//  LRListenViewController.m
 //  LiveRosary
 //
-//  Created by richardtaylor on 1/17/16.
+//  Created by richardtaylor on 1/30/16.
 //  Copyright © 2016 PocketCake. All rights reserved.
 //
 
-#import "LRUserProfileMainViewController.h"
+#import "LRListenViewController.h"
+#import "BroadcastManager.h"
 
-@interface LRUserProfileMainViewController ()
+@interface LRListenViewController ()
 
 @end
 
-@implementation LRUserProfileMainViewController
+@implementation LRListenViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [self addDrawerButton];
+    self.navigationController.navigationBar.topItem.title = @"Stop";
+    
+    [[BroadcastManager sharedManager] startPlayingBroadcastWithId:self.broadcast.bid];
+}
 
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    
+    [[BroadcastManager sharedManager] stopPlaying];
 }
 
 - (void)didReceiveMemoryWarning {

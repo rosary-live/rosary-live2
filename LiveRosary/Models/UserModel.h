@@ -15,8 +15,8 @@
 @property (nonatomic, strong) NSString* lastName;
 @property (nonatomic, strong) NSString* avatarURL;
 @property (nonatomic, strong) NSString* language;
-@property (nonatomic) double latitude;
-@property (nonatomic) double longitude;
+@property (nonatomic, strong) NSNumber* latitude;
+@property (nonatomic, strong) NSNumber* longitude;
 @property (nonatomic, strong) NSString* city;
 @property (nonatomic, strong) NSString* state;
 @property (nonatomic, strong) NSString* country;

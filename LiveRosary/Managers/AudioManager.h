@@ -12,8 +12,7 @@
 
 @optional
 - (void)audioError:(NSError*)error;
-//- (void)capturedAudioData:(NSData*)audio secondsOfAudio:(double)seconds;
-- (void)capturedAudioFile:(NSString*)filename sequence:(NSInteger)sequence secondsOfAudio:(double)seconds;
+- (void)capturedAudioFile:(NSString*)filename sequence:(NSInteger)sequence secondsOfAudio:(double)seconds lastFile:(BOOL)lastFile;
 
 @end
 
@@ -35,7 +34,6 @@
 - (void)prepareToPlay;
 - (void)startPlaying;
 - (void)stopPlaying;
-//- (void)addAudioDataToPlay:(NSData*)data;
 - (void)addAudioFileToPlay:(NSString*)filename;
 
 @end

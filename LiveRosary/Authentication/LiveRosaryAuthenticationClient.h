@@ -22,8 +22,8 @@ typedef NS_ENUM(NSInteger, DeveloperAuthenticationClientErrorType) {
 
 @interface LiveRosaryAuthenticationResponse : NSObject
 
+@property (nonatomic, readonly) BOOL success;
 @property (nonatomic, strong, readonly) NSString* identityId;
-//@property (nonatomic, strong, readonly) NSString* identityPoolId;
 @property (nonatomic, strong, readonly) NSString* token;
 
 @end
@@ -39,7 +39,7 @@ typedef NS_ENUM(NSInteger, DeveloperAuthenticationClientErrorType) {
 - (instancetype)initWithAppname:(NSString*)appname;// endpoint:(NSString*)endpoint;
 
 - (BOOL)isAuthenticated;
-- (AWSTask*)getToken:identityId logins:(NSDictionary *)logins;
+- (AWSTask*)getToken;
 - (AWSTask*)login:(NSString *)email password:(NSString *)password;
 - (void)logout;
 

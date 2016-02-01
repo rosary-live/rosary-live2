@@ -8,20 +8,7 @@
 
 #import "AudioManager.h"
 #import <TheAmazingAudioEngine/TheAmazingAudioEngine.h>
-
-
-//static OSStatus handleCompressBuffer(AudioConverterRef inAudioConverter,
-//                                    UInt32* ioNumberDataPackets,
-//                                    AudioBufferList* ioData,
-//                                    AudioStreamPacketDescription** outDataPacketDescription,
-//                                    void* inUserData);
-//
-//static OSStatus handleDecompressBuffer(AudioConverterRef inAudioConverter,
-//                                         UInt32* ioNumberDataPackets,
-//                                         AudioBufferList* ioData,
-//                                         AudioStreamPacketDescription** outDataPacketDescription,
-//                                         void* inUserData);
-
+                            
 static Boolean IsAACEncoderAvailable(void);
 
 @interface BufferWrapper : NSObject
@@ -37,8 +24,6 @@ static Boolean IsAACEncoderAvailable(void);
 {
     AudioStreamBasicDescription rawFormat;
     AudioStreamBasicDescription compressedFormat;
-//    AudioConverterRef compressor;
-//    AudioConverterRef decompressor;
 }
 
 @property (nonatomic, strong) AEAudioController* audioController;
@@ -93,8 +78,6 @@ static Boolean IsAACEncoderAvailable(void);
 
 - (void)initializeAudio:(BOOL)record
 {
-    IsAACEncoderAvailable();
-    
     rawFormat = AEAudioStreamBasicDescriptionMake(AEAudioStreamBasicDescriptionSampleTypeInt16, NO, (int)self.channels, self.sampleRate);
     compressedFormat = [self AACFormat];
     self.audioController = [[AEAudioController alloc] initWithAudioDescription:rawFormat inputEnabled:record];
@@ -122,16 +105,6 @@ static Boolean IsAACEncoderAvailable(void);
     
     [self initializeAudio:YES];
     
-//    AudioConverterNew(&rawFormat, &compressedFormat, &compressor);
-//    
-//    UInt32 canResume = 0;
-//    UInt32 size = sizeof(canResume);
-//    OSStatus error = AudioConverterGetProperty(compressor, kAudioConverterPropertyCanResumeFromInterruption, &size, &canResume);
-//    
-//    UInt32 outputBitRate;
-//    UInt32 propSize = sizeof(outputBitRate);
-//    error = AudioConverterGetProperty(compressor, kAudioConverterEncodeBitRate, &propSize, &outputBitRate);
-    
     self.broadcastId = broadcastId;
     self.sequence = 1;
     [self startNewRecordFile];
@@ -141,15 +114,16 @@ static Boolean IsAACEncoderAvailable(void);
     
     @weakify(self);
     self.audioReceiver = [AEBlockAudioReceiver audioReceiverWithBlock:^(void *source, const AudioTimeStamp *time, UInt32 frames, AudioBufferList *audio) {
-        //DDLogDebug(@"Audio input buffer received frames %d  buffers %d  chan %d  size %d", frames, audio->mNumberBuffers, audio->mBuffers[0].mNumberChannels, audio->mBuffers[0].mDataByteSize);
-        
-        self.secondsPerBuffer = (double)frames / self.sampleRate;
         @strongify(self)
-        //NSMutableData* buffer = [NSMutableData dataWithBytes:audio->mBuffers[0].mData length:audio->mBuffers[0].mDataByteSize];
-        BufferWrapper* wrapper = [BufferWrapper new];
-        wrapper.buferList = audio;
-        wrapper.frames = frames;
-        [self pushCompressQueueBuffer:wrapper];
+
+        if(self.recording)
+        {
+            self.secondsPerBuffer = (double)frames / self.sampleRate;
+            BufferWrapper* wrapper = [BufferWrapper new];
+            wrapper.buferList = audio;
+            wrapper.frames = frames;
+            [self pushCompressQueueBuffer:wrapper];
+        }
     }];
     
     [self.audioController addInputReceiver:self.audioReceiver];
@@ -167,10 +141,10 @@ static Boolean IsAACEncoderAvailable(void);
 {
     [self.fileWriter finishWriting];
     
-    if(self.delegate != nil && [self.delegate respondsToSelector:@selector(capturedAudioFile:sequence:secondsOfAudio:)])
+    if(self.delegate != nil && [self.delegate respondsToSelector:@selector(capturedAudioFile:sequence:secondsOfAudio:lastFile:)])
     {
         DDLogDebug(@"Completed file %@", self.currentFileName);
-        [self.delegate capturedAudioFile:self.currentFileName sequence:self.sequence secondsOfAudio:10];
+        [self.delegate capturedAudioFile:self.currentFileName sequence:self.sequence secondsOfAudio:10 lastFile:!self.isRecording];
     }
     
     ++_sequence;
@@ -186,7 +160,6 @@ static Boolean IsAACEncoderAvailable(void);
     [self.compressCondition unlock];
     
     [self stopAudio];
-    //AudioConverterDispose(compressor);
 }
 
 - (void)prepareToPlay
@@ -194,8 +167,6 @@ static Boolean IsAACEncoderAvailable(void);
     if(self.isPreparedToPlay) return;
     
     [self initializeAudio:NO];
-    
-    //AudioConverterNew(&compressedFormat, &rawFormat, &decompressor);
     
     _preparedToPlay = YES;
     
@@ -218,11 +189,9 @@ static Boolean IsAACEncoderAvailable(void);
         if(buffer != nil)
         {
             UInt32 sizeInBytes = (UInt32)MIN(frames * 2, buffer.buferList->mBuffers[0].mDataByteSize - buffer.position);
-            //memcpy(audio->mBuffers[0].mData, buffer.buferList->mBuffers[0].mData, sizeInBytes);
             audio->mBuffers[0].mData = &buffer.buferList->mBuffers[0].mData[buffer.position];
             audio->mBuffers[0].mDataByteSize = sizeInBytes;
             buffer.position += sizeInBytes;
-            //DDLogDebug(@"Playing %d bytes  new position %d", (int)sizeInBytes, (int)buffer.position);
             if(buffer.position >= buffer.buferList->mBuffers[0].mDataByteSize)
             {
                 DDLogDebug(@"Popping buffer with length %d", (int)buffer.buferList->mBuffers[0].mDataByteSize);
@@ -247,7 +216,6 @@ static Boolean IsAACEncoderAvailable(void);
     
     [self.audioController removeChannels:@[self.audioPlayChannel]];
     [self stopAudio];
-    //AudioConverterDispose(decompressor);
 }
 
 - (void)addAudioFileToPlay:(NSString*)filename
@@ -344,7 +312,6 @@ static Boolean IsAACEncoderAvailable(void);
 {
     DDLogInfo(@"Compression thread starting");
     
-    //char* convertBuffer = malloc(32 * 1024);
     while(self.isRecording)
     {
         [self.compressCondition lock];
@@ -361,7 +328,6 @@ static Boolean IsAACEncoderAvailable(void);
                 AEAudioFileWriterAddAudioSynchronously(self.fileWriter, buffer.buferList, buffer.frames);
                 self.totalFramesForFile += buffer.frames;
                 double totalSecondsForFile = (double)self.totalFramesForFile / self.sampleRate;
-                //NSLog(@"Wrote %d frame %d bytes  %d total frames  %g seconds", (int)buffer.frames, (int)buffer.buferList[0].mBuffers->mDataByteSize, (int)self.totalFramesForFile, totalSecondsForFile);
                 
                 if(totalSecondsForFile >= 10)
                 {
@@ -370,104 +336,23 @@ static Boolean IsAACEncoderAvailable(void);
                 }
             }
         }
+        else
+        {
+            [self finishRecordFile];
+        }
         
         [self.compressCondition unlock];
     }
     
-    
-//        AudioBufferList outAudioBufferList;
-//        outAudioBufferList.mNumberBuffers = 1;
-//        outAudioBufferList.mBuffers[0].mNumberChannels = 1;
-//        outAudioBufferList.mBuffers[0].mDataByteSize = 32 * 1024;
-//        outAudioBufferList.mBuffers[0].mData = convertBuffer;
-//        
-//        UInt32 ioOutputDataPacketSize = 1;
-//        
-//        const OSStatus conversionResult = AudioConverterFillComplexBuffer(compressor, handleCompressBuffer, (__bridge void*)self, &ioOutputDataPacketSize, &outAudioBufferList, NULL);
-//        
-//        if(conversionResult == 0)
-//        {
-//            @synchronized(self.compressQueue)
-//            {
-//                if(self.compressQueue.count > 0)
-//                {
-//                    [self.compressQueue removeObjectAtIndex:0];
-//                }
-//            }
-//            
-//            if(self.delegate && [self.delegate respondsToSelector:@selector(capturedAudioData:secondsOfAudio:)])
-//            {
-//                NSData* buffer = [NSData dataWithBytes:outAudioBufferList.mBuffers[0].mData length:outAudioBufferList.mBuffers[0].mDataByteSize];
-//                [self.delegate capturedAudioData:buffer secondsOfAudio:self.secondsPerBuffer];
-//            }
-//        }
-//        else
-//        {
-//            if(self.isRecording)
-//            {
-//                DDLogError(@"Compress error %d", (int)conversionResult);
-//            }
-//        }
-//    }
-    
     DDLogInfo(@"Compression thread stopping");
 
 }
-
-//- (OSStatus)handleCompressBuffer:(UInt32*)ioNumberDataPackets data:(AudioBufferList*)ioData description:(AudioStreamPacketDescription**)outDataPacketDescription
-//{
-//    OSStatus status = noErr;
-//    
-//    [self.compressCondition lock];
-//    
-//    if(self.compressQueue.count == 0)
-//    {
-//        [self.compressCondition wait];
-//    }
-//    
-//    if(self.isRecording)
-//    {
-//        NSMutableData* buffer;
-//        @synchronized(self.compressQueue)
-//        {
-//            buffer = [self.compressQueue firstObject];
-//        }
-//
-//        ioData->mNumberBuffers = 1;
-//        ioData->mBuffers[0].mNumberChannels = 1;
-//        ioData->mBuffers[0].mDataByteSize = (UInt32)buffer.length;
-//        ioData->mBuffers[0].mData = [buffer mutableBytes];
-//        
-//        *ioNumberDataPackets = ioData->mBuffers[0].mDataByteSize / 2;
-//    }
-//    else
-//    {
-//        ioData->mBuffers[0].mDataByteSize = 0;
-//        *ioNumberDataPackets = 0;
-//        status = -1;
-//    }
-//    
-//    [self.compressCondition unlock];
-//    
-//    return status;
-//}
-
-//static OSStatus handleCompressBuffer(AudioConverterRef inAudioConverter,
-//                                     UInt32* ioNumberDataPackets,
-//                                     AudioBufferList* ioData,
-//                                     AudioStreamPacketDescription** outDataPacketDescription,
-//                                     void* inUserData)
-//{
-//    AudioManager* manager = (__bridge AudioManager*)inUserData;
-//    return [manager handleCompressBuffer:ioNumberDataPackets data:ioData description:outDataPacketDescription];
-//}
 
 #pragma mark - Decompression
 - (void)decompressThread
 {
     DDLogInfo(@"Decompression thread starting");
     
-    //char* convertBuffer = malloc(32 * 1024);
     while(self.isPreparedToPlay || self.isPlaying)
     {
         [self.decompressCondition lock];
@@ -490,19 +375,10 @@ static Boolean IsAACEncoderAvailable(void);
             DDLogDebug(@"Decompressing file %@", filename);
             self.fileReader = [[AEAudioFileLoaderOperation alloc] initWithFileURL:[NSURL fileURLWithPath:filename] targetAudioDescription:rawFormat];
             
-//            @weakify(self);
-//            self.fileReader.audioReceiverBlock = ^(AudioBufferList *audio, UInt32 lengthInFrames) {
-//                @strongify(self);
-//                BufferWrapper* wrapper = [BufferWrapper new];
-//                wrapper.position = 0;
-//                wrapper.buferList = audio;
-//                wrapper.frames = lengthInFrames;
-//                [self pushPlayQueueBuffer:wrapper];
-//            };
-            
             @weakify(self);
             self.fileReader.completedBlock = ^() {
                 @strongify(self);
+                
                 BufferWrapper* wrapper = [BufferWrapper new];
                 wrapper.position = 0;
                 wrapper.buferList = self.fileReader.bufferList;
@@ -514,137 +390,8 @@ static Boolean IsAACEncoderAvailable(void);
         }
     }
     
-        
-//        AudioBufferList outAudioBufferList;
-//        outAudioBufferList.mNumberBuffers = 1;
-//        outAudioBufferList.mBuffers[0].mNumberChannels = 1;
-//        outAudioBufferList.mBuffers[0].mDataByteSize = 32 * 1024;
-//        outAudioBufferList.mBuffers[0].mData = convertBuffer;
-//        
-////        AudioStreamPacketDescription* pd = (AudioStreamPacketDescription *)(malloc(50 * sizeof(AudioStreamPacketDescription)));
-////        memset(pd, 0xAB, 50 * sizeof(AudioStreamPacketDescription));
-//        
-//        NSMutableData* buffer = nil;
-//        @synchronized(self.decompressQueue)
-//        {
-//            if(self.decompressQueue.count > 0)
-//            {
-//                buffer = [self.decompressQueue firstObject];
-//            }
-//        }
-//        
-//        if(buffer != nil)
-//        {
-//            DDLogDebug(@"Decompressing buffer with length %d", (int)buffer.length);
-//            
-//            UInt32 ioOutputDataPacketSize = 128;
-//            
-//            AudioStreamPacketDescription* pd = (AudioStreamPacketDescription *)(malloc(sizeof(AudioStreamPacketDescription)));
-//            pd->mStartOffset = 0;
-//            pd->mVariableFramesInPacket = 0;
-//            pd->mDataByteSize = (UInt32)buffer.length;
-//            
-//            const OSStatus conversionResult = AudioConverterFillComplexBuffer(decompressor, handleDecompressBuffer, (__bridge void*)self, &ioOutputDataPacketSize, &outAudioBufferList, pd);
-//            
-//            @synchronized(self.decompressQueue)
-//            {
-//                if(self.decompressQueue.count > 0)
-//                {
-//                    [self.decompressQueue removeObjectAtIndex:0];
-//                }
-//            }
-//            
-//            if(conversionResult == 0)
-//            {                
-//                DDLogDebug(@"Decompressed buffer with length %d", (int)outAudioBufferList.mBuffers[0].mDataByteSize);
-//
-//                NSMutableData* buffer = [NSMutableData dataWithBytes:outAudioBufferList.mBuffers[0].mData length:outAudioBufferList.mBuffers[0].mDataByteSize];
-//                [self pushPlayQueueBuffer:buffer];
-//            }
-//            else
-//            {
-//                if(self.isPlaying)
-//                {
-//                    NSError *error = [NSError errorWithDomain:NSOSStatusErrorDomain code:conversionResult userInfo:nil];
-//                    char code[5];
-//                    memcpy(code, &conversionResult, 4);
-//                    code[4] = 0;
-//                    DDLogError(@"Decompress error %s  %@", code, error);
-//                }
-//            }
-//        }
-//        else
-//        {
-//            [NSThread sleepForTimeInterval:0.1];
-//        }
-//    }
-    
     DDLogInfo(@"Decompression thread stopping");
 }
-
-//- (OSStatus)handleDecompressBuffer:(UInt32*)ioNumberDataPackets data:(AudioBufferList*)ioData description:(AudioStreamPacketDescription**)outDataPacketDescription
-//{
-//    OSStatus status = noErr;
-//    
-//    [self.decompressCondition lock];
-//    
-//    if(self.decompressQueue.count == 0)
-//    {
-//        [self.decompressCondition wait];
-//    }
-//    
-//    if(self.isPlaying)
-//    {
-//        NSMutableData* buffer;
-//        @synchronized(self.decompressQueue)
-//        {
-//            buffer = [self.decompressQueue firstObject];
-//        }
-//        
-//        ioData->mNumberBuffers = 1;
-//        ioData->mBuffers[0].mNumberChannels = 1;
-//        ioData->mBuffers[0].mDataByteSize = (UInt32)buffer.length;
-//        ioData->mBuffers[0].mData = [buffer mutableBytes];
-//        
-//        *ioNumberDataPackets = 128;//ioData->mBuffers[0].mDataByteSize / 2;
-//        
-////        (*outDataPacketDescription)->mStartOffset = 0;
-////        (*outDataPacketDescription)->mVariableFramesInPacket = 0;
-////        (*outDataPacketDescription)->mDataByteSize = ioData->mBuffers[0].mDataByteSize;
-//
-//        AudioStreamPacketDescription* pd = (AudioStreamPacketDescription *)(malloc(sizeof(AudioStreamPacketDescription)));
-//        pd->mStartOffset = 0;
-//        pd->mVariableFramesInPacket = 0;
-//        pd->mDataByteSize = ioData->mBuffers[0].mDataByteSize;
-//        
-//        memcpy(*outDataPacketDescription, &pd, sizeof(AudioStreamPacketDescription));
-//    }
-//    else
-//    {
-//        ioData->mBuffers[0].mDataByteSize = 0;
-//        *ioNumberDataPackets = 0;
-//        status = -1;
-//    }
-//    
-//    [self.decompressCondition unlock];
-//    
-//    return status;
-//}
-
-//static OSStatus handleDecompressBuffer(AudioConverterRef inAudioConverter,
-//                                       UInt32* ioNumberDataPackets,
-//                                       AudioBufferList* ioData,
-//                                       AudioStreamPacketDescription** outDataPacketDescription,
-//                                       void* inUserData)
-//{
-//    unsigned char* pd1 = (unsigned char*)outDataPacketDescription;
-//    unsigned char* pd2 = (unsigned char*)*outDataPacketDescription;
-//    unsigned char* pd3 = (unsigned char*)outDataPacketDescription[0];
-//
-//    AudioManager* manager = (__bridge AudioManager*)inUserData;
-//    return [manager handleDecompressBuffer:ioNumberDataPackets data:ioData description:outDataPacketDescription];
-//}
-
 
 #pragma mark - Utilities
 
@@ -660,45 +407,6 @@ static Boolean IsAACEncoderAvailable(void);
     AudioFormatGetProperty(kAudioFormatProperty_FormatInfo, 0, NULL, &size, &aacFormat);
     
     return aacFormat;
-}
-
-static Boolean IsAACEncoderAvailable(void)
-{
-    Boolean isAvailable = false;
-    
-    // get an array of AudioClassDescriptions for all installed encoders for the given format
-    // the specifier is the format that we are interested in - this is 'aac ' in our case
-    UInt32 encoderSpecifier = kAudioFormatMPEG4AAC;
-    UInt32 size;
-    
-    OSStatus result = AudioFormatGetPropertyInfo(kAudioFormatProperty_Encoders, sizeof(encoderSpecifier), &encoderSpecifier, &size);
-    if(result) { DDLogInfo(@"AudioFormatGetPropertyInfo kAudioFormatProperty_Encoders result %d %4.4s", (int)result, (char*)&result); return false; }
-    
-    UInt32 numEncoders = size / sizeof(AudioClassDescription);
-    AudioClassDescription encoderDescriptions[numEncoders];
-    
-    result = AudioFormatGetProperty(kAudioFormatProperty_Encoders, sizeof(encoderSpecifier), &encoderSpecifier, &size, encoderDescriptions);
-    if(result) { DDLogInfo(@"AudioFormatGetProperty kAudioFormatProperty_Encoders result %d %4.4s", (int)result, (char*)&result); return false; }
-    
-    DDLogInfo(@"Number of AAC encoders available: %d\n", (int)numEncoders);
-    
-    // with iOS 7.0 AAC software encode is always available
-    // older devices like the iPhone 4s also have a slower/less flexible hardware encoded for supporting AAC encode on older systems
-    // newer devices may not have a hardware AAC encoder at all but a faster more flexible software AAC encoder
-    // as long as one of these encoders is present we can convert to AAC
-    // if both are available you may choose to which one to prefer via the AudioConverterNewSpecific() API
-    for (UInt32 i=0; i < numEncoders; ++i) {
-        if (encoderDescriptions[i].mSubType == kAudioFormatMPEG4AAC && encoderDescriptions[i].mManufacturer == kAppleHardwareAudioCodecManufacturer) {
-            DDLogInfo(@"Hardware encoder available");
-            isAvailable = true;
-        }
-        if (encoderDescriptions[i].mSubType == kAudioFormatMPEG4AAC && encoderDescriptions[i].mManufacturer == kAppleSoftwareAudioCodecManufacturer) {
-            DDLogInfo(@"Software encoder available");
-            isAvailable = true;
-        }
-    }
-    
-    return isAvailable;
 }
 
 @end
