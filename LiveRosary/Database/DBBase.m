@@ -9,6 +9,9 @@
 #import "DBBase.h"
 #import "UserManager.h"
 
+NSString * const ErrorDomainDatabase = @"ErrorDomainUserManager";
+NSInteger const ErrorException = -900;
+
 @implementation DBBase
 
 - (instancetype)init

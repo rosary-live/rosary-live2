@@ -8,6 +8,7 @@
 
 #import "LRListenViewController.h"
 #import "BroadcastManager.h"
+#import "DBBroadcast.h"
 
 @interface LRListenViewController ()
 
@@ -20,14 +21,18 @@
     
     self.navigationController.navigationBar.topItem.title = @"Stop";
     
-    [[BroadcastManager sharedManager] startPlayingBroadcastWithId:self.broadcast.bid];
+    [[DBBroadcast sharedInstance] getBroadcastById:self.broadcast.bid completion:^(BroadcastModel *broadcast, NSError *error) {
+        DDLogDebug(@"updated broadcast");
+    }];
+    
+    //[[BroadcastManager sharedManager] startPlayingBroadcastWithId:self.broadcast.bid];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
     
-    [[BroadcastManager sharedManager] stopPlaying];
+    //[[BroadcastManager sharedManager] stopPlaying];
 }
 
 - (void)didReceiveMemoryWarning {

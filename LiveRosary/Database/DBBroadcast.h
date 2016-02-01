@@ -16,5 +16,6 @@
 + (instancetype)sharedInstance;
 
 - (void)updateBroadcastsWithCompletion:(void (^)(NSArray<BroadcastModel*>* broadcasts, NSError* error))completion;
+- (void)getBroadcastById:(NSString*)bid completion:(void (^)(BroadcastModel* broadcast, NSError* error))completion;
 
 @end

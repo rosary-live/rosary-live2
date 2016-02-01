@@ -60,6 +60,7 @@
 {
     [[DBBroadcast sharedInstance] updateBroadcastsWithCompletion:^(NSArray<BroadcastModel *> *broadcasts, NSError *error) {
         self.broadcasts = broadcasts;
+        //[self filterBroadcasts];
         [self sortBroadcasts];
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.tableView reloadData];
@@ -71,6 +72,17 @@
 {
     NSSortDescriptor* byDate = [NSSortDescriptor sortDescriptorWithKey:@"created" ascending:YES];
     self.broadcasts = [self.broadcasts sortedArrayUsingDescriptors:@[byDate]];
+}
+
+- (void)filterBroadcasts
+{
+    NSPredicate* filter = [NSPredicate predicateWithBlock:^BOOL(id  _Nonnull evaluatedObject, NSDictionary<NSString *,id> * _Nullable bindings) {
+        BOOL live = [((BroadcastModel*)evaluatedObject).live integerValue] != 0;
+        NSInteger secondsSinceLastUpdate = [[NSDate date] timeIntervalSince1970] - [((BroadcastModel*)evaluatedObject).updated intValue];
+        return  live || secondsSinceLastUpdate < 60;
+    }];
+                           
+    self.broadcasts = [self.broadcasts filteredArrayUsingPredicate:filter];
 }
 
 - (void)didReceiveMemoryWarning {

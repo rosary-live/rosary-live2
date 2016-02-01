@@ -5,6 +5,42 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
     </dependencies>
     <scenes>
+        <!--Login View Controller-->
+        <scene sceneID="48W-Ue-AZS">
+            <objects>
+                <viewController id="Tk8-LE-BZo" customClass="LRLoginViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="pcI-FC-AQL"/>
+                        <viewControllerLayoutGuide type="bottom" id="Djz-bO-QuL"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="6ew-Eu-S1r">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="MEs-11-YbZ" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1274" y="-417"/>
+        </scene>
+        <!--Forgot Password View Controller-->
+        <scene sceneID="z4X-v2-pe6">
+            <objects>
+                <viewController id="nCL-hD-OAk" customClass="LRForgotPasswordViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="at7-cC-Gam"/>
+                        <viewControllerLayoutGuide type="bottom" id="732-zZ-3Hq"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="RGW-IY-BJM">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="AHX-MR-pbf" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1958" y="-418"/>
+        </scene>
         <!--Listener-->
         <scene sceneID="tne-QT-ifu">
             <objects>
@@ -31,7 +67,7 @@
                                         <rect key="frame" x="0.0" y="28" width="600" height="70"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="gh9-SY-lyT" id="7c4-5H-OR8">
-                                            <rect key="frame" x="0.0" y="0.0" width="600" height="69.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="70"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="801" misplaced="YES" text="Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="l70-IL-4sj">
@@ -242,7 +278,7 @@
                                         <rect key="frame" x="0.0" y="28" width="300" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="5Ax-bm-bwX" id="NCx-vx-f5B">
-                                            <rect key="frame" x="0.0" y="0.0" width="300" height="43.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="300" height="44"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qoT-3T-kpp">
@@ -293,6 +329,24 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="X01-Hn-bHm" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="27" y="293"/>
+        </scene>
+        <!--Create User View Controller-->
+        <scene sceneID="yww-QS-wVS">
+            <objects>
+                <viewController storyboardIdentifier="CreateUser" id="Ejo-JY-Jbo" customClass="LRCreateUserViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="4DY-Mr-Fbd"/>
+                        <viewControllerLayoutGuide type="bottom" id="7qp-wH-UeZ"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="Wii-Dl-TDR">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="rwU-bg-c2q" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="606" y="-417"/>
         </scene>
         <!--Listen Nav-->
         <scene sceneID="NiO-xY-C5w">

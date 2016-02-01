@@ -17,7 +17,9 @@
 @property (nonatomic, strong) NSNumber* created;
 @property (nonatomic, strong) NSNumber* updated;
 
-@property (nonatomic, strong) NSString* email;
+@property (nonatomic, strong) NSNumber* live;
+
+@property (nonatomic, strong) NSString* user;
 @property (nonatomic, strong) NSString* name;
 @property (nonatomic, strong) NSString* language;
 @property (nonatomic, strong) NSString* city;

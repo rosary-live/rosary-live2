@@ -7,6 +7,7 @@
 //
 
 #import "BroadcastModel.h"
+#import "NSNumber+Utilities.h"
 
 @implementation BroadcastModel
 
@@ -18,4 +19,8 @@
     return @"bid";
 }
 
+- (NSString*)description
+{
+    return [NSString stringWithFormat:@"%@ seq:%@ created:%@ updated:%@ live:%@ user:%@", self.bid, self.sequence, [self.created dateForNumber], [self.updated dateForNumber], self.live, self.user];
+}
 @end

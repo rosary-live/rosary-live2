@@ -14,6 +14,9 @@
 		D820FB111C4452A9000899DB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D820FB101C4452A9000899DB /* Assets.xcassets */; };
 		D820FB141C4452A9000899DB /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D820FB121C4452A9000899DB /* LaunchScreen.storyboard */; };
 		D83F6A971C47054C005F07E0 /* LRBroadcastMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D83F6A961C47054C005F07E0 /* LRBroadcastMainViewController.m */; };
+		D8427CEA1C5F1FAC00A8CE5F /* LRCreateUserViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8427CE91C5F1FAC00A8CE5F /* LRCreateUserViewController.m */; };
+		D8427CED1C5F20E500A8CE5F /* LRLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8427CEC1C5F20E500A8CE5F /* LRLoginViewController.m */; };
+		D8427CF01C5F21C500A8CE5F /* LRForgotPasswordViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8427CEF1C5F21C500A8CE5F /* LRForgotPasswordViewController.m */; };
 		D86372701C5AD58A00D02DC3 /* BroadcastManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D863726F1C5AD58A00D02DC3 /* BroadcastManager.m */; };
 		D86372731C5ADEF900D02DC3 /* BroadcastModel.m in Sources */ = {isa = PBXBuildFile; fileRef = D86372721C5ADEF900D02DC3 /* BroadcastModel.m */; };
 		D86372761C5AE6BA00D02DC3 /* NSDictionary+Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = D86372751C5AE6BA00D02DC3 /* NSDictionary+Utilities.m */; };
@@ -54,6 +57,12 @@
 		D83F6A941C46D2A2005F07E0 /* PrefixHeader.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
 		D83F6A951C47054C005F07E0 /* LRBroadcastMainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LRBroadcastMainViewController.h; path = ViewControllers/LRBroadcastMainViewController.h; sourceTree = "<group>"; };
 		D83F6A961C47054C005F07E0 /* LRBroadcastMainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LRBroadcastMainViewController.m; path = ViewControllers/LRBroadcastMainViewController.m; sourceTree = "<group>"; };
+		D8427CE81C5F1FAC00A8CE5F /* LRCreateUserViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LRCreateUserViewController.h; path = ViewControllers/Authentication/LRCreateUserViewController.h; sourceTree = "<group>"; };
+		D8427CE91C5F1FAC00A8CE5F /* LRCreateUserViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LRCreateUserViewController.m; path = ViewControllers/Authentication/LRCreateUserViewController.m; sourceTree = "<group>"; };
+		D8427CEB1C5F20E500A8CE5F /* LRLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LRLoginViewController.h; path = ViewControllers/Authentication/LRLoginViewController.h; sourceTree = "<group>"; };
+		D8427CEC1C5F20E500A8CE5F /* LRLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LRLoginViewController.m; path = ViewControllers/Authentication/LRLoginViewController.m; sourceTree = "<group>"; };
+		D8427CEE1C5F21C500A8CE5F /* LRForgotPasswordViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LRForgotPasswordViewController.h; path = ViewControllers/Authentication/LRForgotPasswordViewController.h; sourceTree = "<group>"; };
+		D8427CEF1C5F21C500A8CE5F /* LRForgotPasswordViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LRForgotPasswordViewController.m; path = ViewControllers/Authentication/LRForgotPasswordViewController.m; sourceTree = "<group>"; };
 		D863726E1C5AD58A00D02DC3 /* BroadcastManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BroadcastManager.h; path = Managers/BroadcastManager.h; sourceTree = "<group>"; };
 		D863726F1C5AD58A00D02DC3 /* BroadcastManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BroadcastManager.m; path = Managers/BroadcastManager.m; sourceTree = "<group>"; };
 		D86372711C5ADEF900D02DC3 /* BroadcastModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BroadcastModel.h; path = Models/BroadcastModel.h; sourceTree = "<group>"; };
@@ -190,6 +199,12 @@
 		D863727E1C5B1E6C00D02DC3 /* Authentication */ = {
 			isa = PBXGroup;
 			children = (
+				D8427CE81C5F1FAC00A8CE5F /* LRCreateUserViewController.h */,
+				D8427CE91C5F1FAC00A8CE5F /* LRCreateUserViewController.m */,
+				D8427CEB1C5F20E500A8CE5F /* LRLoginViewController.h */,
+				D8427CEC1C5F20E500A8CE5F /* LRLoginViewController.m */,
+				D8427CEE1C5F21C500A8CE5F /* LRForgotPasswordViewController.h */,
+				D8427CEF1C5F21C500A8CE5F /* LRForgotPasswordViewController.m */,
 			);
 			name = Authentication;
 			sourceTree = "<group>";
@@ -400,6 +415,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D8427CF01C5F21C500A8CE5F /* LRForgotPasswordViewController.m in Sources */,
 				D8A0EFD81C4C21E80006B910 /* LRUserProfileMainViewController.m in Sources */,
 				D863727A1C5AFEC400D02DC3 /* DBBase.m in Sources */,
 				D81AAF7C1C45E29C00B46544 /* LRBaseViewController.m in Sources */,
@@ -413,6 +429,7 @@
 				D820FB091C4452A9000899DB /* AppDelegate.m in Sources */,
 				D863727D1C5AFED900D02DC3 /* DBBroadcast.m in Sources */,
 				D86372731C5ADEF900D02DC3 /* BroadcastModel.m in Sources */,
+				D8427CEA1C5F1FAC00A8CE5F /* LRCreateUserViewController.m in Sources */,
 				D885FA6A1C446FA2002904AC /* LRListenMainViewController.m in Sources */,
 				D8A0EFEB1C4C707B0006B910 /* LiveRosaryAuthenticatedIdentityProvider.m in Sources */,
 				D86372761C5AE6BA00D02DC3 /* NSDictionary+Utilities.m in Sources */,
@@ -423,6 +440,7 @@
 				D8A0EFD51C4C130C0006B910 /* DrawerCell.m in Sources */,
 				D86372701C5AD58A00D02DC3 /* BroadcastManager.m in Sources */,
 				D8EAFEBE1C5D0EB300C38EBA /* BroadcastCell.m in Sources */,
+				D8427CED1C5F20E500A8CE5F /* LRLoginViewController.m in Sources */,
 				D820FB061C4452A9000899DB /* main.m in Sources */,
 				D83F6A971C47054C005F07E0 /* LRBroadcastMainViewController.m in Sources */,
 			);
