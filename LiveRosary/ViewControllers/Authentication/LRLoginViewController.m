@@ -7,8 +7,13 @@
 //
 
 #import "LRLoginViewController.h"
+#import "UserManager.h"
+#import <MBProgressHUD/MBProgressHUD.h>
 
 @interface LRLoginViewController ()
+
+@property (nonatomic, weak) IBOutlet UITextField* email;
+@property (nonatomic, weak) IBOutlet UITextField* password;
 
 @end
 
@@ -33,5 +38,18 @@
     // Pass the selected object to the new view controller.
 }
 */
+
+- (IBAction)onLogin:(id)sender
+{
+    [[UserManager sharedManager] loginWithEmail:self.email.text password:self.password.text completion:^(NSError *error) {
+        if(error != nil)
+        {
+        }
+        else
+        {
+            [self dismissViewControllerAnimated:YES completion:nil];
+        }
+    }];
+}
 
 @end

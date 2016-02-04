@@ -9,6 +9,7 @@
 #import "LRDrawerViewController.h"
 #import "DrawerCell.h"
 #import "UIViewController+MMDrawerController.h"
+#import "UserManager.h"
 
 @interface LRDrawerViewController () <UITableViewDataSource, UITableViewDelegate>
 
@@ -20,7 +21,17 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+    
+    // Start authentication if user isn't logged in
+    if(![UserManager sharedManager].isLoggedIn)
+    {
+        // Queue it at the end of the main run loop so it happens after the UI has been created.
+        dispatch_async(dispatch_get_main_queue(), ^{
+            UIStoryboard* storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+            UINavigationController* authNav = [storyboard instantiateViewControllerWithIdentifier:@"Authentication"];
+            [self presentViewController:authNav animated:YES completion:nil];
+        });
+    }
 }
 
 - (void)didReceiveMemoryWarning {

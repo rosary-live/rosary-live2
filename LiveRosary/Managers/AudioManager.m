@@ -9,8 +9,6 @@
 #import "AudioManager.h"
 #import <TheAmazingAudioEngine/TheAmazingAudioEngine.h>
                             
-static Boolean IsAACEncoderAvailable(void);
-
 @interface BufferWrapper : NSObject
 @property (nonatomic) NSInteger position;
 @property (nonatomic) AudioBufferList* buferList;

@@ -8,6 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
+FOUNDATION_EXTERN NSString * const NotificationUserLoggedIn;
+FOUNDATION_EXTERN NSString * const NotificationUserLoggedOut;
+
 @class AWSServiceConfiguration;
 
 @interface UserManager : NSObject

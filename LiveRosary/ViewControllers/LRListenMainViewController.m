@@ -28,35 +28,37 @@
     
     [self addDrawerButton];
     
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(updatBroadcasts)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(updateBroadcasts)];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateBroadcasts) name:NotificationUserLoggedIn object:nil];
     
-    if([UserManager sharedManager].isLoggedIn)
-    {
-//        [[UserManager sharedManager] refreshTokenWithCompletion:^(NSError *error) {
-//            [self test];
-//            
-            if([[UserManager sharedManager] credentialsExpired])
-            {
-                [[UserManager sharedManager] refreshCredentialsWithCompletion:^(NSError* error) {
-                    [self updatBroadcasts];
-                }];
-            }
-            else
-            {
-                [self updatBroadcasts];
-            }
+//    if([UserManager sharedManager].isLoggedIn)
+//    {
+//        if([[UserManager sharedManager] credentialsExpired])
+//        {
+//            [[UserManager sharedManager] refreshCredentialsWithCompletion:^(NSError* error) {
+//                [self updatBroadcasts];
+//            }];
+//        }
+//        else
+//        {
+//            [self updatBroadcasts];
+//        }
+//    }
+//    else
+//    {
+//        [[UserManager sharedManager] loginWithEmail:@"richard@softwarelogix.com" password:@"qwerty" completion:^(NSError *error) {
+//            [self updatBroadcasts];
 //        }];
-    }
-    else
-    {
-        [[UserManager sharedManager] loginWithEmail:@"richard@softwarelogix.com" password:@"qwerty" completion:^(NSError *error) {
-            [self updatBroadcasts];
-        }];
-    }
+//    }
 }
 
-- (void)updatBroadcasts
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)updateBroadcasts
 {
     [[DBBroadcast sharedInstance] updateBroadcastsWithCompletion:^(NSArray<BroadcastModel *> *broadcasts, NSError *error) {
         self.broadcasts = broadcasts;

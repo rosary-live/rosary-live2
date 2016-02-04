@@ -11,10 +11,6 @@
 @protocol TransferManagerDelegate <NSObject>
 
 @optional
-//- (void)receivedData:(NSData*)data forSequence:(NSInteger)sequence;
-//- (void)sendError:(NSError*)error;
-//- (void)receiveError:(NSError*)error;
-
 - (void)receivedFile:(NSString*)filename forSequence:(NSInteger)sequence;
 - (void)sentFile:(NSString*)filename forSequence:(NSInteger)sequence lastFile:(BOOL)lastFile;
 - (void)sendError:(NSError*)error forFile:(NSString*)filename sequence:(NSInteger)sequence;

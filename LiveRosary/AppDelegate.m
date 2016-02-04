@@ -43,6 +43,10 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     [self.window setRootViewController:self.drawerController];
     
+    [[ConfigModel sharedInstance] loadConfigWithCompletion:^(NSError *error) {
+        DDLogInfo(@"Got config: compressionBitRat: %d  maxBroadcastSeconds: %d  sampleRate: %d  segmentSizeSeconds: %d", (int)[ConfigModel sharedInstance].compressionBitRate, (int)[ConfigModel sharedInstance].maxBroadcastSeconds, (int)[ConfigModel sharedInstance].sampleRate, (int)[ConfigModel sharedInstance].segmentSizeSeconds);
+    }];
+    
     return YES;
 }
 

@@ -7,8 +7,13 @@
 //
 
 #import "LRCreateUserViewController.h"
+#import "UserManager.h"
+#import <MBProgressHUD/MBProgressHUD.h>
 
 @interface LRCreateUserViewController ()
+
+@property (nonatomic, weak) IBOutlet UITextField* email;
+@property (nonatomic, weak) IBOutlet UITextField* password;
 
 @end
 
@@ -33,5 +38,12 @@
     // Pass the selected object to the new view controller.
 }
 */
+
+- (IBAction)onCreate:(id)sender
+{
+    [[UserManager sharedManager] createUserWithEmail:self.email.text password:self.password.text completion:^(NSError *error) {
+        NSLog(@"error: %@", error);
+    }];
+}
 
 @end

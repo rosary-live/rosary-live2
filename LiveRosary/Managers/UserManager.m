@@ -12,11 +12,16 @@
 #import <AWSLambda/AWSLambda.h>
 #import "LiveRosaryAuthenticatedIdentityProvider.h"
 #import "LiveRosaryAuthenticationClient.h"
+#import <AFNetworking/AFNetworking.h>
 
 NSString * const ErrorDomainUserManager = @"ErrorDomainUserManager";
 NSInteger const ErrorCodeUserManager_Exception = 1;
 NSString * const UserDefaultEmail = @"UserDefaultEmail";
 NSString * const UserDefaultPassword = @"UserDefaultPassword";
+
+NSString * const NotificationUserLoggedIn = @"NotificationUserLoggedIn";
+NSString * const NotificationUserLoggedOut = @"NotificationUserLoggedOut";
+
 
 @interface UserManager()
 @property (nonatomic, strong) AWSCognitoCredentialsProvider* credentialsProvider;
@@ -102,6 +107,8 @@ NSString * const UserDefaultPassword = @"UserDefaultPassword";
             
             return [[self.configuration.credentialsProvider refresh] continueWithBlock:^id _Nullable(AWSTask * _Nonnull task) {
                 
+                [[NSNotificationCenter defaultCenter] postNotificationName:NotificationUserLoggedIn object:nil];
+                
                 if(completion) completion(nil);
                 return [AWSTask taskWithResult:nil];
             }];
@@ -121,27 +128,39 @@ NSString * const UserDefaultPassword = @"UserDefaultPassword";
 
 - (void)createUserWithEmail:(NSString*)email password:(NSString*)password completion:(void (^)(NSError* error))completion
 {
-    AWSLambdaInvoker* lambdaInvoker = [AWSLambdaInvoker defaultLambdaInvoker];
+    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
+    AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];
     
-    [[lambdaInvoker invokeFunction:@"LambdAuthCreateUser" JSONObject:@{ @"email": email, @"password": password }] continueWithBlock:^id _Nullable(AWSTask * _Nonnull task) {
+    NSString* post =[NSString stringWithFormat:@"{\"email\":\"%@\",\"password\":\"%@\"}", email, password];
+    NSData* postData = [post dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:NO];
+    NSString* postLength = [NSString stringWithFormat:@"%d", (int)postData.length];
+    
+    NSMutableURLRequest *request = [NSMutableURLRequest new];
+    [request setURL:[NSURL URLWithString:@"https://9wwr7dvesk.execute-api.us-east-1.amazonaws.com/prod/CreateUser"]];
+    [request setHTTPMethod:@"POST"];
+    [request setValue:postLength forHTTPHeaderField:@"Content-Length"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    [request setValue:@"hhpm1l5N771l3eZf7V4Lk8AjWyYgZbPM7XPPU8Jw" forHTTPHeaderField:@"x-api-key"];
+    [request setHTTPBody:postData];
 
-        if(task.error)
-        {
-            DDLogError(@"createUser: error %@", task.error);
-            safeBlock(completion, task.error);
+    NSURLSessionDataTask *dataTask = [manager dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+        if (error) {
+            NSLog(@"Error: %@", error);
+        } else {
+            NSLog(@"%@ %@", response, responseObject);
+            
+            NSNumber* created = (NSNumber*)responseObject[@"created"];
+            if(created != nil && [created integerValue] == 1)
+            {
+                [self loginWithEmail:email password:password completion:completion];
+            }
+            else
+            {
+                safeBlock(completion, [NSError errorWithDomain:ErrorDomainUserManager code:-10 userInfo:nil]);
+            }
         }
-        else if(task.exception)
-        {
-            DDLogError(@"createUser exception: %@", task.exception);
-            safeBlock(completion, [NSError errorWithDomain:ErrorDomainUserManager code:ErrorCodeUserManager_Exception userInfo:nil]);
-        }
-        else if(task.result) {
-            DDLogDebug(@"createUser result: %@", task.result);
-            safeBlock(completion, nil);
-        }
-        
-        return nil;
     }];
+    [dataTask resume];
 }
 
 - (void)loginWithEmail:(NSString*)email password:(NSString*)password completion:(void (^)(NSError* error))completion
