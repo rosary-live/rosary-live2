@@ -15,6 +15,8 @@
 @property (nonatomic, weak) IBOutlet UITextField* email;
 @property (nonatomic, weak) IBOutlet UITextField* password;
 
+@property (nonnull, strong) MBProgressHUD *hud;
+
 @end
 
 @implementation LRLoginViewController
@@ -41,14 +43,43 @@
 
 - (IBAction)onLogin:(id)sender
 {
+    NSString* validationErrorMsg = nil;
+    
+    if(self.email.text.length == 0)
+    {
+        validationErrorMsg = @"Email address is required.";
+    }
+    else if(![self.email.text validEmailAddress])
+    {
+        validationErrorMsg = @"Valid email address is required.";
+    }
+    else if(self.password.text.length < 6)
+    {
+        validationErrorMsg = @"Password with at least 6 characters is required.";
+    }
+    
+    if(validationErrorMsg != nil)
+    {
+        [UIAlertView bk_showAlertViewWithTitle:@"Validation Error" message:validationErrorMsg cancelButtonTitle:@"Ok" otherButtonTitles:nil handler:nil];
+        return;
+    }
+    
+    self.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    self.hud.labelText = @"Logging In";
     [[UserManager sharedManager] loginWithEmail:self.email.text password:self.password.text completion:^(NSError *error) {
-        if(error != nil)
-        {
-        }
-        else
-        {
-            [self dismissViewControllerAnimated:YES completion:nil];
-        }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.hud hide:YES];
+            
+            if(error != nil)
+            {
+                DDLogError(@"Error logging in %@: %@", self.email.text, error);
+                [UIAlertView bk_showAlertViewWithTitle:@"Error" message:@"Error logging in." cancelButtonTitle:@"Ok" otherButtonTitles:nil handler:nil];
+            }
+            else
+            {
+                [self dismissViewControllerAnimated:YES completion:nil];
+            }
+        });
     }];
 }
 

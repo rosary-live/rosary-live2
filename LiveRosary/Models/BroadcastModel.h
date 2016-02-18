@@ -34,4 +34,6 @@
 @property (nonatomic, strong) NSNumber* rate;
 @property (nonatomic, strong) NSNumber* segment_duration;
 
+@property (nonatomic, readonly) BOOL isLive;
+
 @end

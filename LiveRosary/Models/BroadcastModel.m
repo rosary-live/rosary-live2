@@ -19,6 +19,13 @@
     return @"bid";
 }
 
+- (BOOL)isLive
+{
+    BOOL live = self.live.integerValue != 0;
+    NSInteger secondsSinceLastUpdate = [[NSDate date] timeIntervalSince1970] - self.updated.integerValue;
+    return  live && secondsSinceLastUpdate < 60;
+}
+
 - (NSString*)description
 {
     return [NSString stringWithFormat:@"%@ seq:%@ created:%@ updated:%@ live:%@ user:%@", self.bid, self.sequence, [self.created dateForNumber], [self.updated dateForNumber], self.live, self.user];

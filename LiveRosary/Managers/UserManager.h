@@ -20,7 +20,7 @@ FOUNDATION_EXTERN NSString * const NotificationUserLoggedOut;
 
 + (instancetype)sharedManager;
 
-- (void)createUserWithEmail:(NSString*)email password:(NSString*)password completion:(void (^)(NSError* error))completion;
+- (void)createUserWithDictionary:(NSDictionary*)dictionary completion:(void (^)(NSError* error))completion;
 - (void)loginWithEmail:(NSString*)email password:(NSString*)password completion:(void (^)(NSError* error))completion;
 - (BOOL)credentialsExpired;
 - (void)refreshCredentialsWithCompletion:(void (^)(NSError* error))completion;

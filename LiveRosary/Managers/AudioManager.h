@@ -36,4 +36,7 @@
 - (void)stopPlaying;
 - (void)addAudioFileToPlay:(NSString*)filename;
 
+- (void)inputAveragePowerLevel:(Float32*)averagePower peakHoldLevel:(Float32*)peakLevel;
+- (void)outputAveragePowerLevel:(Float32*)averagePower peakHoldLevel:(Float32*)peakLevel;
+
 @end

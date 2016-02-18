@@ -18,6 +18,7 @@
 		D8427CED1C5F20E500A8CE5F /* LRLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8427CEC1C5F20E500A8CE5F /* LRLoginViewController.m */; };
 		D8427CF01C5F21C500A8CE5F /* LRForgotPasswordViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8427CEF1C5F21C500A8CE5F /* LRForgotPasswordViewController.m */; };
 		D8427CF41C601BDA00A8CE5F /* ConfigModel.m in Sources */ = {isa = PBXBuildFile; fileRef = D8427CF31C601BDA00A8CE5F /* ConfigModel.m */; };
+		D8431A241C75269B0061A3CB /* F3BarGauge.m in Sources */ = {isa = PBXBuildFile; fileRef = D8431A231C75269B0061A3CB /* F3BarGauge.m */; };
 		D86372701C5AD58A00D02DC3 /* BroadcastManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D863726F1C5AD58A00D02DC3 /* BroadcastManager.m */; };
 		D86372731C5ADEF900D02DC3 /* BroadcastModel.m in Sources */ = {isa = PBXBuildFile; fileRef = D86372721C5ADEF900D02DC3 /* BroadcastModel.m */; };
 		D86372761C5AE6BA00D02DC3 /* NSDictionary+Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = D86372751C5AE6BA00D02DC3 /* NSDictionary+Utilities.m */; };
@@ -66,6 +67,8 @@
 		D8427CEF1C5F21C500A8CE5F /* LRForgotPasswordViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LRForgotPasswordViewController.m; path = ViewControllers/Authentication/LRForgotPasswordViewController.m; sourceTree = "<group>"; };
 		D8427CF21C601BDA00A8CE5F /* ConfigModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ConfigModel.h; path = Models/ConfigModel.h; sourceTree = "<group>"; };
 		D8427CF31C601BDA00A8CE5F /* ConfigModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ConfigModel.m; path = Models/ConfigModel.m; sourceTree = "<group>"; };
+		D8431A221C75269B0061A3CB /* F3BarGauge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = F3BarGauge.h; path = Views/F3BarGauge.h; sourceTree = "<group>"; };
+		D8431A231C75269B0061A3CB /* F3BarGauge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = F3BarGauge.m; path = Views/F3BarGauge.m; sourceTree = "<group>"; };
 		D863726E1C5AD58A00D02DC3 /* BroadcastManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BroadcastManager.h; path = Managers/BroadcastManager.h; sourceTree = "<group>"; };
 		D863726F1C5AD58A00D02DC3 /* BroadcastManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BroadcastManager.m; path = Managers/BroadcastManager.m; sourceTree = "<group>"; };
 		D86372711C5ADEF900D02DC3 /* BroadcastModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BroadcastModel.h; path = Models/BroadcastModel.h; sourceTree = "<group>"; };
@@ -161,6 +164,7 @@
 		D820FB031C4452A9000899DB /* LiveRosary */ = {
 			isa = PBXGroup;
 			children = (
+				D8431A211C75268A0061A3CB /* Views */,
 				D86372771C5AFEA800D02DC3 /* Database */,
 				D8C23FD81C51E1EC0043F8BE /* Categories */,
 				D8A0EFE81C4C704B0006B910 /* Authentication */,
@@ -186,6 +190,15 @@
 				D83F6A941C46D2A2005F07E0 /* PrefixHeader.pch */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		D8431A211C75268A0061A3CB /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				D8431A221C75269B0061A3CB /* F3BarGauge.h */,
+				D8431A231C75269B0061A3CB /* F3BarGauge.m */,
+			);
+			name = Views;
 			sourceTree = "<group>";
 		};
 		D86372771C5AFEA800D02DC3 /* Database */ = {
@@ -426,6 +439,7 @@
 				D81AAF7C1C45E29C00B46544 /* LRBaseViewController.m in Sources */,
 				D8A0EFDF1C4C2F1E0006B910 /* UserManager.m in Sources */,
 				D8A0EFF91C4F2B1F0006B910 /* AudioManager.m in Sources */,
+				D8431A241C75269B0061A3CB /* F3BarGauge.m in Sources */,
 				D8A0EFE31C4C30E40006B910 /* UserModel.m in Sources */,
 				D885FA671C446F49002904AC /* LRDrawerViewController.m in Sources */,
 				D8A0EFDB1C4C220A0006B910 /* LRAdminMainViewController.m in Sources */,

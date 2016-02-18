@@ -391,6 +391,16 @@
     DDLogInfo(@"Decompression thread stopping");
 }
 
+- (void)inputAveragePowerLevel:(Float32*)averagePower peakHoldLevel:(Float32*)peakLevel
+{
+    [self.audioController inputAveragePowerLevel:averagePower peakHoldLevel:peakLevel];
+}
+
+- (void)outputAveragePowerLevel:(Float32*)averagePower peakHoldLevel:(Float32*)peakLevel
+{
+    [self.audioController outputAveragePowerLevel:averagePower peakHoldLevel:peakLevel];
+}
+
 #pragma mark - Utilities
 
 - (AudioStreamBasicDescription)AACFormat

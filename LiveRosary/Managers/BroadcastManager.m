@@ -13,6 +13,8 @@
 
 @interface BroadcastManager () <AudioManagerDelegate, TransferManagerDelegate>
 
+@property (nonatomic) NSInteger startSequence;
+
 @end
 
 
@@ -62,17 +64,18 @@
     }
 }
 
-- (void)startPlayingBroadcastWithId:(NSString*)broadcastId
+- (void)startPlayingBroadcastWithId:(NSString*)broadcastId atSequence:(NSInteger)sequence
 {
     if(self.state == BroadcastStateIdle)
     {
         _state = BroadcastStatePlaying;
+        _startSequence = sequence;
         
         [AudioManager sharedManager].delegate = self;
         [AudioManager sharedManager].sampleRate = 11025.0;
         [AudioManager sharedManager].channels = 1;
         [TransferManager sharedManager].delegate = self;
-        [[TransferManager sharedManager] startReceiving:broadcastId atSequence:1];
+        [[TransferManager sharedManager] startReceiving:broadcastId atSequence:sequence];
         
         [[AudioManager sharedManager] prepareToPlay];
     }
@@ -129,7 +132,7 @@
 {
     [[AudioManager sharedManager] addAudioFileToPlay:filename];
     
-    if(![AudioManager sharedManager].isPlaying)
+    if(![AudioManager sharedManager].isPlaying && sequence > self.startSequence)
     {
         [[AudioManager sharedManager] startPlaying];
     }

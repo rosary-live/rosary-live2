@@ -24,7 +24,7 @@ typedef NS_ENUM(NSUInteger, BroadcastState) {
 - (NSString*)startBroadcasting;
 - (void)stopBroadcasting;
 
-- (void)startPlayingBroadcastWithId:(NSString*)broadcastId;
+- (void)startPlayingBroadcastWithId:(NSString*)broadcastId atSequence:(NSInteger)sequence;
 - (void)stopPlaying;
 
 @end

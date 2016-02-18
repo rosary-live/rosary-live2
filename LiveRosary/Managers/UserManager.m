@@ -126,13 +126,14 @@ NSString * const NotificationUserLoggedOut = @"NotificationUserLoggedOut";
 //    }
 }
 
-- (void)createUserWithEmail:(NSString*)email password:(NSString*)password completion:(void (^)(NSError* error))completion
+- (void)createUserWithDictionary:(NSDictionary*)dictionary completion:(void (^)(NSError* error))completion;
 {
     NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
     AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];
     
-    NSString* post =[NSString stringWithFormat:@"{\"email\":\"%@\",\"password\":\"%@\"}", email, password];
-    NSData* postData = [post dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:NO];
+//    NSString* post =[NSString stringWithFormat:@"{\"email\":\"%@\",\"password\":\"%@\"}", email, password];
+//    NSData* postData = [post dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:NO];
+    NSData* postData = [NSJSONSerialization dataWithJSONObject:dictionary options:0 error:nil];
     NSString* postLength = [NSString stringWithFormat:@"%d", (int)postData.length];
     
     NSMutableURLRequest *request = [NSMutableURLRequest new];
@@ -152,7 +153,7 @@ NSString * const NotificationUserLoggedOut = @"NotificationUserLoggedOut";
             NSNumber* created = (NSNumber*)responseObject[@"created"];
             if(created != nil && [created integerValue] == 1)
             {
-                [self loginWithEmail:email password:password completion:completion];
+                [self loginWithEmail:dictionary[@"email"] password:dictionary[@"password"] completion:completion];
             }
             else
             {

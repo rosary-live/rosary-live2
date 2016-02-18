@@ -8,11 +8,16 @@
 
 #import "LRBroadcastMainViewController.h"
 #import "BroadcastManager.h"
+#import "AudioManager.h"
+#import "F3BarGauge.h"
 
 @interface LRBroadcastMainViewController ()
 
 @property (nonatomic, weak) IBOutlet UIButton* startStopButton;
 @property (nonatomic, weak) IBOutlet UILabel* infoLabel;
+@property (nonatomic, weak) IBOutlet F3BarGauge* meter;
+
+@property (nonatomic, strong) NSTimer* meterTimer;
 
 @end
 
@@ -22,6 +27,10 @@
     [super viewDidLoad];
 
     [self addDrawerButton];
+    
+    self.meter.minLimit = 0.0;
+    self.meter.maxLimit = 1.0;
+    self.meter.holdPeak = NO;
 }
 
 - (void)didReceiveMemoryWarning {
@@ -45,11 +54,19 @@
     {
         [self.startStopButton setTitle:@"Start" forState:UIControlStateNormal];
         [[BroadcastManager sharedManager] stopBroadcasting];
+        self.meter.value = 0.0;
     }
     else if([BroadcastManager sharedManager].state == BroadcastStateIdle)
     {
         [self.startStopButton setTitle:@"Stop" forState:UIControlStateNormal];
-        [[BroadcastManager sharedManager] startBroadcasting];        
+        [[BroadcastManager sharedManager] startBroadcasting];
+        
+        self.meterTimer = [NSTimer bk_scheduledTimerWithTimeInterval:0.05 block:^(NSTimer *timer) {
+            Float32 level;
+            Float32 peak;
+            [[AudioManager sharedManager] inputAveragePowerLevel:&level peakHoldLevel:&peak];
+            self.meter.value = pow(10, level/40);
+        } repeats:YES];
     }
 }
 

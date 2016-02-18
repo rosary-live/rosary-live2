@@ -31,26 +31,6 @@
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(updateBroadcasts)];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateBroadcasts) name:NotificationUserLoggedIn object:nil];
-    
-//    if([UserManager sharedManager].isLoggedIn)
-//    {
-//        if([[UserManager sharedManager] credentialsExpired])
-//        {
-//            [[UserManager sharedManager] refreshCredentialsWithCompletion:^(NSError* error) {
-//                [self updatBroadcasts];
-//            }];
-//        }
-//        else
-//        {
-//            [self updatBroadcasts];
-//        }
-//    }
-//    else
-//    {
-//        [[UserManager sharedManager] loginWithEmail:@"richard@softwarelogix.com" password:@"qwerty" completion:^(NSError *error) {
-//            [self updatBroadcasts];
-//        }];
-//    }
 }
 
 - (void)dealloc
@@ -62,7 +42,7 @@
 {
     [[DBBroadcast sharedInstance] updateBroadcastsWithCompletion:^(NSArray<BroadcastModel *> *broadcasts, NSError *error) {
         self.broadcasts = broadcasts;
-        //[self filterBroadcasts];
+        [self filterBroadcasts];
         [self sortBroadcasts];
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.tableView reloadData];
@@ -79,9 +59,7 @@
 - (void)filterBroadcasts
 {
     NSPredicate* filter = [NSPredicate predicateWithBlock:^BOOL(id  _Nonnull evaluatedObject, NSDictionary<NSString *,id> * _Nullable bindings) {
-        BOOL live = [((BroadcastModel*)evaluatedObject).live integerValue] != 0;
-        NSInteger secondsSinceLastUpdate = [[NSDate date] timeIntervalSince1970] - [((BroadcastModel*)evaluatedObject).updated intValue];
-        return  live || secondsSinceLastUpdate < 60;
+        return ((BroadcastModel*)evaluatedObject).isLive;
     }];
                            
     self.broadcasts = [self.broadcasts filteredArrayUsingPredicate:filter];
@@ -96,27 +74,11 @@
 
 // In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-    
     LRListenViewController* listenViewController = (LRListenViewController*)segue.destinationViewController;
     BroadcastCell* cell = (BroadcastCell*)sender;
     NSIndexPath* indexPath = [self.tableView indexPathForCell:cell];
     listenViewController.broadcast = self.broadcasts[indexPath.row];
 }
-
-- (IBAction)onPlayStopButton:(id)sender
-{
-    if([BroadcastManager sharedManager].state == BroadcastStatePlaying)
-    {
-        [[BroadcastManager sharedManager] stopPlaying];
-    }
-    else if([BroadcastManager sharedManager].state == BroadcastStateIdle)
-    {
-        [[BroadcastManager sharedManager] startPlayingBroadcastWithId:@""];
-    }
-}
-
 
 #pragma mark - UITableViewDataSource
 

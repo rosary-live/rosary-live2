@@ -9,8 +9,19 @@
 #import "LRListenViewController.h"
 #import "BroadcastManager.h"
 #import "DBBroadcast.h"
+#import "NSNumber+Utilities.h"
+#import <MBProgressHUD/MBProgressHUD.h>
 
 @interface LRListenViewController ()
+
+@property (nonatomic, weak) IBOutlet UIImageView* avatar;
+@property (nonatomic, weak) IBOutlet UILabel* name;
+@property (nonatomic, weak) IBOutlet UILabel* language;
+@property (nonatomic, weak) IBOutlet UILabel* date;
+@property (nonatomic, weak) IBOutlet UILabel* location;
+@property (nonatomic, weak) IBOutlet UILabel* status;
+
+@property (nonnull, strong) MBProgressHUD *hud;
 
 @end
 
@@ -21,18 +32,29 @@
     
     self.navigationController.navigationBar.topItem.title = @"Stop";
     
+    self.name.text = self.broadcast.name;
+    self.language.text = self.broadcast.language;
+    self.location.text = [NSString stringWithFormat:@"%@, %@ %@", self.broadcast.city, self.broadcast.state, self.broadcast.country];
+    self.date.text = [NSDateFormatter localizedStringFromDate:[self.broadcast.updated dateForNumber] dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterShortStyle];
+    self.status.text = @"Loading";
+    
+    self.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    self.hud.labelText = @"Loading";
+
     [[DBBroadcast sharedInstance] getBroadcastById:self.broadcast.bid completion:^(BroadcastModel *broadcast, NSError *error) {
         DDLogDebug(@"updated broadcast");
+        [self.hud hide:YES];
+        
+        if(broadcast.live.boolValue )
+        [[BroadcastManager sharedManager] startPlayingBroadcastWithId:self.broadcast.bid atSequence:broadcast.sequence.integerValue];
     }];
-    
-    //[[BroadcastManager sharedManager] startPlayingBroadcastWithId:self.broadcast.bid];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
     
-    //[[BroadcastManager sharedManager] stopPlaying];
+    [[BroadcastManager sharedManager] stopPlaying];
 }
 
 - (void)didReceiveMemoryWarning {

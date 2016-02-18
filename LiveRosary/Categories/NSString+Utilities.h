@@ -12,5 +12,6 @@
 
 + (NSString*)UUID;
 + (NSString*)filenameForBroadcastId:(NSString*)bid andSequence:(NSInteger)sequence;
+- (BOOL)validEmailAddress;
 
 @end
