@@ -1,37 +1,36 @@
 //
-//  LRListenMainViewController.m
+//  BroadcastsTableView.m
 //  LiveRosary
 //
-//  Created by richardtaylor on 1/11/16.
+//  Created by richardtaylor on 2/17/16.
 //  Copyright © 2016 PocketCake. All rights reserved.
 //
 
-#import "LRListenMainViewController.h"
-#import "LRListenViewController.h"
+#import "BroadcastsTableView.h"
+#import "BroadcastCell.h"
 #import "UserManager.h"
 #import "BroadcastManager.h"
 #import "DBBroadcast.h"
-#import "BroadcastCell.h"
 #import "NSNumber+Utilities.h"
 
-@interface LRListenMainViewController () <UITableViewDataSource>
+@interface BroadcastsTableView() <UITableViewDataSource, UITableViewDelegate>
 
-@property (nonatomic, weak) IBOutlet UITableView* tableView;
 @property (nonatomic, strong) NSArray<BroadcastModel *> *broadcasts;
 
 @end
 
-@implementation LRListenMainViewController
+@implementation BroadcastsTableView
 
-- (void)viewDidLoad {
-    [super viewDidLoad];
+- (void)awakeFromNib
+{
+    self.dataSource = self;
+    self.delegate = self;
     
-    [self addDrawerButton];
-    
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(updateBroadcasts)];
+    UINib* cellNib = [UINib nibWithNibName:@"BroadcastCell" bundle:nil];
+    [self registerNib:cellNib forCellReuseIdentifier:@"BroadcastCell"];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateBroadcasts) name:NotificationUserLoggedIn object:nil];
-    
+
     if([UserManager sharedManager].isLoggedIn)
     {
         [self updateBroadcasts];
@@ -50,7 +49,7 @@
         //[self filterBroadcasts];
         [self sortBroadcasts];
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.tableView reloadData];
+            [self reloadData];
         });
     }];
 }
@@ -66,24 +65,8 @@
     NSPredicate* filter = [NSPredicate predicateWithBlock:^BOOL(id  _Nonnull evaluatedObject, NSDictionary<NSString *,id> * _Nullable bindings) {
         return ((BroadcastModel*)evaluatedObject).isLive;
     }];
-                           
+    
     self.broadcasts = [self.broadcasts filteredArrayUsingPredicate:filter];
-}
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    LRListenViewController* listenViewController = (LRListenViewController*)segue.destinationViewController;
-    BroadcastCell* cell = (BroadcastCell*)sender;
-    NSIndexPath* indexPath = [self.tableView indexPathForCell:cell];
-    listenViewController.broadcast = self.broadcasts[indexPath.row];
-    listenViewController.playFromStart = NO;
 }
 
 #pragma mark - UITableViewDataSource
@@ -102,7 +85,23 @@
     cell.language.text = broadcast.language;
     cell.location.text = [NSString stringWithFormat:@"%@, %@ %@", broadcast.city, broadcast.state, broadcast.country];
     cell.date.text = [NSDateFormatter localizedStringFromDate:[broadcast.updated dateForNumber] dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterShortStyle];
+    cell.live.text = broadcast.isLive ? @"LIVE" : @"ENDED";
     return cell;
+}
+
+#pragma mark - UITableViewDelegate
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 70.0f;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if(self.actionDelegate != nil && [self.actionDelegate respondsToSelector:@selector(selectedBroadcast:)])
+    {
+        [self.actionDelegate selectedBroadcast:self.broadcasts[indexPath.row]];
+    }
 }
 
 @end

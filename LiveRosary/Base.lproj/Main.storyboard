@@ -153,6 +153,15 @@
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="69"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalCompressionResistancePriority="500" misplaced="YES" text="Language" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="s0M-mb-5Fw">
+                                                    <rect key="frame" x="505" y="5" width="87" height="21"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="21" id="B4Z-Ob-GTh"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="801" misplaced="YES" text="Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="l70-IL-4sj">
                                                     <rect key="frame" x="76" y="5" width="421" height="21"/>
                                                     <constraints>
@@ -177,15 +186,6 @@
                                                         <constraint firstAttribute="height" constant="21" id="W6a-0O-mEy"/>
                                                     </constraints>
                                                     <fontDescription key="fontDescription" type="system" pointSize="13"/>
-                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalCompressionResistancePriority="500" misplaced="YES" text="Language" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="s0M-mb-5Fw">
-                                                    <rect key="frame" x="505" y="5" width="87" height="21"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="height" constant="21" id="B4Z-Ob-GTh"/>
-                                                    </constraints>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
@@ -250,7 +250,7 @@
         <!--Listen-->
         <scene sceneID="HC4-9C-L6e">
             <objects>
-                <viewController id="AKf-93-N7p" customClass="LRListenViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="LRListenViewController" id="AKf-93-N7p" customClass="LRListenViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="dHP-Cw-Sl2"/>
                         <viewControllerLayoutGuide type="bottom" id="yYp-Ov-izF"/>
@@ -342,6 +342,7 @@
                         <outlet property="language" destination="le9-v0-HcO" id="Yj0-1S-VMI"/>
                         <outlet property="location" destination="K85-tR-qd1" id="vwK-rP-kL5"/>
                         <outlet property="name" destination="OSC-L7-hIj" id="0Us-qX-NvB"/>
+                        <outlet property="status" destination="AFB-d7-Xtv" id="cKa-Sk-OL5"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="238-ec-7pc" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -399,10 +400,10 @@
             </objects>
             <point key="canvasLocation" x="1468" y="1134"/>
         </scene>
-        <!--Admin-->
+        <!--All Broadcasts-->
         <scene sceneID="OU7-xf-r3b">
             <objects>
-                <viewController id="1MB-1X-hih" customClass="LRAdminMainViewController" sceneMemberID="viewController">
+                <viewController id="1MB-1X-hih" customClass="LRAdminBroadcastsViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="gaP-cK-AcB"/>
                         <viewControllerLayoutGuide type="bottom" id="xGF-Xz-Ipz"/>
@@ -410,13 +411,28 @@
                     <view key="view" contentMode="scaleToFill" id="DH6-Yf-NPz">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MvZ-5P-jVM" customClass="BroadcastsTableView">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </view>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="MvZ-5P-jVM" secondAttribute="trailing" id="HcE-kW-qeY"/>
+                            <constraint firstItem="MvZ-5P-jVM" firstAttribute="leading" secondItem="DH6-Yf-NPz" secondAttribute="leading" id="UsB-Ye-Nbh"/>
+                            <constraint firstItem="MvZ-5P-jVM" firstAttribute="top" secondItem="DH6-Yf-NPz" secondAttribute="top" id="YWL-pD-hw3"/>
+                            <constraint firstItem="xGF-Xz-Ipz" firstAttribute="top" secondItem="MvZ-5P-jVM" secondAttribute="bottom" id="mTa-dd-VlM"/>
+                        </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Admin" id="zDd-3j-QBw"/>
+                    <navigationItem key="navigationItem" title="All Broadcasts" id="ik9-Dp-bar"/>
+                    <connections>
+                        <outlet property="tableView" destination="MvZ-5P-jVM" id="yGa-ET-uGT"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="nVR-YS-ehy" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1468" y="1825"/>
+            <point key="canvasLocation" x="2280" y="1825"/>
         </scene>
         <!--Drawer View Controller-->
         <scene sceneID="NZy-Z5-Zvd">
@@ -741,12 +757,48 @@
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
-                        <segue destination="1MB-1X-hih" kind="relationship" relationship="rootViewController" id="l6u-JL-o82"/>
+                        <segue destination="poU-iY-A2R" kind="relationship" relationship="rootViewController" id="gs9-dH-pCp"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="bod-hf-1Di" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="606" y="1825"/>
+        </scene>
+        <!--Admin-->
+        <scene sceneID="4gY-Q9-Oph">
+            <objects>
+                <viewController id="poU-iY-A2R" customClass="LRAdminMainViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="8yI-oG-4LQ"/>
+                        <viewControllerLayoutGuide type="bottom" id="79w-9f-Avl"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="NfH-6p-h5i">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="k6v-WQ-DNQ">
+                                <rect key="frame" x="242" y="121" width="117" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="117" id="Z4J-dA-2r4"/>
+                                    <constraint firstAttribute="height" constant="30" id="u2o-US-lh6"/>
+                                </constraints>
+                                <state key="normal" title="All Broadcasts"/>
+                                <connections>
+                                    <segue destination="1MB-1X-hih" kind="show" id="Pap-hD-sfv"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="k6v-WQ-DNQ" firstAttribute="top" secondItem="8yI-oG-4LQ" secondAttribute="bottom" constant="57" id="OhR-sv-Lhe"/>
+                            <constraint firstItem="k6v-WQ-DNQ" firstAttribute="centerX" secondItem="NfH-6p-h5i" secondAttribute="centerX" id="zan-Lx-DnD"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" title="Admin" id="UHg-A0-Lvm"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="IHD-oN-Lb7" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1477" y="1828"/>
         </scene>
         <!--User Profile-->
         <scene sceneID="NXt-nT-axO">

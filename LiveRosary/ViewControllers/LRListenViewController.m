@@ -43,10 +43,20 @@
 
     [[DBBroadcast sharedInstance] getBroadcastById:self.broadcast.bid completion:^(BroadcastModel *broadcast, NSError *error) {
         DDLogDebug(@"updated broadcast");
-        [self.hud hide:YES];
         
-        if(broadcast.live.boolValue )
-        [[BroadcastManager sharedManager] startPlayingBroadcastWithId:self.broadcast.bid atSequence:broadcast.sequence.integerValue];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.hud hide:YES];
+            
+            if(broadcast.isLive || self.playFromStart)
+            {
+                self.status.text = @"Playing";
+                [[BroadcastManager sharedManager] startPlayingBroadcastWithId:self.broadcast.bid atSequence:self.playFromStart ? 1 : broadcast.sequence.integerValue];
+            }
+            else
+            {
+                self.status.text = @"Broadcast Has Ended";
+            }
+        });
     }];
 }
 

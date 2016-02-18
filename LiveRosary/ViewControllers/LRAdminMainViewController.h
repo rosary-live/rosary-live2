@@ -1,12 +1,12 @@
 //
-//  LRAdminMainViewController.h
+//  LRAdminTabBarController.h
 //  LiveRosary
 //
-//  Created by richardtaylor on 1/13/16.
+//  Created by richardtaylor on 2/17/16.
 //  Copyright © 2016 PocketCake. All rights reserved.
 //
 
-#import "LRBaseViewController.h"
+#include "LRBaseViewController.h"
 
 @interface LRAdminMainViewController : LRBaseViewController
 

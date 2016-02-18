@@ -15,5 +15,6 @@
 @property (nonatomic, weak) IBOutlet UILabel* language;
 @property (nonatomic, weak) IBOutlet UILabel* date;
 @property (nonatomic, weak) IBOutlet UILabel* location;
+@property (nonatomic, weak) IBOutlet UILabel* live;
 
 @end

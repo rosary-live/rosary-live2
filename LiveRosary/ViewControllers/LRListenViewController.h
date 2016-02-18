@@ -12,5 +12,6 @@
 @interface LRListenViewController : UIViewController
 
 @property (nonatomic, strong) BroadcastModel* broadcast;
+@property (nonatomic) BOOL playFromStart;
 
 @end
