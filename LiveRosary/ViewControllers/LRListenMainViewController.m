@@ -13,10 +13,11 @@
 #import "DBBroadcast.h"
 #import "BroadcastCell.h"
 #import "NSNumber+Utilities.h"
+#import "BroadcastsTableView.h"
 
-@interface LRListenMainViewController () <UITableViewDataSource>
+@interface LRListenMainViewController () <BroadcastsTableViewActionDelegate>
 
-@property (nonatomic, weak) IBOutlet UITableView* tableView;
+@property (nonatomic, weak) IBOutlet BroadcastsTableView* tableView;
 @property (nonatomic, strong) NSArray<BroadcastModel *> *broadcasts;
 
 @end
@@ -30,44 +31,7 @@
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(updateBroadcasts)];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateBroadcasts) name:NotificationUserLoggedIn object:nil];
-    
-    if([UserManager sharedManager].isLoggedIn)
-    {
-        [self updateBroadcasts];
-    }
-}
-
-- (void)dealloc
-{
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
-- (void)updateBroadcasts
-{
-    [[DBBroadcast sharedInstance] updateBroadcastsWithCompletion:^(NSArray<BroadcastModel *> *broadcasts, NSError *error) {
-        self.broadcasts = broadcasts;
-        //[self filterBroadcasts];
-        [self sortBroadcasts];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.tableView reloadData];
-        });
-    }];
-}
-
-- (void)sortBroadcasts
-{
-    NSSortDescriptor* byDate = [NSSortDescriptor sortDescriptorWithKey:@"created" ascending:YES];
-    self.broadcasts = [self.broadcasts sortedArrayUsingDescriptors:@[byDate]];
-}
-
-- (void)filterBroadcasts
-{
-    NSPredicate* filter = [NSPredicate predicateWithBlock:^BOOL(id  _Nonnull evaluatedObject, NSDictionary<NSString *,id> * _Nullable bindings) {
-        return ((BroadcastModel*)evaluatedObject).isLive;
-    }];
-                           
-    self.broadcasts = [self.broadcasts filteredArrayUsingPredicate:filter];
+    self.tableView.actionDelegate = self;
 }
 
 - (void)didReceiveMemoryWarning {
@@ -78,31 +42,23 @@
 #pragma mark - Navigation
 
 // In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    LRListenViewController* listenViewController = (LRListenViewController*)segue.destinationViewController;
-    BroadcastCell* cell = (BroadcastCell*)sender;
-    NSIndexPath* indexPath = [self.tableView indexPathForCell:cell];
-    listenViewController.broadcast = self.broadcasts[indexPath.row];
-    listenViewController.playFromStart = NO;
-}
+//- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+//    LRListenViewController* listenViewController = (LRListenViewController*)segue.destinationViewController;
+//    BroadcastCell* cell = (BroadcastCell*)sender;
+//    NSIndexPath* indexPath = [self.tableView indexPathForCell:cell];
+//    listenViewController.broadcast = self.broadcasts[indexPath.row];
+//    listenViewController.playFromStart = NO;
+//}
 
-#pragma mark - UITableViewDataSource
+#pragma mark - BroadcastsTableViewActionDelegate
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+- (void)selectedBroadcast:(BroadcastModel*)broadcast
 {
-    return self.broadcasts.count;
-}
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    BroadcastCell* cell = [tableView dequeueReusableCellWithIdentifier:@"BroadcastCell"];
-    
-    BroadcastModel* broadcast = self.broadcasts[indexPath.row];
-    cell.name.text = broadcast.name;
-    cell.language.text = broadcast.language;
-    cell.location.text = [NSString stringWithFormat:@"%@, %@ %@", broadcast.city, broadcast.state, broadcast.country];
-    cell.date.text = [NSDateFormatter localizedStringFromDate:[broadcast.updated dateForNumber] dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterShortStyle];
-    return cell;
+    UIStoryboard* storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    LRListenViewController* listenViewController = [storyboard instantiateViewControllerWithIdentifier:@"LRListenViewController"];
+    listenViewController.broadcast = broadcast;
+    listenViewController.playFromStart = YES;
+    [self.navigationController pushViewController:listenViewController animated:YES];
 }
 
 @end
