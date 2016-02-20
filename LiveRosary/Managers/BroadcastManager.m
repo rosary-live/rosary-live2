@@ -10,6 +10,7 @@
 #import "AudioManager.h"
 #import "TransferManager.h"
 #import "NSString+Utilities.h"
+#import "ConfigModel.h"
 
 @interface BroadcastManager () <AudioManagerDelegate, TransferManagerDelegate>
 
@@ -44,8 +45,9 @@
         [[TransferManager sharedManager] addSequenceFile:filename lastFile:NO];
         
         [AudioManager sharedManager].delegate = self;
-        [AudioManager sharedManager].sampleRate = 11025.0;
+        [AudioManager sharedManager].sampleRate = [ConfigModel sharedInstance].sampleRate;
         [AudioManager sharedManager].channels = 1;
+        [AudioManager sharedManager].secondsPerSegment = [ConfigModel sharedInstance].segmentSizeSeconds;
         [[AudioManager sharedManager] startRecording:self.broadcastId];
         
         return self.broadcastId;
@@ -122,15 +124,31 @@
 - (void)capturedAudioFile:(NSString*)filename sequence:(NSInteger)sequence secondsOfAudio:(double)seconds lastFile:(BOOL)lastFile
 {
     [[TransferManager sharedManager] addSequenceFile:filename lastFile:lastFile];
-    DDLogDebug(@"Added file to send: %@", filename);
+    DDLogDebug(@"Added file to send: %@ %d %@", filename, (int)sequence, lastFile ? @"LAST" : @"");
 }
 
+- (void)playedAudioFile:(NSString *)filename sequence:(NSInteger)sequence lastFile:(BOOL)lastFile
+{
+    DDLogDebug(@"Played sequence %d %@", (int)sequence, lastFile ? @"LAST" : @"");
+    
+    if(lastFile && self.delegate != nil && [self.delegate respondsToSelector:@selector(broadcastHasEnded)])
+    {
+        [self.delegate broadcastHasEnded];
+    }
+}
+
+- (void)audioError:(NSError *)error
+{
+    DDLogError(@"Audio Error: %@", error);
+}
 
 #pragma mark - TransferManagerDelegate
 
-- (void)receivedFile:(NSString*)filename forSequence:(NSInteger)sequence
+- (void)receivedFile:(NSString*)filename forSequence:(NSInteger)sequence lastFile:(BOOL)lastFile
 {
-    [[AudioManager sharedManager] addAudioFileToPlay:filename];
+    DDLogDebug(@"Received sequence %d %@", (int)sequence, lastFile ? @"LAST" : @"");
+    
+    [[AudioManager sharedManager] addAudioFileToPlay:filename sequence:sequence lastFile:lastFile];
     
     if(![AudioManager sharedManager].isPlaying && sequence > self.startSequence)
     {
@@ -142,7 +160,7 @@
 {
     if(lastFile)
     {
-        DDLogInfo(@"Send last file");
+        DDLogInfo(@"Sent last file");
         [[TransferManager sharedManager] stopSending];
         _state = BroadcastStateIdle;
     }

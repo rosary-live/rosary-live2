@@ -22,6 +22,7 @@
     [super viewDidLoad];
     
     self.tableView.actionDelegate = self;
+    self.tableView.liveOnly = NO;
         
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self.tableView action:@selector(updateBroadcasts)];
 }

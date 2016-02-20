@@ -12,7 +12,7 @@
 #import "NSNumber+Utilities.h"
 #import <MBProgressHUD/MBProgressHUD.h>
 
-@interface LRListenViewController ()
+@interface LRListenViewController () <BroadcastManagerDelegate>
 
 @property (nonatomic, weak) IBOutlet UIImageView* avatar;
 @property (nonatomic, weak) IBOutlet UILabel* name;
@@ -31,6 +31,8 @@
     [super viewDidLoad];
     
     self.navigationController.navigationBar.topItem.title = @"Stop";
+    
+    [BroadcastManager sharedManager].delegate = self;
     
     self.name.text = self.broadcast.name;
     self.language.text = self.broadcast.language;
@@ -81,5 +83,14 @@
     // Pass the selected object to the new view controller.
 }
 */
+
+#pragma mark - BroadcastManagerDelegate
+
+- (void)broadcastHasEnded
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.status.text = @"Broadcast Has Ended";
+    });
+}
 
 @end

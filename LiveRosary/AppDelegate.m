@@ -20,8 +20,8 @@
 @implementation AppDelegate
 
 -(BOOL)application:(UIApplication *)application willFinishLaunchingWithOptions:(NSDictionary *)launchOptions{
-    [DDLog addLogger:[DDTTYLogger sharedInstance]];
-    [[DDTTYLogger sharedInstance] setColorsEnabled:YES];
+//    [DDLog addLogger:[DDTTYLogger sharedInstance]];
+//    [[DDTTYLogger sharedInstance] setColorsEnabled:YES];
     
     DDLogInfo(@"App Startup");
     

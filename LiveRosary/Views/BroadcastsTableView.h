@@ -18,6 +18,7 @@
 @interface BroadcastsTableView : UITableView
 
 @property (nonatomic, weak) id<BroadcastsTableViewActionDelegate> actionDelegate;
+@property (nonatomic) BOOL liveOnly;
 
 - (void)updateBroadcasts;
 

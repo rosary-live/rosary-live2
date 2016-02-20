@@ -29,9 +29,10 @@
     
     [self addDrawerButton];
     
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(updateBroadcasts)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self.tableView action:@selector(updateBroadcasts)];
     
     self.tableView.actionDelegate = self;
+    self.tableView.liveOnly = YES;
 }
 
 - (void)didReceiveMemoryWarning {
@@ -57,7 +58,7 @@
     UIStoryboard* storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     LRListenViewController* listenViewController = [storyboard instantiateViewControllerWithIdentifier:@"LRListenViewController"];
     listenViewController.broadcast = broadcast;
-    listenViewController.playFromStart = YES;
+    listenViewController.playFromStart = NO;
     [self.navigationController pushViewController:listenViewController animated:YES];
 }
 

@@ -13,10 +13,23 @@
 @property (nonatomic) NSInteger position;
 @property (nonatomic) AudioBufferList* buferList;
 @property (nonatomic) UInt32 frames;
+@property (nonatomic, strong) NSString* filename;
+@property (nonatomic) NSInteger sequence;
+@property (nonatomic) BOOL lastFile;
 @end
 
 @implementation BufferWrapper
 @end
+
+@interface FileWrapper : NSObject
+@property (nonatomic, strong) NSString* filename;
+@property (nonatomic) NSInteger sequence;
+@property (nonatomic) BOOL lastFile;
+@end
+
+@implementation FileWrapper
+@end
+
 
 @interface AudioManager()
 {
@@ -38,7 +51,7 @@
 
 @property (nonatomic, strong) AEBlockChannel* audioPlayChannel;
 @property (nonatomic, strong) NSCondition* decompressCondition;
-@property (nonatomic, strong) NSMutableArray<NSString*>* decompressQueue;
+@property (nonatomic, strong) NSMutableArray<FileWrapper*>* decompressQueue;
 @property (nonatomic, strong) NSMutableArray<BufferWrapper*>* playQueue;
 @property (nonatomic, strong) AEAudioFileLoaderOperation* fileReader;
 
@@ -141,7 +154,7 @@
     
     if(self.delegate != nil && [self.delegate respondsToSelector:@selector(capturedAudioFile:sequence:secondsOfAudio:lastFile:)])
     {
-        DDLogDebug(@"Completed file %@", self.currentFileName);
+        DDLogDebug(@"Completed file %@  %@", self.currentFileName, !self.isRecording ? @"LAST" : @"");
         [self.delegate capturedAudioFile:self.currentFileName sequence:self.sequence secondsOfAudio:10 lastFile:!self.isRecording];
     }
     
@@ -178,7 +191,7 @@
     
     _playing = YES;
     self.audioPlayChannel = [AEBlockChannel channelWithBlock:^(const AudioTimeStamp *time, UInt32 frames, AudioBufferList *audio) {
-        BufferWrapper* buffer = nil;// = [self popPlayQueueBuffer];
+        BufferWrapper* buffer = nil;
         @synchronized(self.playQueue)
         {
             buffer = [self.playQueue objectAtIndex:0];
@@ -189,11 +202,22 @@
             UInt32 sizeInBytes = (UInt32)MIN(frames * 2, buffer.buferList->mBuffers[0].mDataByteSize - buffer.position);
             audio->mBuffers[0].mData = &buffer.buferList->mBuffers[0].mData[buffer.position];
             audio->mBuffers[0].mDataByteSize = sizeInBytes;
+            //DDLogDebug(@"Playing sequence %d at %d length %d, remaining %d", (int)buffer.sequence, (int)buffer.position, (int)sizeInBytes, (int)(buffer.buferList->mBuffers[0].mDataByteSize - (buffer.position - sizeInBytes)));
             buffer.position += sizeInBytes;
+            
+            if(self.delegate != nil && [self.delegate respondsToSelector:@selector(playPosition:)])
+            {
+            }
+            
             if(buffer.position >= buffer.buferList->mBuffers[0].mDataByteSize)
             {
-                DDLogDebug(@"Popping buffer with length %d", (int)buffer.buferList->mBuffers[0].mDataByteSize);
+                NSLog(@"Popping buffer with length %d", (int)buffer.buferList->mBuffers[0].mDataByteSize);
                 [self popPlayQueueBuffer];
+                
+                if(self.delegate != nil && [self.delegate respondsToSelector:@selector(playedAudioFile:sequence:lastFile:)])
+                {
+                    [self.delegate playedAudioFile:buffer.filename sequence:buffer.sequence lastFile:buffer.lastFile];
+                }
             }
         }
     }];
@@ -216,9 +240,13 @@
     [self stopAudio];
 }
 
-- (void)addAudioFileToPlay:(NSString*)filename
+- (void)addAudioFileToPlay:(NSString*)filename sequence:(NSInteger)sequence lastFile:(BOOL)lastFile
 {
-    [self pushDecompressQueueBuffer:filename];
+    FileWrapper* wrapper = [FileWrapper new];
+    wrapper.filename = filename;
+    wrapper.sequence = sequence;
+    wrapper.lastFile = lastFile;
+    [self pushDecompressQueueBuffer:wrapper];
 }
 
 - (void)pushCompressQueueBuffer:(BufferWrapper*)buffer
@@ -250,33 +278,33 @@
     return buffer;
 }
 
-- (void)pushDecompressQueueBuffer:(NSString*)file
+- (void)pushDecompressQueueBuffer:(FileWrapper*)wrapper
 {
     [self.decompressCondition lock];
     
     @synchronized(self.decompressQueue)
     {
-        [self.decompressQueue addObject:file];
+        [self.decompressQueue addObject:wrapper];
     }
     
     [self.decompressCondition broadcast];
     [self.decompressCondition unlock];
 }
 
-- (NSString*)popDecompressQueueBuffer
+- (FileWrapper*)popDecompressQueueBuffer
 {
-    NSString* filename = nil;
+    FileWrapper* wrapper = nil;
     
     @synchronized(self.decompressQueue)
     {
         if(self.decompressQueue.count > 0)
         {
-            filename = [self.decompressQueue objectAtIndex:0];
+            wrapper = [self.decompressQueue objectAtIndex:0];
             [self.decompressQueue removeObjectAtIndex:0];
         }
     }
     
-    return filename;
+    return wrapper;
 }
 
 - (void)pushPlayQueueBuffer:(BufferWrapper*)buffer
@@ -327,7 +355,7 @@
                 self.totalFramesForFile += buffer.frames;
                 double totalSecondsForFile = (double)self.totalFramesForFile / self.sampleRate;
                 
-                if(totalSecondsForFile >= 10)
+                if(totalSecondsForFile >= self.secondsPerSegment)
                 {
                     [self finishRecordFile];
                     [self startNewRecordFile];
@@ -359,29 +387,32 @@
             [self.decompressCondition wait];
         }
         
-        NSString* filename = nil;
+        FileWrapper* fileWrapper = nil;
         
         if(self.isPlaying)
         {
-            filename = [self popDecompressQueueBuffer];
+            fileWrapper = [self popDecompressQueueBuffer];
         }
         
         [self.decompressCondition unlock];
 
-        if(filename != nil)
+        if(fileWrapper.filename != nil)
         {
-            DDLogDebug(@"Decompressing file %@", filename);
-            self.fileReader = [[AEAudioFileLoaderOperation alloc] initWithFileURL:[NSURL fileURLWithPath:filename] targetAudioDescription:rawFormat];
+            DDLogDebug(@"Decompressing file %@", fileWrapper.filename);
+            self.fileReader = [[AEAudioFileLoaderOperation alloc] initWithFileURL:[NSURL fileURLWithPath:fileWrapper.filename] targetAudioDescription:rawFormat];
             
             @weakify(self);
             self.fileReader.completedBlock = ^() {
                 @strongify(self);
                 
-                BufferWrapper* wrapper = [BufferWrapper new];
-                wrapper.position = 0;
-                wrapper.buferList = self.fileReader.bufferList;
-                wrapper.frames = self.fileReader.lengthInFrames;
-                [self pushPlayQueueBuffer:wrapper];
+                BufferWrapper* bufferWrapper = [BufferWrapper new];
+                bufferWrapper.position = 0;
+                bufferWrapper.buferList = self.fileReader.bufferList;
+                bufferWrapper.frames = self.fileReader.lengthInFrames;
+                bufferWrapper.filename = fileWrapper.filename;
+                bufferWrapper.lastFile = fileWrapper.lastFile;
+                bufferWrapper.sequence = fileWrapper.sequence;
+                [self pushPlayQueueBuffer:bufferWrapper];
             };
             
             [self.fileReader start];

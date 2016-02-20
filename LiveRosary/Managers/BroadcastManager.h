@@ -14,8 +14,16 @@ typedef NS_ENUM(NSUInteger, BroadcastState) {
     BroadcastStatePlaying,
 };
 
+@protocol BroadcastManagerDelegate <NSObject>
+
+- (void)broadcastHasEnded;
+
+@end
+
+
 @interface BroadcastManager : NSObject
 
+@property (nonatomic, weak) id<BroadcastManagerDelegate> delegate;
 @property (nonatomic, readonly) BroadcastState state;
 @property (nonatomic, strong, readonly) NSString* broadcastId;
 

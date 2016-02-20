@@ -200,17 +200,27 @@
             }
             else
             {
+                NSHTTPURLResponse* httpResponse = (NSHTTPURLResponse*)response;
+                
                 NSData* data = (NSData*)responseObject;
                 DDLogDebug(@"TransferManager downloaded sequence %d with %d bytes", (int)self.sequence, (int)data.length);
                 lastSuccessfulReceiveDate = [NSDate date];
                 lastError = nil;
-                
-                if(self.delegate != nil && [self.delegate respondsToSelector:@selector(receivedFile:forSequence:)])
+             
+                NSString* lastFileHeader = httpResponse.allHeaderFields[@"x-amz-meta-last-file"];
+                BOOL lastFile = lastFileHeader != nil && lastFileHeader.integerValue != 0;
+                if(lastFile) NSLog(@"!!!!!!!!!!!!LAST FILE");
+                if(self.delegate != nil && [self.delegate respondsToSelector:@selector(receivedFile:forSequence:lastFile:)])
                 {
                     NSString* filename = [NSString filenameForBroadcastId:self.broadcastId andSequence:self.sequence];
                     [data writeToFile:filename atomically:NO];
-                    [self.delegate receivedFile:filename forSequence:self.sequence];
+                    [self.delegate receivedFile:filename forSequence:self.sequence lastFile:lastFile];
                     ++_sequence;
+                }
+                
+                if(lastFile)
+                {
+                    _receiving = NO;
                 }
             }
             
@@ -226,9 +236,14 @@
         [condition wait];
         [condition unlock];
         
+        if(!_receiving)
+        {
+            break;
+        }
+        
         if(lastError != nil)
         {
-            if([[NSDate date] timeIntervalSinceDate:lastSuccessfulReceiveDate] > 30)
+            if([[NSDate date] timeIntervalSinceDate:lastSuccessfulReceiveDate] > 60)
             {
                 _receiving = NO;
             }

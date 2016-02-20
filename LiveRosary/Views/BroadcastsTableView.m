@@ -46,7 +46,7 @@
 {
     [[DBBroadcast sharedInstance] updateBroadcastsWithCompletion:^(NSArray<BroadcastModel *> *broadcasts, NSError *error) {
         self.broadcasts = broadcasts;
-        //[self filterBroadcasts];
+        [self filterBroadcasts];
         [self sortBroadcasts];
         dispatch_async(dispatch_get_main_queue(), ^{
             [self reloadData];
@@ -62,11 +62,14 @@
 
 - (void)filterBroadcasts
 {
-    NSPredicate* filter = [NSPredicate predicateWithBlock:^BOOL(id  _Nonnull evaluatedObject, NSDictionary<NSString *,id> * _Nullable bindings) {
-        return ((BroadcastModel*)evaluatedObject).isLive;
-    }];
-    
-    self.broadcasts = [self.broadcasts filteredArrayUsingPredicate:filter];
+    if(self.liveOnly)
+    {
+        NSPredicate* filter = [NSPredicate predicateWithBlock:^BOOL(id  _Nonnull evaluatedObject, NSDictionary<NSString *,id> * _Nullable bindings) {
+            return ((BroadcastModel*)evaluatedObject).isLive;
+        }];
+        
+        self.broadcasts = [self.broadcasts filteredArrayUsingPredicate:filter];
+    }
 }
 
 #pragma mark - UITableViewDataSource

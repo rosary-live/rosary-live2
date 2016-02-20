@@ -39,7 +39,7 @@ NSString * const UserDefaultsKeyConfigSettings = @"ConfigSettings";
             _compressionBitRate = 10000;
             _maxBroadcastSeconds = 1800;
             _sampleRate = 11025;
-            _segmentSizeSeconds = 10;
+            _segmentSizeSeconds = 5;
         }
     }
     return self;

@@ -11,18 +11,22 @@ var dynamodb = new AWS.DynamoDB();
 function process(bucket, key, bid, seq, callback) {
 	seq = parseInt(seq);
 
+console.log("bid: " + bid + ",  seq: " + seq);
 	if(seq == 0) {
+		console.log("Deleting broadcast " + bid);
 		// Delete DDB record
 		dynamodb.deleteItem({
 			TableName: config.DDB_BROADCAST_TABLE,
 			Key: { bid: { S: bid }},
 			ReturnValues: 'NONE'
 		}, function(err, data) {
+			console.log(util.inspect(err, { showHidden: true, depth: 10 }));
 			if(err) callback(err);
 			else callback();
 		});	
 	} else {
 		callback();
+		console.log("Only act on sequence 0");
 	}
 }
 
@@ -37,15 +41,10 @@ exports.handler = function(event, context) {
 
     var parts = key.split('/');
     if(parts.length == 2) {
-    	var seqparts = parts[1].split('-');
-    	if(seqparts.length == 2) {
-	    	process(bucket, key, parts[0], seqparts[1], function(err) {
-	    		if(err) context.fail({success:false, error:err});
-	    		else context.succeed({success: true});
-	    	});
-	    } else {
-	    	context.fail({success:false, error:'Invalid file name: ' + key});
-	    }
+    	process(bucket, key, parts[0], parts[1], function(err) {
+    		if(err) context.fail({success:false, error:err});
+    		else context.succeed({success: true});
+    	});
     } else {
 	    context.fail({success:false, error:'Invalid file name: ' + key});
     }
