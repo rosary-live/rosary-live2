@@ -64,6 +64,11 @@
     [self.sendCondition lock];
     [self.sendCondition broadcast];
     [self.sendCondition unlock];
+
+    @synchronized(self.sendQueue)
+    {
+        [self.sendQueue removeAllObjects];
+    }
 }
 
 - (void)addSequenceFile:(NSString *)filename lastFile:(BOOL)lastFile

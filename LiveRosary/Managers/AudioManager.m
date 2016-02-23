@@ -171,6 +171,8 @@
     [self.compressCondition unlock];
     
     [self stopAudio];
+    
+    [self clearCompressQueue];
 }
 
 - (void)prepareToPlay
@@ -238,6 +240,9 @@
     
     [self.audioController removeChannels:@[self.audioPlayChannel]];
     [self stopAudio];
+    
+    [self clearDecompressQueue];
+    [self clearPlayQueue];
 }
 
 - (void)addAudioFileToPlay:(NSString*)filename sequence:(NSInteger)sequence lastFile:(BOOL)lastFile
@@ -278,6 +283,14 @@
     return buffer;
 }
 
+- (void)clearCompressQueue
+{
+    @synchronized(self.compressQueue)
+    {
+        [self.compressQueue removeAllObjects];
+    }
+}
+
 - (void)pushDecompressQueueBuffer:(FileWrapper*)wrapper
 {
     [self.decompressCondition lock];
@@ -307,6 +320,14 @@
     return wrapper;
 }
 
+- (void)clearDecompressQueue
+{
+    @synchronized(self.compressQueue)
+    {
+        [self.decompressQueue removeAllObjects];
+    }
+}
+
 - (void)pushPlayQueueBuffer:(BufferWrapper*)buffer
 {
     @synchronized(self.playQueue)
@@ -331,6 +352,13 @@
     return buffer;
 }
 
+- (void)clearPlayQueue
+{
+    @synchronized(self.compressQueue)
+    {
+        [self.playQueue removeAllObjects];
+    }
+}
 
 #pragma mark - Compression
 

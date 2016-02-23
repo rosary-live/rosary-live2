@@ -44,7 +44,7 @@
     self.hud.labelText = @"Loading";
 
     [[DBBroadcast sharedInstance] getBroadcastById:self.broadcast.bid completion:^(BroadcastModel *broadcast, NSError *error) {
-        DDLogDebug(@"updated broadcast");
+        DDLogDebug(@"updated broadcast %@", broadcast);
         
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.hud hide:YES];

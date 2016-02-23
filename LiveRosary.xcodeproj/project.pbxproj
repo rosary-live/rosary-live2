@@ -21,7 +21,6 @@
 		D8431A241C75269B0061A3CB /* F3BarGauge.m in Sources */ = {isa = PBXBuildFile; fileRef = D8431A231C75269B0061A3CB /* F3BarGauge.m */; };
 		D86372701C5AD58A00D02DC3 /* BroadcastManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D863726F1C5AD58A00D02DC3 /* BroadcastManager.m */; };
 		D86372731C5ADEF900D02DC3 /* BroadcastModel.m in Sources */ = {isa = PBXBuildFile; fileRef = D86372721C5ADEF900D02DC3 /* BroadcastModel.m */; };
-		D86372761C5AE6BA00D02DC3 /* NSDictionary+Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = D86372751C5AE6BA00D02DC3 /* NSDictionary+Utilities.m */; };
 		D863727A1C5AFEC400D02DC3 /* DBBase.m in Sources */ = {isa = PBXBuildFile; fileRef = D86372791C5AFEC400D02DC3 /* DBBase.m */; };
 		D863727D1C5AFED900D02DC3 /* DBBroadcast.m in Sources */ = {isa = PBXBuildFile; fileRef = D863727C1C5AFED900D02DC3 /* DBBroadcast.m */; };
 		D86372811C5B1FFB00D02DC3 /* NSNumber+Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = D86372801C5B1FFB00D02DC3 /* NSNumber+Utilities.m */; };
@@ -77,8 +76,6 @@
 		D863726F1C5AD58A00D02DC3 /* BroadcastManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BroadcastManager.m; path = Managers/BroadcastManager.m; sourceTree = "<group>"; };
 		D86372711C5ADEF900D02DC3 /* BroadcastModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BroadcastModel.h; path = Models/BroadcastModel.h; sourceTree = "<group>"; };
 		D86372721C5ADEF900D02DC3 /* BroadcastModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BroadcastModel.m; path = Models/BroadcastModel.m; sourceTree = "<group>"; };
-		D86372741C5AE6BA00D02DC3 /* NSDictionary+Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSDictionary+Utilities.h"; path = "Categories/NSDictionary+Utilities.h"; sourceTree = "<group>"; };
-		D86372751C5AE6BA00D02DC3 /* NSDictionary+Utilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSDictionary+Utilities.m"; path = "Categories/NSDictionary+Utilities.m"; sourceTree = "<group>"; };
 		D86372781C5AFEC400D02DC3 /* DBBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DBBase.h; path = Database/DBBase.h; sourceTree = "<group>"; };
 		D86372791C5AFEC400D02DC3 /* DBBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DBBase.m; path = Database/DBBase.m; sourceTree = "<group>"; };
 		D863727B1C5AFED900D02DC3 /* DBBroadcast.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DBBroadcast.h; path = Database/DBBroadcast.h; sourceTree = "<group>"; };
@@ -320,8 +317,6 @@
 			children = (
 				D8C23FD91C51E23D0043F8BE /* NSString+Utilities.h */,
 				D8C23FDA1C51E23D0043F8BE /* NSString+Utilities.m */,
-				D86372741C5AE6BA00D02DC3 /* NSDictionary+Utilities.h */,
-				D86372751C5AE6BA00D02DC3 /* NSDictionary+Utilities.m */,
 				D863727F1C5B1FFB00D02DC3 /* NSNumber+Utilities.h */,
 				D86372801C5B1FFB00D02DC3 /* NSNumber+Utilities.m */,
 			);
@@ -472,7 +467,6 @@
 				D8427CEA1C5F1FAC00A8CE5F /* LRCreateUserViewController.m in Sources */,
 				D885FA6A1C446FA2002904AC /* LRListenMainViewController.m in Sources */,
 				D8A0EFEB1C4C707B0006B910 /* LiveRosaryAuthenticatedIdentityProvider.m in Sources */,
-				D86372761C5AE6BA00D02DC3 /* NSDictionary+Utilities.m in Sources */,
 				D86372811C5B1FFB00D02DC3 /* NSNumber+Utilities.m in Sources */,
 				D8EAFEC11C5D29E100C38EBA /* LRListenViewController.m in Sources */,
 				D8C23FDB1C51E23D0043F8BE /* NSString+Utilities.m in Sources */,

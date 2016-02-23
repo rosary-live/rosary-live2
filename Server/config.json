@@ -1,6 +1,6 @@
 {
 	"sampleRate": 11025,
-	"segmentSizeSeconds": 10,
+	"segmentSizeSeconds": 5,
 	"maxBroadcastSeconds": 1800,
 	"compressionBitRate": 10000
 }

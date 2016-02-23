@@ -26,7 +26,6 @@
 #import <EXTScope.h>
 #import <EXTKeyPathCoding.h>
 #import "NSString+Utilities.h"
-#import "NSDictionary+Utilities.h"
 #import "ConfigModel.h"
 
 #endif
