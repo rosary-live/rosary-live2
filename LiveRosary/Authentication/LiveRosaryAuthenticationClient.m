@@ -302,10 +302,11 @@ NSString * const KeyToken = @"KeyToken";
 }
 
 - (void)logout {
-//    self.key = nil;
-//    self.keychain[EncryptionKeyKey] = nil;
-//    self.uid = nil;
-//    self.keychain[UidKey] = nil;
+    self.keychain[KeyEmail] = self.email = nil;
+    self.keychain[KeyPassword] = self.password = nil;
+    self.keychain[KeyIdentityId] = self.identityId = nil;
+    self.keychain[KeyToken] = self.token = nil;
+    
 }
 
 // call gettoken and set our values from returned result

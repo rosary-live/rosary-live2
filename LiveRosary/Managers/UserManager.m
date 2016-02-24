@@ -131,8 +131,6 @@ NSString * const NotificationUserLoggedOut = @"NotificationUserLoggedOut";
     NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
     AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];
     
-//    NSString* post =[NSString stringWithFormat:@"{\"email\":\"%@\",\"password\":\"%@\"}", email, password];
-//    NSData* postData = [post dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:NO];
     NSData* postData = [NSJSONSerialization dataWithJSONObject:dictionary options:0 error:nil];
     NSString* postLength = [NSString stringWithFormat:@"%d", (int)postData.length];
     
@@ -173,6 +171,14 @@ NSString * const NotificationUserLoggedOut = @"NotificationUserLoggedOut";
         [self initializeCognitoWithCompletion:completion];
         return [AWSTask taskWithResult:nil];
     }];
+}
+
+- (void)logoutWithCompletion:(void (^)(NSError* error))completion
+{
+    [self.authClient logout];
+    [self.credentialsProvider clearCredentials];
+    [[NSNotificationCenter defaultCenter] postNotificationName:NotificationUserLoggedOut object:nil];
+    safeBlock(completion, nil);
 }
 
 - (BOOL)credentialsExpired

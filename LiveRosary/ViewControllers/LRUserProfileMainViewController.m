@@ -7,6 +7,7 @@
 //
 
 #import "LRUserProfileMainViewController.h"
+#import "UserManager.h"
 
 @interface LRUserProfileMainViewController ()
 
@@ -35,5 +36,12 @@
     // Pass the selected object to the new view controller.
 }
 */
+
+- (IBAction)onLogout:(id)sender
+{
+    [[UserManager sharedManager] logoutWithCompletion:^(NSError *error) {
+        DDLogInfo(@"Logout complete");
+    }];
+}
 
 @end

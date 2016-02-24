@@ -25,13 +25,11 @@
     // Start authentication if user isn't logged in
     if(![UserManager sharedManager].isLoggedIn)
     {
-        // Queue it at the end of the main run loop so it happens after the UI has been created.
-        dispatch_async(dispatch_get_main_queue(), ^{
-            UIStoryboard* storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-            UINavigationController* authNav = [storyboard instantiateViewControllerWithIdentifier:@"Authentication"];
-            [self presentViewController:authNav animated:YES completion:nil];
-        });
+        [self showAuthentication];
     }
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userLoggedOut) name:NotificationUserLoggedOut object:nil];
+    
 }
 
 - (void)didReceiveMemoryWarning {
@@ -48,6 +46,21 @@
     // Pass the selected object to the new view controller.
 }
 */
+
+- (void)userLoggedOut
+{
+    [self showAuthentication];
+}
+
+- (void)showAuthentication
+{
+    // Queue it at the end of the main run loop so it happens after the UI has been created.
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UIStoryboard* storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+        UINavigationController* authNav = [storyboard instantiateViewControllerWithIdentifier:@"Authentication"];
+        [self presentViewController:authNav animated:YES completion:nil];
+    });
+}
 
 #pragma mark - UITableViewDataSource
 
