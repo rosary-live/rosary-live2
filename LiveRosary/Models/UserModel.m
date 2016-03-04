@@ -18,4 +18,24 @@
     return @"email";
 }
 
+- (id)initWithDict:(NSDictionary*)dict
+{
+    self = [super init];
+    if(self != nil)
+    {
+        self.email = dict[@"email"];
+        self.firstName = dict[@"firstName"];
+        self.lastName = dict[@"lastName"];
+        self.city = dict[@"city"];
+        self.state = dict[@"state"];
+        self.country = dict[@"country"];
+        self.language = dict[@"language"];
+        self.latitude = dict[@"lat"];
+        self.longitude = dict[@"lon"];
+        self.avatar = dict[@"avatar"];
+    }
+    
+    return self;
+}
+
 @end

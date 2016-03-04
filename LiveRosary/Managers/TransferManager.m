@@ -263,6 +263,8 @@
 
 }
 
+#pragma mark - AFURLResponseSerialization
+
 - (nullable id)responseObjectForResponse:(nullable NSURLResponse *)response
                                     data:(nullable NSData *)data
                                    error:(NSError * _Nullable __autoreleasing *)error

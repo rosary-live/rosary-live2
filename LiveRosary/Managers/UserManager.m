@@ -13,6 +13,7 @@
 #import "LiveRosaryAuthenticatedIdentityProvider.h"
 #import "LiveRosaryAuthenticationClient.h"
 #import <AFNetworking/AFNetworking.h>
+#import <AWSS3/AWSS3.h>
 
 NSString * const ErrorDomainUserManager = @"ErrorDomainUserManager";
 NSInteger const ErrorCodeUserManager_Exception = 1;
@@ -23,7 +24,7 @@ NSString * const NotificationUserLoggedIn = @"NotificationUserLoggedIn";
 NSString * const NotificationUserLoggedOut = @"NotificationUserLoggedOut";
 
 
-@interface UserManager()
+@interface UserManager() <AFURLResponseSerialization>
 @property (nonatomic, strong) AWSCognitoCredentialsProvider* credentialsProvider;
 @property (nonatomic, strong) LiveRosaryAuthenticationClient* authClient;
 @property (nonatomic, strong) NSString* email;
@@ -107,6 +108,8 @@ NSString * const NotificationUserLoggedOut = @"NotificationUserLoggedOut";
             
             return [[self.configuration.credentialsProvider refresh] continueWithBlock:^id _Nullable(AWSTask * _Nonnull task) {
                 
+                self.currentUser = [[UserModel alloc] initWithDict:((LiveRosaryAuthenticatedIdentityProvider*)identityProvider).user];
+                [self loadAvatarImage];
                 [[NSNotificationCenter defaultCenter] postNotificationName:NotificationUserLoggedIn object:nil];
                 
                 if(completion) completion(nil);
@@ -126,7 +129,7 @@ NSString * const NotificationUserLoggedOut = @"NotificationUserLoggedOut";
 //    }
 }
 
-- (void)createUserWithDictionary:(NSDictionary*)dictionary completion:(void (^)(NSError* error))completion;
+- (void)createUserWithDictionary:(NSDictionary*)dictionary completion:(void (^)(NSError* error))completion
 {
     NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
     AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];
@@ -162,11 +165,117 @@ NSString * const NotificationUserLoggedOut = @"NotificationUserLoggedOut";
     [dataTask resume];
 }
 
+- (NSString*)avatarImagePath
+{
+    NSArray* paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    return [[paths objectAtIndex:0] stringByAppendingPathComponent:@"avatar.jpg"];
+}
+
+- (NSString*)serverAvatarImageFilename
+{
+    return [self.email stringByReplacingOccurrencesOfString:@"@" withString:@"-"];
+}
+
+- (void)uploadAvatarImage:(UIImage*)image completion:(void (^)(NSError* error))completion
+{
+    AWSServiceConfiguration* configuration = [UserManager sharedManager].configuration;
+    [AWSS3 registerS3WithConfiguration:configuration forKey:@"Sender"];
+    AWSS3* s3 = [AWSS3 S3ForKey:@"Sender"];
+    
+    NSString* filename = [self serverAvatarImageFilename];
+    NSData* data = UIImageJPEGRepresentation(image, 90.0f);
+    DDLogInfo(@"Upload avatar image %@ %d bytes", filename, (int)data.length);
+
+    AWSS3PutObjectRequest* putRequest = [AWSS3PutObjectRequest new];
+    putRequest.bucket = @"liverosaryavatars";
+    putRequest.key = filename;
+    putRequest.contentLength = @(data.length);
+    putRequest.ACL = AWSS3BucketCannedACLPublicRead;
+    putRequest.contentType = @"image/jpeg";
+    putRequest.body = data;
+    
+    AWSTask* task = [s3 putObject:putRequest];
+    [task continueWithBlock:^id _Nullable(AWSTask * _Nonnull task) {
+        if(task.error)
+        {
+            DDLogError(@"Error uploading avatar image %@", task.error);
+            safeBlock(completion, task.error);
+        }
+        else if(task.exception)
+        {
+            DDLogError(@"Exception uploading avatar image %@", task.exception);
+            safeBlock(completion, [NSError errorWithDomain:ErrorDomainUserManager code:-11 userInfo:nil]);
+        }
+        else
+        {
+            DDLogInfo(@"Avatar image upload complete");
+            
+            [data writeToFile:[self avatarImagePath] atomically:YES];
+            [self loadAvatarImage];
+            
+            safeBlock(completion, nil);
+        }
+        
+        return [AWSTask taskWithResult:nil];
+    }];
+    
+}
+
+- (void)downloadAvatarImageWithCompletion:(void (^)(NSError* error))completion
+{
+    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
+    AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];
+    manager.responseSerializer = self;
+    
+    NSString* URLString = [NSString stringWithFormat:@"https://s3.amazonaws.com/liverosaryavatars/%@", [self serverAvatarImageFilename]];
+    NSURL *URL = [NSURL URLWithString:URLString];
+    NSURLRequest *request = [NSURLRequest requestWithURL:URL];
+    
+    DDLogDebug(@"Downloading avatar image %@", URLString);
+    NSURLSessionDataTask *dataTask = [manager dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+        if (error)
+        {
+            DDLogError(@"Avatar download error: %@", error);
+            safeBlock(completion, error);
+        }
+        else
+        {
+            NSData* data = (NSData*)responseObject;
+            [data writeToFile:[self avatarImagePath] atomically:YES];
+            
+            safeBlock(completion, nil);
+        }
+    }];
+    
+    [dataTask resume];
+}
+
+- (void)loadAvatarImage
+{
+    if([[NSFileManager defaultManager] fileExistsAtPath:[self avatarImagePath] isDirectory:nil])
+    {
+        self.avatarImage = [UIImage imageWithContentsOfFile:[self avatarImagePath]];
+    }
+    else
+    {
+        self.avatarImage = nil;
+    }
+}
+
 - (void)loginWithEmail:(NSString*)email password:(NSString*)password completion:(void (^)(NSError* error))completion
 {
     [[self.authClient login:email password:password] continueWithBlock:^id _Nullable(AWSTask * _Nonnull task) {
         self.email = email;
         self.password = password;
+        
+        LiveRosaryAuthenticationResponse* result = (LiveRosaryAuthenticationResponse*)task.result;
+        self.currentUser = [[UserModel alloc] initWithDict:result.user];
+        if(self.currentUser.avatar != nil && self.currentUser.avatar.integerValue != 0)
+        {
+            [self downloadAvatarImageWithCompletion:^(NSError *error) {
+                [self loadAvatarImage];
+            }];
+        }
         
         [self initializeCognitoWithCompletion:completion];
         return [AWSTask taskWithResult:nil];
@@ -177,6 +286,11 @@ NSString * const NotificationUserLoggedOut = @"NotificationUserLoggedOut";
 {
     [self.authClient logout];
     [self.credentialsProvider clearCredentials];
+    self.email = nil;
+    self.password = nil;
+    self.currentUser = nil;
+    self.avatarImage = nil;
+    [[NSFileManager defaultManager] removeItemAtPath:[self avatarImagePath] error:nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:NotificationUserLoggedOut object:nil];
     safeBlock(completion, nil);
 }
@@ -212,6 +326,21 @@ NSString * const NotificationUserLoggedOut = @"NotificationUserLoggedOut";
             return [AWSTask taskWithResult:nil];
         }];
     }];
+}
+
+#pragma mark - AFURLResponseSerialization
+
+- (nullable id)responseObjectForResponse:(nullable NSURLResponse *)response
+                                    data:(nullable NSData *)data
+                                   error:(NSError * _Nullable __autoreleasing *)error
+{
+    NSHTTPURLResponse* httpResponse = (NSHTTPURLResponse*)response;
+    if(httpResponse.statusCode != 200)
+    {
+        *error = [NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorFileDoesNotExist userInfo:nil];
+    }
+    
+    return data;
 }
 
 @end

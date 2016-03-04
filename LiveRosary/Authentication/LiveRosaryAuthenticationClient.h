@@ -25,18 +25,18 @@ typedef NS_ENUM(NSInteger, DeveloperAuthenticationClientErrorType) {
 @property (nonatomic, readonly) BOOL success;
 @property (nonatomic, strong, readonly) NSString* identityId;
 @property (nonatomic, strong, readonly) NSString* token;
+@property (nonatomic, strong, readonly) NSDictionary* user;
 
 @end
 
 @interface LiveRosaryAuthenticationClient : NSObject
 
 @property (nonatomic, strong) NSString* appname;
-//@property (nonatomic, strong) NSString* endpoint;
 @property (nonatomic, strong) NSString* identityId;
 @property (nonatomic, strong) NSString* token;
 
-+ (instancetype)identityProviderWithAppname:(NSString*)appname;// endpoint:(NSString*)endpoint;
-- (instancetype)initWithAppname:(NSString*)appname;// endpoint:(NSString*)endpoint;
++ (instancetype)identityProviderWithAppname:(NSString*)appname;
+- (instancetype)initWithAppname:(NSString*)appname;
 
 - (BOOL)isAuthenticated;
 - (AWSTask*)getToken;

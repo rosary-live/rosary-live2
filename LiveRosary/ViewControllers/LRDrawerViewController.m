@@ -13,6 +13,10 @@
 
 @interface LRDrawerViewController () <UITableViewDataSource, UITableViewDelegate>
 
+@property (nonatomic, weak) IBOutlet UIImageView* avatarImageView;
+@property (nonatomic, weak) IBOutlet UILabel* firstName;
+@property (nonatomic, weak) IBOutlet UILabel* lastName;
+@property (nonatomic, weak) IBOutlet UILabel* language;
 @property (nonatomic, weak) IBOutlet UITableView* tableView;
 
 @end
@@ -30,6 +34,19 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userLoggedOut) name:NotificationUserLoggedOut object:nil];
     
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    if([UserManager sharedManager].currentUser != nil)
+    {
+        self.avatarImageView.image = [UserManager sharedManager].avatarImage;
+        self.firstName.text = [UserManager sharedManager].currentUser.firstName;
+        self.lastName.text = [UserManager sharedManager].currentUser.lastName;
+        self.language.text = [UserManager sharedManager].currentUser.language;
+    }
 }
 
 - (void)didReceiveMemoryWarning {

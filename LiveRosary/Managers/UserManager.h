@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "UserModel.h"
 
 FOUNDATION_EXTERN NSString * const NotificationUserLoggedIn;
 FOUNDATION_EXTERN NSString * const NotificationUserLoggedOut;
@@ -16,11 +17,14 @@ FOUNDATION_EXTERN NSString * const NotificationUserLoggedOut;
 @interface UserManager : NSObject
 
 @property (nonatomic, getter=isLoggedIn) BOOL loggedIn;
+@property (nonatomic, strong) UserModel* currentUser;
+@property (nonatomic, strong) UIImage* avatarImage;
 @property (nonatomic, strong) AWSServiceConfiguration* configuration;
 
 + (instancetype)sharedManager;
 
 - (void)createUserWithDictionary:(NSDictionary*)dictionary completion:(void (^)(NSError* error))completion;
+- (void)uploadAvatarImage:(UIImage*)image completion:(void (^)(NSError* error))completion;
 - (void)loginWithEmail:(NSString*)email password:(NSString*)password completion:(void (^)(NSError* error))completion;
 - (void)logoutWithCompletion:(void (^)(NSError* error))completion;
 - (BOOL)credentialsExpired;

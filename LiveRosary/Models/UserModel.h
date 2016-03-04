@@ -10,15 +10,17 @@
 
 @interface UserModel : BaseModel
 
-@property (nonatomic, strong) NSString* userId;
+@property (nonatomic, strong) NSString* email;
 @property (nonatomic, strong) NSString* firstName;
 @property (nonatomic, strong) NSString* lastName;
-@property (nonatomic, strong) NSString* avatarURL;
 @property (nonatomic, strong) NSString* language;
 @property (nonatomic, strong) NSNumber* latitude;
 @property (nonatomic, strong) NSNumber* longitude;
 @property (nonatomic, strong) NSString* city;
 @property (nonatomic, strong) NSString* state;
 @property (nonatomic, strong) NSString* country;
+@property (nonatomic, strong) NSNumber* avatar;
+
+- (id)initWithDict:(NSDictionary*)dict;
 
 @end

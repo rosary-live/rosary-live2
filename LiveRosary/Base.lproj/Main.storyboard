@@ -24,7 +24,7 @@
                                     <constraint firstAttribute="width" constant="279" id="oFx-PN-OAO"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits" returnKeyType="done"/>
+                                <textInputTraits key="textInputTraits" keyboardType="emailAddress" returnKeyType="done"/>
                                 <connections>
                                     <outlet property="delegate" destination="Tk8-LE-BZo" id="KSP-Pj-lQi"/>
                                 </connections>
@@ -36,7 +36,7 @@
                                     <constraint firstAttribute="width" constant="279" id="Gyg-1M-Fbm"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits" returnKeyType="done"/>
+                                <textInputTraits key="textInputTraits" returnKeyType="done" secureTextEntry="YES"/>
                                 <connections>
                                     <outlet property="delegate" destination="Tk8-LE-BZo" id="MOu-Vd-arB"/>
                                 </connections>
@@ -105,7 +105,7 @@
                                     <constraint firstAttribute="height" constant="30" id="XsM-lj-9tY"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits" returnKeyType="done"/>
+                                <textInputTraits key="textInputTraits" keyboardType="emailAddress" returnKeyType="done"/>
                                 <connections>
                                     <outlet property="delegate" destination="nCL-hD-OAk" id="eVr-9R-Ucg"/>
                                 </connections>
@@ -374,6 +374,29 @@
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xdA-JM-eQk">
                                 <rect key="frame" x="0.0" y="0.0" width="300" height="128"/>
+                                <subviews>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="AvatarImage" translatesAutoresizingMaskIntoConstraints="NO" id="Y3c-co-Ngd">
+                                        <rect key="frame" x="8" y="20" width="100" height="100"/>
+                                    </imageView>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8Y2-w4-aWs">
+                                        <rect key="frame" x="116" y="20" width="176" height="21"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5nE-Pn-KA1">
+                                        <rect key="frame" x="116" y="49" width="176" height="21"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Fv7-Wj-Mkq">
+                                        <rect key="frame" x="116" y="78" width="176" height="21"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="128" id="sIt-Qg-Kjy"/>
@@ -388,7 +411,7 @@
                                         <rect key="frame" x="0.0" y="28" width="300" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="5Ax-bm-bwX" id="NCx-vx-f5B">
-                                            <rect key="frame" x="0.0" y="0.0" width="300" height="43.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="300" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qoT-3T-kpp">
@@ -433,6 +456,10 @@
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <size key="freeformSize" width="300" height="600"/>
                     <connections>
+                        <outlet property="avatarImageView" destination="Y3c-co-Ngd" id="haI-eA-hKo"/>
+                        <outlet property="firstName" destination="8Y2-w4-aWs" id="krK-Q2-1d6"/>
+                        <outlet property="language" destination="Fv7-Wj-Mkq" id="qE7-as-ut6"/>
+                        <outlet property="lastName" destination="5nE-Pn-KA1" id="Gwd-Cf-vVQ"/>
                         <outlet property="tableView" destination="rDu-az-Nwm" id="0tB-85-eQS"/>
                     </connections>
                 </viewController>
@@ -483,7 +510,7 @@
                                     <constraint firstAttribute="height" constant="30" id="mKx-bk-OER"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="done"/>
+                                <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="emailAddress" returnKeyType="done"/>
                                 <connections>
                                     <outlet property="delegate" destination="Ejo-JY-Jbo" id="E9V-Dq-Rd0"/>
                                 </connections>
@@ -539,6 +566,9 @@
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="words"/>
+                                <connections>
+                                    <outlet property="delegate" destination="Ejo-JY-Jbo" id="dZk-gJ-gcU"/>
+                                </connections>
                             </textField>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="State/Provice" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="WN5-JW-vqA">
                                 <rect key="frame" x="310" y="264" width="130" height="30"/>
@@ -548,6 +578,9 @@
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
+                                <connections>
+                                    <outlet property="delegate" destination="Ejo-JY-Jbo" id="jnD-Tu-5IZ"/>
+                                </connections>
                             </textField>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Country" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Zhv-cC-jjt">
                                 <rect key="frame" x="310" y="306" width="130" height="30"/>
@@ -565,6 +598,9 @@
                                         <exclude reference="Its-GF-1fi"/>
                                     </mask>
                                 </variation>
+                                <connections>
+                                    <outlet property="delegate" destination="Ejo-JY-Jbo" id="auX-gN-Cvu"/>
+                                </connections>
                             </textField>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Language" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Oan-p2-zuY">
                                 <rect key="frame" x="310" y="349" width="130" height="30"/>
@@ -574,6 +610,9 @@
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
+                                <connections>
+                                    <outlet property="delegate" destination="Ejo-JY-Jbo" id="ZDk-oh-FQb"/>
+                                </connections>
                             </textField>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="WL6-52-h5q">
                                 <rect key="frame" x="245" y="394" width="111" height="30"/>
@@ -592,7 +631,10 @@
                                     <constraint firstAttribute="height" constant="23" id="0AL-fn-hL0"/>
                                     <constraint firstAttribute="width" constant="130" id="DF7-Av-GNm"/>
                                 </constraints>
-                                <state key="normal" title="Camera"/>
+                                <state key="normal" title="Update"/>
+                                <connections>
+                                    <action selector="onUpdateAvatar:" destination="Ejo-JY-Jbo" eventType="touchUpInside" id="mVZ-f3-f8g"/>
+                                </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -644,6 +686,7 @@
                         <outlet property="lastName" destination="FfF-9q-QIr" id="YO4-Mr-ZV1"/>
                         <outlet property="password" destination="LNK-bz-OAW" id="tcB-qO-abH"/>
                         <outlet property="state" destination="WN5-JW-vqA" id="kTe-n5-Hgq"/>
+                        <outlet property="updateAvatarButton" destination="H3z-Ze-QqX" id="d7T-KR-ZRz"/>
                         <outlet property="verifyPassword" destination="egM-Up-vij" id="ENQ-Se-fEV"/>
                     </connections>
                 </viewController>

@@ -13,6 +13,7 @@
 @interface LiveRosaryAuthenticatedIdentityProvider : AWSAbstractCognitoIdentityProvider
 
 @property (strong, atomic, readonly) LiveRosaryAuthenticationClient* client;
+@property (nonatomic, strong) NSDictionary* user;
 
 - (instancetype)initWithRegionType:(AWSRegionType)regionType
                         identityId:(NSString*)identityId

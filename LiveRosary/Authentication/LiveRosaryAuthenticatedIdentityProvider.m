@@ -57,9 +57,10 @@
         }
         else
         {
-            LiveRosaryAuthenticationResponse *response = task.result;
+            LiveRosaryAuthenticationResponse* response = task.result;
             self.identityId = response.identityId;
             self.token = response.token;
+            self.user = response.user;
             return [AWSTask taskWithResult:self.identityId];
         }
     }];
