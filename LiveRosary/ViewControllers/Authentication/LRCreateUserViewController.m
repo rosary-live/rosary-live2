@@ -12,7 +12,7 @@
 #import <FCCurrentLocationGeocoder/FCCurrentLocationGeocoder.h>
 #import <CZPhotoPickerController/CZPhotoPickerController.h>
 
-@interface LRCreateUserViewController ()
+@interface LRCreateUserViewController () <UIPickerViewDelegate, UIPickerViewDataSource>
 
 @property (nonatomic, weak) IBOutlet UITextField* firstName;
 @property (nonatomic, weak) IBOutlet UITextField* lastName;
@@ -26,6 +26,8 @@
 @property (nonatomic, weak) IBOutlet UIImageView* avatarImage;
 
 @property (nonatomic, weak) IBOutlet UIButton* updateAvatarButton;
+
+@property (nonatomic, strong) UIPickerView* languagePickerView;
 
 @property (nonatomic, strong) MBProgressHUD *hud;
 @property (nonatomic, strong) FCCurrentLocationGeocoder* geocoder;
@@ -50,6 +52,7 @@
     
     [self populateLanguage];
     [self populateLocation];
+    [self addLanguagePickerView];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -130,6 +133,35 @@
             });
         }];
     }
+}
+
+-(void)addLanguagePickerView
+{
+    self.languagePickerView = [[UIPickerView alloc] init];
+    self.languagePickerView.dataSource = self;
+    self.languagePickerView.delegate = self;
+    self.languagePickerView.showsSelectionIndicator = YES;
+    
+    UIBarButtonItem* doneButton = [[UIBarButtonItem alloc]
+                                   initWithTitle:@"Done" style:UIBarButtonItemStyleDone
+                                   target:self action:@selector(onLanguagePickerDone:)];
+    
+    UIToolbar* toolBar = [[UIToolbar alloc] initWithFrame:
+                          CGRectMake(0, self.view.frame.size.height-
+                                     self.languagePickerView.frame.size.height-50, 320, 50)];
+    
+    [toolBar setBarStyle:UIBarStyleBlackOpaque];
+    NSArray *toolbarItems = [NSArray arrayWithObjects:doneButton, nil];
+    [toolBar setItems:toolbarItems];
+    self.language.inputView = self.languagePickerView;
+    self.language.inputAccessoryView = toolBar;
+    
+    [self.languagePickerView selectRow:[self.languageNames indexOfObject:self.language.text] inComponent:0 animated:NO];
+}
+
+- (IBAction)onLanguagePickerDone:(id)sender
+{
+    [self.language resignFirstResponder];
 }
 
 - (IBAction)onCreate:(id)sender
@@ -259,6 +291,30 @@
 {
     [aTextField resignFirstResponder];
     return YES;
+}
+
+#pragma mark - UIPickerViewDataSource
+
+-(NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView
+{
+    return 1;
+}
+
+-(NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
+{
+    return self.languageNames.count;
+}
+
+#pragma mark - UIPickerViewDelegate
+
+-(void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
+{
+    [self.language setText:[self.languageNames objectAtIndex:row]];
+}
+
+- (NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component
+{
+    return [self.languageNames objectAtIndex:row];
 }
 
 @end
