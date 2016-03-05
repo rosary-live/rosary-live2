@@ -11,6 +11,7 @@
 #import "TransferManager.h"
 #import "NSString+Utilities.h"
 #import "ConfigModel.h"
+#import "UserManager.h"
 
 @interface BroadcastManager () <AudioManagerDelegate, TransferManagerDelegate>
 
@@ -101,15 +102,14 @@
                                                      @"version": @(1),
                                                      @"bid": bid,
                                                      @"start": @((int)[[NSDate date] timeIntervalSince1970]),
-                                                     @"language": @"en",
-                                                     @"user": @"richard@softwarelogix.com",
-                                                     @"name": @"Richard Taylor",
-                                                     @"avatar": @"URL",
-                                                     @"lat": @"1.2",
-                                                     @"lon": @"3.4",
-                                                     @"city": @"Olathe",
-                                                     @"state": @"KS",
-                                                     @"country": @"US",
+                                                     @"language": [UserManager sharedManager].currentUser.language,
+                                                     @"user": [UserManager sharedManager].currentUser.email,
+                                                     @"name": [NSString stringWithFormat:@"%@ %@", [UserManager sharedManager].currentUser.firstName, [UserManager sharedManager].currentUser.lastName],
+                                                     @"lat": [UserManager sharedManager].currentUser.latitude,
+                                                     @"lon": [UserManager sharedManager].currentUser.longitude,
+                                                     @"city": [UserManager sharedManager].currentUser.city,
+                                                     @"state": [UserManager sharedManager].currentUser.state,
+                                                     @"country": [UserManager sharedManager].currentUser.country,
                                                      @"rate": @(11025),
                                                      @"bits": @(8),
                                                      @"channels": @(1),

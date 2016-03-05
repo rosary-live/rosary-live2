@@ -47,6 +47,7 @@ NSString * const NotificationUserLoggedOut = @"NotificationUserLoggedOut";
 {
     if(self = [super init])
     {
+        [self populateLanguages];
         self.authClient = [LiveRosaryAuthenticationClient identityProviderWithAppname:@"LiveRosary"];
 
         //[AWSLogger defaultLogger].logLevel = AWSLogLevelVerbose;
@@ -54,6 +55,24 @@ NSString * const NotificationUserLoggedOut = @"NotificationUserLoggedOut";
         }];
     }
     return self;
+}
+
+- (void)populateLanguages
+{
+    NSMutableArray<NSString*>* languages = [NSMutableArray new];
+    for(NSString* code in [NSLocale ISOLanguageCodes])
+    {
+        if(code != nil)
+        {
+            NSString* name = [[[NSLocale alloc] initWithLocaleIdentifier:code] displayNameForKey:NSLocaleIdentifier value:code];
+            if(name != nil)
+            {
+                [languages addObject:name];
+            }
+        }
+    }
+    
+    _languages = [NSArray arrayWithArray:languages];
 }
 
 - (void)setEmail:(NSString *)email

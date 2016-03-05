@@ -37,9 +37,6 @@
 @property (nonatomic, strong) NSString* languageCode;
 @property (nonatomic, strong) NSString* languageName;
 
-@property (nonatomic, strong) NSMutableArray<NSString*>* languageCodes;
-@property (nonatomic, strong) NSMutableArray<NSString*>* languageNames;
-
 @property (nonatomic, strong) CZPhotoPickerController* photoPicker;
 @property (nonatomic) BOOL havePhoto;
 
@@ -79,22 +76,7 @@
         self.languageCode = [code componentsSeparatedByString:@"-"][0];
         self.languageName = [[[NSLocale alloc] initWithLocaleIdentifier:self.languageCode] displayNameForKey:NSLocaleIdentifier value:self.languageCode];
         self.language.text = self.languageName;
-    }
-    
-    self.languageCodes = [NSMutableArray new];
-    self.languageNames = [NSMutableArray new];
-    for(NSString* code in [NSLocale ISOLanguageCodes])
-    {
-        if(code != nil)
-        {
-            NSString* name = [[[NSLocale alloc] initWithLocaleIdentifier:code] displayNameForKey:NSLocaleIdentifier value:code];
-            if(name != nil)
-            {
-                [self.languageCodes addObject:code];
-                [self.languageNames addObject:name];
-            }
-        }
-    }
+    }    
 }
 
 - (void)populateLocation
@@ -156,7 +138,7 @@
     self.language.inputView = self.languagePickerView;
     self.language.inputAccessoryView = toolBar;
     
-    [self.languagePickerView selectRow:[self.languageNames indexOfObject:self.language.text] inComponent:0 animated:NO];
+    [self.languagePickerView selectRow:[[UserManager sharedManager].languages indexOfObject:self.language.text] inComponent:0 animated:NO];
 }
 
 - (IBAction)onLanguagePickerDone:(id)sender
@@ -302,19 +284,19 @@
 
 -(NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
 {
-    return self.languageNames.count;
+    return [UserManager sharedManager].languages.count;
 }
 
 #pragma mark - UIPickerViewDelegate
 
 -(void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
 {
-    [self.language setText:[self.languageNames objectAtIndex:row]];
+    [self.language setText:[[UserManager sharedManager].languages objectAtIndex:row]];
 }
 
 - (NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component
 {
-    return [self.languageNames objectAtIndex:row];
+    return [[UserManager sharedManager].languages objectAtIndex:row];
 }
 
 @end

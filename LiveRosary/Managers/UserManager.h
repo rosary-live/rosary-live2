@@ -20,6 +20,7 @@ FOUNDATION_EXTERN NSString * const NotificationUserLoggedOut;
 @property (nonatomic, strong) UserModel* currentUser;
 @property (nonatomic, strong) UIImage* avatarImage;
 @property (nonatomic, strong) AWSServiceConfiguration* configuration;
+@property (nonatomic, strong, readonly) NSArray<NSString*>* languages;
 
 + (instancetype)sharedManager;
 
