@@ -9,15 +9,15 @@
 #import <UIKit/UIKit.h>
 #import "BroadcastModel.h"
 
-@protocol BroadcastsTableViewActionDelegate <NSObject>
+@protocol BroadcastsViewDelegate <NSObject>
 
 - (void)selectedBroadcast:(BroadcastModel*)model;
 
 @end
 
-@interface BroadcastsTableView : UITableView
+@interface BroadcastsView : UIView
 
-@property (nonatomic, weak) id<BroadcastsTableViewActionDelegate> actionDelegate;
+@property (nonatomic, weak) id<BroadcastsViewDelegate> delegate;
 @property (nonatomic) BOOL liveOnly;
 
 - (void)updateBroadcasts;

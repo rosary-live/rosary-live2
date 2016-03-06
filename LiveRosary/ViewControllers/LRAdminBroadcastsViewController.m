@@ -7,12 +7,14 @@
 //
 
 #import "LRAdminBroadcastsViewController.h"
-#import "BroadcastsTableView.h"
+#import "BroadcastsView.h"
 #import "LRListenViewController.h"
+#import "BroadcastsViewController.h"
+#import <PureLayout/PureLayout.h>
 
-@interface LRAdminBroadcastsViewController () <BroadcastsTableViewActionDelegate>
+@interface LRAdminBroadcastsViewController () <BroadcastsViewDelegate>
 
-@property (nonatomic, weak) IBOutlet BroadcastsTableView* tableView;
+@property (nonatomic, strong) BroadcastsViewController* broadcastViewController;
 
 @end
 
@@ -20,11 +22,10 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+
+    [self addBroadcasts];
     
-    self.tableView.actionDelegate = self;
-    self.tableView.liveOnly = NO;
-        
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self.tableView action:@selector(updateBroadcasts)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self.broadcastViewController action:@selector(updateBroadcasts)];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -51,6 +52,18 @@
     listenViewController.broadcast = broadcast;
     listenViewController.playFromStart = YES;
     [self.navigationController pushViewController:listenViewController animated:YES];
+}
+
+- (void)addBroadcasts
+{
+    self.broadcastViewController = [BroadcastsViewController instantiate];
+    self.broadcastViewController.delegate = self;
+    self.broadcastViewController.liveOnly = YES;
+    
+    [self addChildViewController:self.broadcastViewController];
+    [self.view addSubview:self.broadcastViewController.view];
+    [self.broadcastViewController.view autoPinEdgesToSuperviewEdges];
+    [self.broadcastViewController didMoveToParentViewController:self];
 }
 
 @end

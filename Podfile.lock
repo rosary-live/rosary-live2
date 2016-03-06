@@ -102,6 +102,10 @@ PODS:
     - MMDrawerController/Core
   - MMDrawerController/Subclass (0.6.0):
     - MMDrawerController/Core
+  - PureLayout (3.0.1)
+  - SDWebImage (3.7.5):
+    - SDWebImage/Core (= 3.7.5)
+  - SDWebImage/Core (3.7.5)
   - TheAmazingAudioEngine (1.5.5)
   - UICKeyChainStore (2.1.0)
 
@@ -121,6 +125,8 @@ DEPENDENCIES:
   - Mantle
   - MBProgressHUD
   - MMDrawerController
+  - PureLayout
+  - SDWebImage
   - TheAmazingAudioEngine
   - UICKeyChainStore
 
@@ -141,6 +147,8 @@ SPEC CHECKSUMS:
   Mantle: 299966b00759634931699f69cb6a30b9239b944d
   MBProgressHUD: 1569cf7ace17a8bac47aabfbb8580a49690386d1
   MMDrawerController: e3a54a5570388463ad3b36975251575b50c4e1a0
+  PureLayout: f35f5384c9c4e4479df041dbe33ad7577b71ddfb
+  SDWebImage: 69c6303e3348fba97e03f65d65d4fbc26740f461
   TheAmazingAudioEngine: d867edf0da7c4d1283df5d721f5633d5523126b2
   UICKeyChainStore: f1cbd42216a113f0165de1e733e62905b8823432
 
