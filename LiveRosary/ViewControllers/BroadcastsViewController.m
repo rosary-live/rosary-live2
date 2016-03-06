@@ -107,6 +107,7 @@ typedef NS_ENUM(NSUInteger, Mode) {
         [self sortBroadcasts];
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.tableView reloadData];
+            [self addMapPins];
         });
     }];
 }
@@ -126,6 +127,20 @@ typedef NS_ENUM(NSUInteger, Mode) {
         }];
         
         self.broadcasts = [self.broadcasts filteredArrayUsingPredicate:filter];
+    }
+}
+
+- (void)addMapPins
+{
+    [self.mapView removeAnnotations:self.mapView.annotations];
+    
+    for(BroadcastModel* broadcast in self.broadcasts)
+    {
+        MKPointAnnotation* pin = [[MKPointAnnotation alloc] init];
+        pin.coordinate = CLLocationCoordinate2DMake(broadcast.lat.doubleValue, broadcast.lon.doubleValue);
+        pin.title = [NSString stringWithFormat:@"%@ - %@", broadcast.name, broadcast.language];
+        pin.subtitle = [NSDateFormatter localizedStringFromDate:[broadcast.updated dateForNumber] dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterShortStyle];
+        [self.mapView addAnnotation:pin];
     }
 }
 
