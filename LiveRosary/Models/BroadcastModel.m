@@ -30,4 +30,22 @@
 {
     return [NSString stringWithFormat:@"%@ seq:%@ created:%@ updated:%@ live:%@ user:%@", self.bid, self.sequence, [self.created dateForNumber], [self.updated dateForNumber], self.live, self.user];
 }
+
+#pragma mark - MKAnnotation
+
+- (CLLocationCoordinate2D)coordinate
+{
+    return CLLocationCoordinate2DMake(self.lat.doubleValue, self.lon.doubleValue);
+}
+
+- (NSString*)title
+{
+    return [NSString stringWithFormat:@"%@ - %@", self.name, self.language];
+}
+
+- (NSString*)subtitle
+{
+    return [NSString stringWithFormat:@"%@ %@",[NSDateFormatter localizedStringFromDate:[self.updated dateForNumber] dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterShortStyle], self.isLive ? @"LIVE" : @"ENDED"];
+}
+
 @end

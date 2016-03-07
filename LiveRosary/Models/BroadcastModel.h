@@ -7,8 +7,9 @@
 //
 
 #import "BaseModel.h"
+#import <MapKit/MapKit.h>
 
-@interface BroadcastModel : BaseModel
+@interface BroadcastModel : BaseModel <MKAnnotation>
 
 @property (nonatomic, strong) NSNumber* version;
 @property (nonatomic, strong) NSString* bid;
@@ -35,5 +36,10 @@
 @property (nonatomic, strong) NSNumber* segment_duration;
 
 @property (nonatomic, readonly) BOOL isLive;
+
+
+@property (nonatomic, readonly) CLLocationCoordinate2D coordinate;
+@property (nonatomic, readonly, copy, nullable) NSString* title;
+@property (nonatomic, readonly, copy, nullable) NSString* subtitle;
 
 @end

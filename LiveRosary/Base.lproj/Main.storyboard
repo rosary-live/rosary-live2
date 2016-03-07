@@ -817,6 +817,9 @@
                             </textField>
                             <mapView hidden="YES" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" rotateEnabled="NO" pitchEnabled="NO" showsUserLocation="YES" showsBuildings="NO" showsPointsOfInterest="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6Lz-cb-geZ">
                                 <rect key="frame" x="0.0" y="46" width="600" height="554"/>
+                                <connections>
+                                    <outlet property="delegate" destination="RGe-SW-VKd" id="ffs-88-c4C"/>
+                                </connections>
                             </mapView>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="HTS-0l-2Ej">
                                 <rect key="frame" x="0.0" y="46" width="600" height="554"/>

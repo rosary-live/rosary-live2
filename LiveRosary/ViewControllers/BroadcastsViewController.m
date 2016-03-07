@@ -21,6 +21,13 @@ typedef NS_ENUM(NSUInteger, Mode) {
     ModeMap
 };
 
+//@interface MapAnnotation : NSObject  <MKAnnotation>
+//@end
+//
+//@implementation MapAnnotation
+//@end
+
+
 @interface BroadcastsViewController () <UITableViewDataSource, UITableViewDelegate, UIPickerViewDelegate, UIPickerViewDataSource, MKMapViewDelegate>
 
 @property (nonatomic, weak) IBOutlet UITableView* tableView;
@@ -136,11 +143,12 @@ typedef NS_ENUM(NSUInteger, Mode) {
     
     for(BroadcastModel* broadcast in self.broadcasts)
     {
-        MKPointAnnotation* pin = [[MKPointAnnotation alloc] init];
-        pin.coordinate = CLLocationCoordinate2DMake(broadcast.lat.doubleValue, broadcast.lon.doubleValue);
-        pin.title = [NSString stringWithFormat:@"%@ - %@", broadcast.name, broadcast.language];
-        pin.subtitle = [NSDateFormatter localizedStringFromDate:[broadcast.updated dateForNumber] dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterShortStyle];
-        [self.mapView addAnnotation:pin];
+        [self.mapView addAnnotation:broadcast];
+//        MKPointAnnotation* pin = [[MKPointAnnotation alloc] init];
+//        pin.coordinate = CLLocationCoordinate2DMake(broadcast.lat.doubleValue, broadcast.lon.doubleValue);
+//        pin.title = [NSString stringWithFormat:@"%@ - %@", broadcast.name, broadcast.language];
+//        pin.subtitle = [NSDateFormatter localizedStringFromDate:[broadcast.updated dateForNumber] dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterShortStyle];
+//        [self.mapView addAnnotation:pin];
     }
 }
 
@@ -242,10 +250,7 @@ typedef NS_ENUM(NSUInteger, Mode) {
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if(self.delegate != nil && [self.delegate respondsToSelector:@selector(selectedBroadcast:)])
-    {
-        [self.delegate selectedBroadcast:self.broadcasts[indexPath.row]];
-    }
+    [self broadcastSelected:self.broadcasts[indexPath.row]];
 }
 
 #pragma mark - UIPickerViewDataSource
@@ -270,6 +275,71 @@ typedef NS_ENUM(NSUInteger, Mode) {
 - (NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component
 {
     return [self.languages objectAtIndex:row];
+}
+
+#pragma mark - MKMapViewDelegate
+
+#pragma mark MKMapView delegate
+- (MKAnnotationView *)mapView:(MKMapView *)mapview viewForAnnotation:(id <MKAnnotation>)annotation
+{
+    if ([annotation isKindOfClass:[MKUserLocation class]])
+    {
+        return nil;
+    }
+    
+    static NSString* AnnotationIdentifier = @"AnnotationIdentifier";
+    MKAnnotationView *annotationView = [self.mapView dequeueReusableAnnotationViewWithIdentifier:AnnotationIdentifier];
+    if(annotationView)
+    {
+        return annotationView;
+    }
+    else
+    {
+        MKAnnotationView *annotationView = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:AnnotationIdentifier];
+        if(((BroadcastModel*)annotation).isLive)
+        {
+            annotationView.image = [UIImage imageNamed:@"LiveMapPin"];
+        }
+        else
+        {
+            annotationView.image = [UIImage imageNamed:@"EndedMapPin"];
+        }
+        
+        UIButton* rightButton = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
+        [rightButton addTarget:self action:@selector(onMapPinSelected:) forControlEvents:UIControlEventTouchUpInside];
+        [rightButton setTitle:annotation.title forState:UIControlStateNormal];
+        annotationView.rightCalloutAccessoryView = rightButton;
+        annotationView.canShowCallout = YES;
+        annotationView.draggable = NO;
+        annotationView.centerOffset = CGPointMake(0.0f, -18.0f);
+        return annotationView;
+    }
+    return nil;
+}
+
+- (void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view
+{
+    NSLog(@"didSelectAnnotationView");
+}
+
+- (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control
+{
+    NSLog(@"calloutAccessoryControlTapped");
+    [self broadcastSelected:(BroadcastModel*)view.annotation];
+}
+
+- (IBAction)onMapPinSelected:(id)sender
+{
+    NSLog(@"onMapPinSelected %@", sender);
+}
+
+
+- (void)broadcastSelected:(BroadcastModel*)broadcast
+{
+    if(self.delegate != nil && [self.delegate respondsToSelector:@selector(selectedBroadcast:)])
+    {
+        [self.delegate selectedBroadcast:broadcast];
+    }
 }
 
 @end
