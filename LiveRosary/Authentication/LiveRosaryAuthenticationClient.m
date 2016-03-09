@@ -138,4 +138,10 @@ NSString * const KeyToken = @"KeyToken";
     return [self login:self.email password:self.password];
 }
 
+- (void)updatePassword:(NSString*)password
+{
+    self.keychain[KeyPassword] = self.password = password;
+
+}
+
 @end

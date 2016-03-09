@@ -42,5 +42,6 @@ typedef NS_ENUM(NSInteger, DeveloperAuthenticationClientErrorType) {
 - (AWSTask*)getToken;
 - (AWSTask*)login:(NSString *)email password:(NSString *)password;
 - (void)logout;
+- (void)updatePassword:(NSString*)password;
 
 @end

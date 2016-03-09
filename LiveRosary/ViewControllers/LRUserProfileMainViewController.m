@@ -11,6 +11,15 @@
 
 @interface LRUserProfileMainViewController ()
 
+@property (nonatomic, weak) IBOutlet UILabel* email;
+@property (nonatomic, weak) IBOutlet UIImageView* avatar;
+@property (nonatomic, weak) IBOutlet UILabel* firstName;
+@property (nonatomic, weak) IBOutlet UILabel* lastName;
+@property (nonatomic, weak) IBOutlet UILabel* language;
+@property (nonatomic, weak) IBOutlet UILabel* city;
+@property (nonatomic, weak) IBOutlet UILabel* state;
+@property (nonatomic, weak) IBOutlet UILabel* country;
+
 @end
 
 @implementation LRUserProfileMainViewController
@@ -20,6 +29,20 @@
     
     [self addDrawerButton];
 
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    self.email.text = [UserManager sharedManager].currentUser.email;
+    self.avatar.image = [UserManager sharedManager].avatarImage;
+    self.firstName.text = [UserManager sharedManager].currentUser.firstName;
+    self.lastName.text = [UserManager sharedManager].currentUser.lastName;
+    self.language.text = [UserManager sharedManager].currentUser.language;
+    self.city.text = [UserManager sharedManager].currentUser.city;
+    self.state.text = [UserManager sharedManager].currentUser.state;
+    self.country.text = [UserManager sharedManager].currentUser.country;
 }
 
 - (void)didReceiveMemoryWarning {

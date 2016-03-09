@@ -23,6 +23,7 @@ NSString * const UserDefaultPassword = @"UserDefaultPassword";
 NSString * const NotificationUserLoggedIn = @"NotificationUserLoggedIn";
 NSString * const NotificationUserLoggedOut = @"NotificationUserLoggedOut";
 
+NSString* const ApiKey = @"hhpm1l5N771l3eZf7V4Lk8AjWyYgZbPM7XPPU8Jw";
 
 @interface UserManager() <AFURLResponseSerialization>
 @property (nonatomic, strong) AWSCognitoCredentialsProvider* credentialsProvider;
@@ -161,7 +162,7 @@ NSString * const NotificationUserLoggedOut = @"NotificationUserLoggedOut";
     [request setHTTPMethod:@"POST"];
     [request setValue:postLength forHTTPHeaderField:@"Content-Length"];
     [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
-    [request setValue:@"hhpm1l5N771l3eZf7V4Lk8AjWyYgZbPM7XPPU8Jw" forHTTPHeaderField:@"x-api-key"];
+    [request setValue:ApiKey forHTTPHeaderField:@"x-api-key"];
     [request setHTTPBody:postData];
 
     NSURLSessionDataTask *dataTask = [manager dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
@@ -277,7 +278,7 @@ NSString * const NotificationUserLoggedOut = @"NotificationUserLoggedOut";
     }
     else
     {
-        self.avatarImage = nil;
+        self.avatarImage = [UIImage imageNamed:@"AvatarImage"];
     }
 }
 
@@ -329,8 +330,44 @@ NSString * const NotificationUserLoggedOut = @"NotificationUserLoggedOut";
     }];
 }
 
-- (void)updateUserInfoWithDictionary:(NSDictionary*)info
+- (void)updateUserInfoWithDictionary:(NSDictionary*)info completion:(void (^)(NSError* error))completion;
 {
+    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
+    AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];
+    
+    NSMutableDictionary* newDict = [info mutableCopy];
+    newDict[@"email"] = self.email;
+    newDict[@"password"] = self.password;
+    
+    NSData* postData = [NSJSONSerialization dataWithJSONObject:newDict options:0 error:nil];
+    NSString* postLength = [NSString stringWithFormat:@"%d", (int)postData.length];
+    
+    NSMutableURLRequest *request = [NSMutableURLRequest new];
+    [request setURL:[NSURL URLWithString:@"https://9wwr7dvesk.execute-api.us-east-1.amazonaws.com/prod/UpdateUser"]];
+    [request setHTTPMethod:@"POST"];
+    [request setValue:postLength forHTTPHeaderField:@"Content-Length"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    [request setValue:ApiKey forHTTPHeaderField:@"x-api-key"];
+    [request setHTTPBody:postData];
+    
+    NSURLSessionDataTask *dataTask = [manager dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+        if (error) {
+            NSLog(@"Error: %@", error);
+        } else {
+            NSLog(@"%@ %@", response, responseObject);
+            
+            NSNumber* updated = (NSNumber*)responseObject[@"updated"];
+            if(updated != nil && [updated integerValue] == 1)
+            {
+                safeBlock(completion, nil);
+            }
+            else
+            {
+                safeBlock(completion, [NSError errorWithDomain:ErrorDomainUserManager code:-12 userInfo:nil]);
+            }
+        }
+    }];
+    [dataTask resume];
 }
 
 - (void)refreshTokenWithCompletion:(void (^)(NSError* error))completion
@@ -345,6 +382,44 @@ NSString * const NotificationUserLoggedOut = @"NotificationUserLoggedOut";
             return [AWSTask taskWithResult:nil];
         }];
     }];
+}
+
+- (void)changePassword:(NSString*)currentPassword newPassword:(NSString*)newPassword completion:(void (^)(NSError* error))completion;
+{
+    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
+    AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];
+    
+    NSData* postData = [NSJSONSerialization dataWithJSONObject:@{ @"email": self.currentUser.email, @"oldPassword": currentPassword, @"newPassword": newPassword } options:0 error:nil];
+    NSString* postLength = [NSString stringWithFormat:@"%d", (int)postData.length];
+    
+    NSMutableURLRequest *request = [NSMutableURLRequest new];
+    [request setURL:[NSURL URLWithString:@"https://9wwr7dvesk.execute-api.us-east-1.amazonaws.com/prod/ChangePassword"]];
+    [request setHTTPMethod:@"POST"];
+    [request setValue:postLength forHTTPHeaderField:@"Content-Length"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    [request setValue:ApiKey forHTTPHeaderField:@"x-api-key"];
+    [request setHTTPBody:postData];
+    
+    NSURLSessionDataTask *dataTask = [manager dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+        if (error) {
+            NSLog(@"Error: %@", error);
+        } else {
+            NSLog(@"%@ %@", response, responseObject);
+            
+            NSNumber* changed = (NSNumber*)responseObject[@"changed"];
+            if(changed != nil && [changed integerValue] == 1)
+            {
+                [self.authClient updatePassword:newPassword];
+                
+                safeBlock(completion, nil);
+            }
+            else
+            {
+                safeBlock(completion, [NSError errorWithDomain:ErrorDomainUserManager code:-11 userInfo:nil]);
+            }
+        }
+    }];
+    [dataTask resume];
 }
 
 #pragma mark - AFURLResponseSerialization

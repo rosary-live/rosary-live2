@@ -30,7 +30,8 @@ FOUNDATION_EXTERN NSString * const NotificationUserLoggedOut;
 - (void)logoutWithCompletion:(void (^)(NSError* error))completion;
 - (BOOL)credentialsExpired;
 - (void)refreshCredentialsWithCompletion:(void (^)(NSError* error))completion;
-- (void)updateUserInfoWithDictionary:(NSDictionary*)info;
+- (void)updateUserInfoWithDictionary:(NSDictionary*)info completion:(void (^)(NSError* error))completion;
 - (void)refreshTokenWithCompletion:(void (^)(NSError* error))completion;
+- (void)changePassword:(NSString*)currentPassword newPassword:(NSString*)newPassword completion:(void (^)(NSError* error))completion;;
 
 @end
