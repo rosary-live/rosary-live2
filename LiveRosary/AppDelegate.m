@@ -10,6 +10,7 @@
 #import "MMDrawerController.h"
 #import "LRDrawerViewController.h"
 #import "LRListenMainViewController.h"
+#import "TestFairy.h"
 
 @interface AppDelegate ()
 
@@ -22,6 +23,8 @@
 -(BOOL)application:(UIApplication *)application willFinishLaunchingWithOptions:(NSDictionary *)launchOptions{
 //    [DDLog addLogger:[DDTTYLogger sharedInstance]];
 //    [[DDTTYLogger sharedInstance] setColorsEnabled:YES];
+    
+    [TestFairy begin:@"af61a53a28663c4531a8f85810786c236aca5908"];
     
     DDLogInfo(@"App Startup");
     

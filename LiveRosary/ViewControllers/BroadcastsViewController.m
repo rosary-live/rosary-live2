@@ -110,7 +110,7 @@ typedef NS_ENUM(NSUInteger, Mode) {
 {
     [[DBBroadcast sharedInstance] updateBroadcastsWithCompletion:^(NSArray<BroadcastModel *> *broadcasts, NSError *error) {
         self.broadcasts = broadcasts;
-        //[self filterBroadcasts];
+        [self filterBroadcasts];
         [self sortBroadcasts];
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.tableView reloadData];
@@ -127,7 +127,7 @@ typedef NS_ENUM(NSUInteger, Mode) {
 
 - (void)filterBroadcasts
 {
-    //if(self.liveOnly)
+    if(self.liveOnly)
     {
         NSPredicate* filter = [NSPredicate predicateWithBlock:^BOOL(id  _Nonnull evaluatedObject, NSDictionary<NSString *,id> * _Nullable bindings) {
             return ((BroadcastModel*)evaluatedObject).isLive;

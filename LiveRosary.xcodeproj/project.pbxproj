@@ -42,6 +42,12 @@
 		D8A1B9041C75628300CEE8D0 /* BroadcastsView.m in Sources */ = {isa = PBXBuildFile; fileRef = D8A1B9031C75628300CEE8D0 /* BroadcastsView.m */; };
 		D8A1B9081C7568FF00CEE8D0 /* BroadcastCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D8A1B9071C7568FF00CEE8D0 /* BroadcastCell.xib */; };
 		D8A1B90B1C75779F00CEE8D0 /* LRAdminMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8A1B90A1C75779F00CEE8D0 /* LRAdminMainViewController.m */; };
+		D8B72E621C9A394C0081723F /* libTestFairy.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D8B72E601C9A394C0081723F /* libTestFairy.a */; };
+		D8B72E641C9A39950081723F /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D8B72E631C9A39950081723F /* CoreMedia.framework */; };
+		D8B72E661C9A399C0081723F /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D8B72E651C9A399C0081723F /* CoreMotion.framework */; };
+		D8B72E681C9A39A70081723F /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D8B72E671C9A39A70081723F /* AVFoundation.framework */; };
+		D8B72E6A1C9A39B20081723F /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D8B72E691C9A39B20081723F /* SystemConfiguration.framework */; };
+		D8B72E6C1C9A39BB0081723F /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D8B72E6B1C9A39BB0081723F /* OpenGLES.framework */; };
 		D8C23FD61C51D3D10043F8BE /* TransferManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D8C23FD51C51D3D10043F8BE /* TransferManager.m */; };
 		D8C23FDB1C51E23D0043F8BE /* NSString+Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = D8C23FDA1C51E23D0043F8BE /* NSString+Utilities.m */; };
 		D8EAFEBE1C5D0EB300C38EBA /* BroadcastCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D8EAFEBD1C5D0EB300C38EBA /* BroadcastCell.m */; };
@@ -119,6 +125,13 @@
 		D8A1B9071C7568FF00CEE8D0 /* BroadcastCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = BroadcastCell.xib; path = Cells/BroadcastCell.xib; sourceTree = "<group>"; };
 		D8A1B9091C75779F00CEE8D0 /* LRAdminMainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LRAdminMainViewController.h; path = ViewControllers/LRAdminMainViewController.h; sourceTree = "<group>"; };
 		D8A1B90A1C75779F00CEE8D0 /* LRAdminMainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LRAdminMainViewController.m; path = ViewControllers/LRAdminMainViewController.m; sourceTree = "<group>"; };
+		D8B72E601C9A394C0081723F /* libTestFairy.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libTestFairy.a; sourceTree = "<group>"; };
+		D8B72E611C9A394C0081723F /* TestFairy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestFairy.h; sourceTree = "<group>"; };
+		D8B72E631C9A39950081723F /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		D8B72E651C9A399C0081723F /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
+		D8B72E671C9A39A70081723F /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		D8B72E691C9A39B20081723F /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		D8B72E6B1C9A39BB0081723F /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		D8C23FD41C51D3D10043F8BE /* TransferManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TransferManager.h; path = Managers/TransferManager.h; sourceTree = "<group>"; };
 		D8C23FD51C51D3D10043F8BE /* TransferManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TransferManager.m; path = Managers/TransferManager.m; sourceTree = "<group>"; };
 		D8C23FD91C51E23D0043F8BE /* NSString+Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+Utilities.h"; path = "Categories/NSString+Utilities.h"; sourceTree = "<group>"; };
@@ -135,7 +148,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D8B72E6C1C9A39BB0081723F /* OpenGLES.framework in Frameworks */,
+				D8B72E6A1C9A39B20081723F /* SystemConfiguration.framework in Frameworks */,
+				D8B72E681C9A39A70081723F /* AVFoundation.framework in Frameworks */,
+				D8B72E661C9A399C0081723F /* CoreMotion.framework in Frameworks */,
+				D8B72E641C9A39950081723F /* CoreMedia.framework in Frameworks */,
 				E9E80094D216F82DAF5B13F5 /* libPods.a in Frameworks */,
+				D8B72E621C9A394C0081723F /* libTestFairy.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -154,6 +173,11 @@
 		C0FFDF672BBC5D1F37B6621D /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				D8B72E6B1C9A39BB0081723F /* OpenGLES.framework */,
+				D8B72E691C9A39B20081723F /* SystemConfiguration.framework */,
+				D8B72E671C9A39A70081723F /* AVFoundation.framework */,
+				D8B72E651C9A399C0081723F /* CoreMotion.framework */,
+				D8B72E631C9A39950081723F /* CoreMedia.framework */,
 				F67958F927E045E478D94BB5 /* libPods.a */,
 			);
 			name = Frameworks;
@@ -162,6 +186,7 @@
 		D820FAF81C4452A9000899DB = {
 			isa = PBXGroup;
 			children = (
+				D8B72E5F1C9A394C0081723F /* TestFairy */,
 				D820FB031C4452A9000899DB /* LiveRosary */,
 				D820FB021C4452A9000899DB /* Products */,
 				0989DF6E0E971F9A7E095333 /* Pods */,
@@ -325,6 +350,15 @@
 				D8A0EFED1C4C70ED0006B910 /* LiveRosaryAuthenticationClient.m */,
 			);
 			name = Authentication;
+			sourceTree = "<group>";
+		};
+		D8B72E5F1C9A394C0081723F /* TestFairy */ = {
+			isa = PBXGroup;
+			children = (
+				D8B72E601C9A394C0081723F /* libTestFairy.a */,
+				D8B72E611C9A394C0081723F /* TestFairy.h */,
+			);
+			path = TestFairy;
 			sourceTree = "<group>";
 		};
 		D8C23FD81C51E1EC0043F8BE /* Categories */ = {
@@ -615,6 +649,10 @@
 				INFOPLIST_FILE = LiveRosary/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/TestFairy",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.pocketcake.LiveRosary;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "6af44090-549d-44dd-a072-e37467df06d9";
@@ -633,6 +671,10 @@
 				INFOPLIST_FILE = LiveRosary/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/TestFairy",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.pocketcake.LiveRosary;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "6af44090-549d-44dd-a072-e37467df06d9";
