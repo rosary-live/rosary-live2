@@ -1,18 +1,18 @@
 //
-//  DBBroadcast.m
+//  DBSchedule.m
 //  LiveRosary
 //
-//  Created by richardtaylor on 1/28/16.
+//  Created by richardtaylor on 3/16/16.
 //  Copyright © 2016 PocketCake. All rights reserved.
 //
 
-#import "DBBroadcast.h"
+#import "DBSchedule.h"
 
-@implementation DBBroadcast
+@implementation DBSchedule
 
 + (instancetype)sharedInstance
 {
-    static DBBroadcast* instance = nil;
+    static DBSchedule* instance = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         instance = [[self alloc] init];
@@ -20,13 +20,13 @@
     return instance;
 }
 
-- (void)updateBroadcastsWithCompletion:(void (^)(NSArray<BroadcastModel*>* broadcasts, NSError* error))completion
+- (void)updateScheduledBroadcastsWithCompletion:(void (^)(NSArray<ScheduleModel*>* scheduledBroadcasts, NSError* error))completion
 {
     AWSDynamoDBScanExpression* scanExpression = [AWSDynamoDBScanExpression new];
     scanExpression.limit = @(100);
     
-    [[self.dynamoDBObjectMapper scan:[BroadcastModel class] expression:scanExpression] continueWithBlock:^id _Nullable(AWSTask * _Nonnull task) {
-
+    [[self.dynamoDBObjectMapper scan:[ScheduleModel class] expression:scanExpression] continueWithBlock:^id _Nullable(AWSTask * _Nonnull task) {
+        
         if(task.error)
         {
             DDLogError(@"Scan failed. Error: [%@]", task.error);
@@ -40,9 +40,9 @@
         else if(task.result)
         {
             AWSDynamoDBPaginatedOutput *paginatedOutput = task.result;
-            for(BroadcastModel* broadcast in paginatedOutput.items)
+            for(ScheduleModel* scheduledBroadcast in paginatedOutput.items)
             {
-                DDLogDebug(@"Broadcast: %@", broadcast);
+                DDLogDebug(@"Scheduled Broadcast: %@", scheduledBroadcast);
             }
             
             safeBlock(completion, paginatedOutput.items, nil);
@@ -52,9 +52,9 @@
     }];
 }
 
-- (void)getBroadcastById:(NSString*)bid completion:(void (^)(BroadcastModel* broadcast, NSError* error))completion
-{    
-    [[self.dynamoDBObjectMapper load:[BroadcastModel class] hashKey:bid rangeKey:nil] continueWithBlock:^id _Nullable(AWSTask * _Nonnull task) {
+- (void)getScheduledBroadcastById:(NSString*)sid completion:(void (^)(ScheduleModel* scheduledBroadcast, NSError* error))completion
+{
+    [[self.dynamoDBObjectMapper load:[ScheduleModel class] hashKey:sid rangeKey:nil] continueWithBlock:^id _Nullable(AWSTask * _Nonnull task) {
         if(task.error)
         {
             DDLogError(@"Load failed. Error: [%@]", task.error);
@@ -67,10 +67,10 @@
         }
         else if(task.result)
         {
-            BroadcastModel* broadcast = task.result;
-            DDLogDebug(@"Broadcast: %@", broadcast);
+            ScheduleModel* scheduledBroadcast = task.result;
+            DDLogDebug(@"Scheduled Broadcast: %@", scheduledBroadcast);
             
-            safeBlock(completion, broadcast, nil);
+            safeBlock(completion, scheduledBroadcast, nil);
         }
         
         return nil;

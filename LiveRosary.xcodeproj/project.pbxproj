@@ -48,6 +48,9 @@
 		D8B72E681C9A39A70081723F /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D8B72E671C9A39A70081723F /* AVFoundation.framework */; };
 		D8B72E6A1C9A39B20081723F /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D8B72E691C9A39B20081723F /* SystemConfiguration.framework */; };
 		D8B72E6C1C9A39BB0081723F /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D8B72E6B1C9A39BB0081723F /* OpenGLES.framework */; };
+		D8B72E6F1C9A3D140081723F /* ScheduleManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D8B72E6E1C9A3D140081723F /* ScheduleManager.m */; };
+		D8B72E721C9A3FE50081723F /* DBSchedule.m in Sources */ = {isa = PBXBuildFile; fileRef = D8B72E711C9A3FE50081723F /* DBSchedule.m */; };
+		D8B72E751C9A40620081723F /* ScheduleModel.m in Sources */ = {isa = PBXBuildFile; fileRef = D8B72E741C9A40620081723F /* ScheduleModel.m */; };
 		D8C23FD61C51D3D10043F8BE /* TransferManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D8C23FD51C51D3D10043F8BE /* TransferManager.m */; };
 		D8C23FDB1C51E23D0043F8BE /* NSString+Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = D8C23FDA1C51E23D0043F8BE /* NSString+Utilities.m */; };
 		D8EAFEBE1C5D0EB300C38EBA /* BroadcastCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D8EAFEBD1C5D0EB300C38EBA /* BroadcastCell.m */; };
@@ -132,6 +135,12 @@
 		D8B72E671C9A39A70081723F /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		D8B72E691C9A39B20081723F /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		D8B72E6B1C9A39BB0081723F /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
+		D8B72E6D1C9A3D140081723F /* ScheduleManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ScheduleManager.h; path = Managers/ScheduleManager.h; sourceTree = "<group>"; };
+		D8B72E6E1C9A3D140081723F /* ScheduleManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ScheduleManager.m; path = Managers/ScheduleManager.m; sourceTree = "<group>"; };
+		D8B72E701C9A3FE50081723F /* DBSchedule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DBSchedule.h; path = Database/DBSchedule.h; sourceTree = "<group>"; };
+		D8B72E711C9A3FE50081723F /* DBSchedule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DBSchedule.m; path = Database/DBSchedule.m; sourceTree = "<group>"; };
+		D8B72E731C9A40620081723F /* ScheduleModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ScheduleModel.h; path = Models/ScheduleModel.h; sourceTree = "<group>"; };
+		D8B72E741C9A40620081723F /* ScheduleModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ScheduleModel.m; path = Models/ScheduleModel.m; sourceTree = "<group>"; };
 		D8C23FD41C51D3D10043F8BE /* TransferManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TransferManager.h; path = Managers/TransferManager.h; sourceTree = "<group>"; };
 		D8C23FD51C51D3D10043F8BE /* TransferManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TransferManager.m; path = Managers/TransferManager.m; sourceTree = "<group>"; };
 		D8C23FD91C51E23D0043F8BE /* NSString+Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+Utilities.h"; path = "Categories/NSString+Utilities.h"; sourceTree = "<group>"; };
@@ -252,6 +261,8 @@
 				D86372791C5AFEC400D02DC3 /* DBBase.m */,
 				D863727B1C5AFED900D02DC3 /* DBBroadcast.h */,
 				D863727C1C5AFED900D02DC3 /* DBBroadcast.m */,
+				D8B72E701C9A3FE50081723F /* DBSchedule.h */,
+				D8B72E711C9A3FE50081723F /* DBSchedule.m */,
 			);
 			name = Database;
 			sourceTree = "<group>";
@@ -322,6 +333,8 @@
 				D8C23FD51C51D3D10043F8BE /* TransferManager.m */,
 				D863726E1C5AD58A00D02DC3 /* BroadcastManager.h */,
 				D863726F1C5AD58A00D02DC3 /* BroadcastManager.m */,
+				D8B72E6D1C9A3D140081723F /* ScheduleManager.h */,
+				D8B72E6E1C9A3D140081723F /* ScheduleManager.m */,
 			);
 			name = Managers;
 			sourceTree = "<group>";
@@ -337,6 +350,8 @@
 				D86372721C5ADEF900D02DC3 /* BroadcastModel.m */,
 				D8427CF21C601BDA00A8CE5F /* ConfigModel.h */,
 				D8427CF31C601BDA00A8CE5F /* ConfigModel.m */,
+				D8B72E731C9A40620081723F /* ScheduleModel.h */,
+				D8B72E741C9A40620081723F /* ScheduleModel.m */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -503,7 +518,9 @@
 				D81AAF7C1C45E29C00B46544 /* LRBaseViewController.m in Sources */,
 				D8A0EFDF1C4C2F1E0006B910 /* UserManager.m in Sources */,
 				D8A0EFF91C4F2B1F0006B910 /* AudioManager.m in Sources */,
+				D8B72E751C9A40620081723F /* ScheduleModel.m in Sources */,
 				D8431A241C75269B0061A3CB /* F3BarGauge.m in Sources */,
+				D8B72E6F1C9A3D140081723F /* ScheduleManager.m in Sources */,
 				D8A0EFE31C4C30E40006B910 /* UserModel.m in Sources */,
 				D885FA671C446F49002904AC /* LRDrawerViewController.m in Sources */,
 				D8A0EFDB1C4C220A0006B910 /* LRAdminBroadcastsViewController.m in Sources */,
@@ -521,6 +538,7 @@
 				D86372811C5B1FFB00D02DC3 /* NSNumber+Utilities.m in Sources */,
 				D8EAFEC11C5D29E100C38EBA /* LRListenViewController.m in Sources */,
 				D84A21141C8E6CB8006C4D63 /* LREditUserViewController.m in Sources */,
+				D8B72E721C9A3FE50081723F /* DBSchedule.m in Sources */,
 				D8C23FDB1C51E23D0043F8BE /* NSString+Utilities.m in Sources */,
 				D8C23FD61C51D3D10043F8BE /* TransferManager.m in Sources */,
 				D8A0EFD51C4C130C0006B910 /* DrawerCell.m in Sources */,
