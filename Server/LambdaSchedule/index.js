@@ -31,8 +31,8 @@ function addSchedule(event, callback) {
 			country: { S: event.country },
 			start: { N: event.start.toString() }
 		},
-		ConditionExpression: 'attribute_not_exists (bid)',
-		ReturnValues: 'ALL_OLD'
+		ConditionExpression: 'attribute_not_exists (sid)',
+		ReturnValues: 'NONE'
 	}, function(err, data) {
 		if(err) callback(err, null);
 		else callback(null, data);
@@ -58,7 +58,7 @@ function updateSchedule(event, callback) {
 								country: { Action: 'PUT', Value: { S: event.country } },
 								start: { Action: 'PUT', Value: { N: event.start.toString() } }
 							  },
-			ReturnValues: 'ALL_NEW'
+			ReturnValues: 'NONE'
 		}, function(err, data) {
 			if(err) callback(err, null);
 			else callback(null, data);

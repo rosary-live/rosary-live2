@@ -8,6 +8,10 @@
 
 #import "ScheduleManager.h"
 
+@interface ScheduleManager ()
+
+@end
+
 @implementation ScheduleManager
 
 + (instancetype)sharedManager
