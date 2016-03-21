@@ -12,4 +12,6 @@
 
 @property (nonatomic, weak) IBOutlet UILabel* name;
 
+@property (nonatomic, readonly) BOOL expandable;
+
 @end

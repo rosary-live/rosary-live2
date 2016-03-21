@@ -13,6 +13,7 @@
 #import "ButtonSettingCell.h"
 
 typedef NS_ENUM(NSUInteger, CellType) {
+    CellTypeNone,
     CellTypeType,
     CellTypeDate,
     CellTypeFrom,
@@ -27,6 +28,8 @@ typedef NS_ENUM(NSUInteger, CellType) {
 
 @property (nonatomic, weak) IBOutlet UITableView* tableView;
 
+@property (nonatomic, strong) UISegmentedControl* typeControl;
+
 @property (nonatomic) BOOL existing;
 @property (nonatomic) BOOL single;
 @property (nonatomic, strong) NSDate* start;
@@ -35,12 +38,18 @@ typedef NS_ENUM(NSUInteger, CellType) {
 @property (nonatomic, strong) NSNumber* at;
 @property (nonatomic, strong) NSNumber* days;
 
+@property (nonatomic) CellType expandedCell;
+@property (nonatomic, strong) NSIndexPath* expandedCellIndexPath;
+@property (nonatomic) CGFloat expandedCellHeight;
+
 @end
 
 @implementation LRScheduleBroadcastViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    self.expandedCell = CellTypeNone;
     
     if(self.scheduledBroadcast != nil)
     {
@@ -79,7 +88,65 @@ typedef NS_ENUM(NSUInteger, CellType) {
 }
 */
 
+- (CellType)typeAtRow:(NSInteger)row
+{
+    CellType ct;
+    
+    if(row == 0)
+    {
+        ct = CellTypeType;
+    }
+    else
+    {
+        if(self.single)
+        {
+            if(row == 1)
+            {
+                ct = CellTypeDate;
+            }
+            else if(row == 2)
+            {
+                ct = CellTypeSave;
+            }
+            else if(self.existing)
+            {
+                ct = CellTypeDelete;
+            }
+        }
+        else
+        {
+            if(row == 1)
+            {
+                ct = CellTypeFrom;
+            }
+            else if(row == 2)
+            {
+                ct = CellTypeTo;
+            }
+            else if(row == 3)
+            {
+                ct = CellTypeAt;
+            }
+            else if(row == 4)
+            {
+                ct = CellTypeDays;
+            }
+            else if(row == 5)
+            {
+                ct = CellTypeSave;
+            }
+            else if(self.existing)
+            {
+                ct = CellTypeDelete;
+            }
+        }
+    }
+    
+    return ct;
+}
+
 #pragma mark - UITableViewDataSource
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     NSInteger count = 2; // type, save
@@ -101,59 +168,19 @@ typedef NS_ENUM(NSUInteger, CellType) {
     return count;
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if([self typeAtRow:indexPath.row] == self.expandedCell)
+    {
+        return self.expandedCellHeight;
+    }
+    
+    return 50.0;
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    CellType ct;
-    
-    if(indexPath.row == 0)
-    {
-        ct = CellTypeType;
-    }
-    else
-    {
-        if(self.single)
-        {
-            if(indexPath.row == 1)
-            {
-                ct = CellTypeDate;
-            }
-            else if(indexPath.row == 2)
-            {
-                ct = CellTypeSave;
-            }
-            else if(self.existing)
-            {
-                ct = CellTypeDelete;
-            }
-        }
-        else
-        {
-            if(indexPath.row == 1)
-            {
-                ct = CellTypeFrom;
-            }
-            else if(indexPath.row == 2)
-            {
-                ct = CellTypeTo;
-            }
-            else if(indexPath.row == 3)
-            {
-                ct = CellTypeAt;
-            }
-            else if(indexPath.row == 4)
-            {
-                ct = CellTypeDays;
-            }
-            else if(indexPath.row == 5)
-            {
-                ct = CellTypeSave;
-            }
-            else if(self.existing)
-            {
-                ct = CellTypeDelete;
-            }
-        }
-    }
+    CellType ct = [self typeAtRow:indexPath.row];
     
     switch(ct)
     {
@@ -162,6 +189,8 @@ typedef NS_ENUM(NSUInteger, CellType) {
             SegmentedSettingCell* cell = [self.tableView dequeueReusableCellWithIdentifier:@"SegmentedSettingCell" forIndexPath:indexPath];
             cell.name.text = @"Type";
             cell.control.selectedSegmentIndex = self.single ? 0 : 1;
+            
+            self.typeControl = cell.control;
             
             [cell.control addTarget:self action:@selector(onTypeChanged:) forControlEvents:UIControlEventValueChanged];
             
@@ -212,6 +241,7 @@ typedef NS_ENUM(NSUInteger, CellType) {
         {
             ButtonSettingCell* cell = [self.tableView dequeueReusableCellWithIdentifier:@"ButtonSettingCell" forIndexPath:indexPath];
             [cell.button setTitle:@"Save" forState:UIControlStateNormal];
+            [cell.button addTarget:self action:@selector(onSave:) forControlEvents:UIControlEventTouchUpInside];
             return cell;
         }
             
@@ -219,25 +249,12 @@ typedef NS_ENUM(NSUInteger, CellType) {
         {
             ButtonSettingCell* cell = [self.tableView dequeueReusableCellWithIdentifier:@"ButtonSettingCell" forIndexPath:indexPath];
             [cell.button setTitle:@"Delete" forState:UIControlStateNormal];
+            [cell.button addTarget:self action:@selector(onDelete:) forControlEvents:UIControlEventTouchUpInside];
             return cell;
         }
     }
     
     return nil;
-    
-//    ViewScheduleSingleCell* cell = [tableView dequeueReusableCellWithIdentifier:@"ScheduleCell" forIndexPath:indexPath];
-//    
-//    ScheduleModel* schedule = self.scheduledBroadcasts[indexPath.row];
-//    
-//    if(schedule.isSingle)
-//    {
-//        cell.schedule.text = [NSString stringWithFormat:@"Single broadcast %@ %@", [NSDateFormatter localizedStringFromDate:[schedule.start dateForNumber] dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterNoStyle], [NSDateFormatter localizedStringFromDate:[schedule.start dateForNumber] dateStyle:NSDateFormatterNoStyle timeStyle:NSDateFormatterShortStyle]];
-//    }
-//    else
-//    {
-//    }
-//    
-//    return cell;
 }
 
 
@@ -245,10 +262,74 @@ typedef NS_ENUM(NSUInteger, CellType) {
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    SettingCell* cell = [tableView cellForRowAtIndexPath:indexPath];
+    if(cell.expandable)
+    {
+        ValueSettingCell* cell = [tableView cellForRowAtIndexPath:indexPath];
+        CellType ct = [self typeAtRow:indexPath.row];
+        if(ct == self.expandedCell)
+        {
+            [cell removeDatePicker];
+            self.expandedCell = CellTypeNone;
+            self.expandedCellIndexPath = nil;
+            
+            [tableView reloadData];
+            return;
+        }
+        
+        if(self.expandedCell != CellTypeNone)
+        {
+            ValueSettingCell* exCell = [tableView cellForRowAtIndexPath:self.expandedCellIndexPath];
+            [exCell removeDatePicker];
+            self.expandedCell = CellTypeNone;
+            self.expandedCellIndexPath = nil;
+        }
+        
+        __weak ValueSettingCell* weakCell = cell;
+        self.expandedCellIndexPath = indexPath;
+        self.expandedCell = ct;
+        self.expandedCellHeight = [cell addDatePickerWithDate:[NSDate date] andMode:UIDatePickerModeDate valueChanged:^(NSDate *value) {
+            self.start = value;
+            weakCell.value.text = [NSDateFormatter localizedStringFromDate:self.start dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterNoStyle];
+        }];
+    }
+    
+//    if(ct == CellTypeDate)
+//    {
+//        self.dateExpanded = !self.dateExpanded;
+//        
+//        ValueSettingCell* cell = [tableView cellForRowAtIndexPath:indexPath];
+//        if(self.dateExpanded)
+//        {
+//            __weak ValueSettingCell* weakCell = cell;
+//            self.dateExpandedHeight = [cell addDatePickerWithDate:[NSDate date] andMode:UIDatePickerModeDate valueChanged:^(NSDate *value) {
+//                self.start = value;
+//                weakCell.value.text = [NSDateFormatter localizedStringFromDate:self.start dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterNoStyle];
+//            }];
+//        }
+//        else
+//        {
+//            [cell removeDatePicker];
+//        }
+//    }
+    
+    [tableView reloadData];
 }
 
 - (IBAction)onTypeChanged:(id)sender
 {
+    self.single = self.typeControl.selectedSegmentIndex == 0;
+    [self.tableView reloadData];
+}
+
+- (IBAction)onSave:(id)sender
+{
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (IBAction)onDelete:(id)sender
+{
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 @end

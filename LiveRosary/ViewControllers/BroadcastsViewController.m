@@ -336,7 +336,10 @@ typedef NS_ENUM(NSUInteger, Mode) {
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    [self broadcastSelected:self.broadcasts[indexPath.row]];
+    if(indexPath.section == SectionBroadcasts)
+    {
+        [self broadcastSelected:self.broadcasts[indexPath.row]];
+    }
 }
 
 #pragma mark - UIPickerViewDataSource

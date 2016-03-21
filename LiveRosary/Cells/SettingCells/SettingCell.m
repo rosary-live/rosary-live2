@@ -18,4 +18,9 @@
     [super setSelected:NO animated:NO];
 }
 
+- (BOOL)expandable
+{
+    return NO;
+}
+
 @end
