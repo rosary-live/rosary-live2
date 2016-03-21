@@ -35,7 +35,7 @@
         else if(task.exception)
         {
             DDLogError(@"Scan failed. Exception: [%@]", task.exception);
-            safeBlock(completion, nil, [NSError errorWithDomain:ErrorDomainDatabase code:ErrorException userInfo:@{ @"description": task.exception.description }]);
+            safeBlock(completion, nil, [NSError errorWithDomain:ErrorDomainDatabase code:ErrorException userInfo:@{ NSLocalizedDescriptionKey: task.exception.description }]);
         }
         else if(task.result)
         {
@@ -44,6 +44,8 @@
             {
                 DDLogDebug(@"Scheduled Broadcast: %@", scheduledBroadcast);
             }
+            
+            _scheduledBroadcasts = paginatedOutput.items;
             
             safeBlock(completion, paginatedOutput.items, nil);
         }
@@ -63,7 +65,7 @@
         else if(task.exception)
         {
             DDLogError(@"Load failed. Exception: [%@]", task.exception);
-            safeBlock(completion, nil, [NSError errorWithDomain:ErrorDomainDatabase code:ErrorException userInfo:@{ @"description": task.exception.description }]);
+            safeBlock(completion, nil, [NSError errorWithDomain:ErrorDomainDatabase code:ErrorException userInfo:@{ NSLocalizedDescriptionKey: task.exception.description }]);
         }
         else if(task.result)
         {
@@ -71,6 +73,40 @@
             DDLogDebug(@"Scheduled Broadcast: %@", scheduledBroadcast);
             
             safeBlock(completion, scheduledBroadcast, nil);
+        }
+        
+        return nil;
+    }];
+}
+
+- (void)getScheduledBroadcastsByEmail:(NSString*)email completion:(void (^)(NSArray<ScheduleModel*>* scheduledBroadcasts, NSError* error))completion
+{
+    AWSDynamoDBScanExpression* scanExpression = [AWSDynamoDBScanExpression new];
+    scanExpression.limit = @(100);
+    scanExpression.filterExpression = @"#atname = :val";
+    scanExpression.expressionAttributeNames = @{ @"#atname": @"user" };
+    scanExpression.expressionAttributeValues = @{ @":val": email };
+    
+    [[self.dynamoDBObjectMapper scan:[ScheduleModel class] expression:scanExpression] continueWithBlock:^id _Nullable(AWSTask * _Nonnull task) {
+        if(task.error)
+        {
+            DDLogError(@"Load failed. Error: [%@]", task.error);
+            safeBlock(completion, nil, task.error);
+        }
+        else if(task.exception)
+        {
+            DDLogError(@"Load failed. Exception: [%@]", task.exception);
+            safeBlock(completion, nil, [NSError errorWithDomain:ErrorDomainDatabase code:ErrorException userInfo:@{ NSLocalizedDescriptionKey: task.exception.description }]);
+        }
+        else if(task.result)
+        {
+            AWSDynamoDBPaginatedOutput *paginatedOutput = task.result;
+            for(ScheduleModel* scheduledBroadcast in paginatedOutput.items)
+            {
+                DDLogDebug(@"Scheduled Broadcast: %@", scheduledBroadcast);
+            }
+            
+            safeBlock(completion, paginatedOutput.items, nil);
         }
         
         return nil;

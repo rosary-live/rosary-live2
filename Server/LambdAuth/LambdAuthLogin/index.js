@@ -84,27 +84,21 @@ exports.handler = function(event, context) {
 
 	getUser(email, function(err, correctHash, salt, verified, user) {
 		if (err) {
-			context.fail('Error in getUser: ' + err);
+			context.succeed({success: false, message:'Email or password incorrect.', error: err});
 		} else {
 			if (correctHash == null) {
 				// User not found
 				console.log('User not found: ' + email);
-				context.succeed({
-					login: false
-				});
+				context.succeed({success: false, message:'Email or password incorrect.', error: 'user not found'});
 			} else if (!verified) {
 				// User not verified
 				console.log('User not verified: ' + email);
-				context.succeed({
-					login: false
-				});
+				context.succeed({success: false, message:'Email or password incorrect.', error: 'user not verified'});
 			} else {
 				computeHash(clearPassword, salt, function(err, salt, hash) {
 					if (err) {
 						console.log("Hash error: " + err);
-						context.fail({
-							login: false
-						});
+						context.succeed({success: false, message:'Email or password incorrect.', error: err});
 					} else {
 						console.log('correctHash: ' + correctHash + ' hash: ' + hash);
 						if (hash == correctHash) {
@@ -113,12 +107,10 @@ exports.handler = function(event, context) {
 							getToken(email, function(err, identityId, token) {
 								if (err) {
 									console.log('getToken error: ' + err);
-									context.fail({
-										login: false
-									});
+									context.succeed({success: false, message:'Unabled to log in.', error: err});
 								} else {
 									context.succeed({
-										login: true,
+										success: true,
 										identityId: identityId,
 										token: token,
 										user: user
@@ -128,9 +120,7 @@ exports.handler = function(event, context) {
 						} else {
 							// Login failed
 							console.log('User login failed: ' + email);
-							context.succeed({
-								login: false
-							});
+							context.succeed({success: false, message:'Email or password incorrect.', error: 'login failed'});
 						}
 					}
 				});

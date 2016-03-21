@@ -38,6 +38,7 @@ function addSchedule(event, callback) {
 		ConditionExpression: 'attribute_not_exists (sid)',
 		ReturnValues: 'NONE'
 	}, function(err, data) {
+		console.log(util.inspect(err, { showHidden: true, depth: 10 }));
 		if(err) callback(err, null);
 		else callback(null, data);
 	});	
@@ -68,6 +69,7 @@ function updateSchedule(event, callback) {
 							  },
 			ReturnValues: 'NONE'
 		}, function(err, data) {
+		console.log(util.inspect(err, { showHidden: true, depth: 10 }));
 			if(err) callback(err, null);
 			else callback(null, data);
 		});
@@ -90,20 +92,20 @@ exports.handler = function(event, context) {
 
 	if(event.action == "add") {		
 		addSchedule(event, function(err, result) {
-			if(err) context.fail({success:false, error:err});
+			if(err) context.fail({success:false, message: 'Failed to add scheduled broadcast.', error:err});
 			else context.succeed({success:true});
 		});
 	}
 	else if(event.action == "update") {
 		updateSchedule(event, function(err, result) {
-			if(err) context.fail({success:false, error:err});
+			if(err) context.fail({success:false, message: 'Failed to update scheduled broadcast.', error:err});
 			else context.succeed({success:true});
 		});
 	}
 	else if(event.action == "remove")
 	{		
 		updateSchedule(event, function(err) {
-			if(err) context.fail({success:false, error:err});
+			if(err) context.fail({success:false, message: 'Failed to remove scheduled broadcast.', error:err});
 			else context.succeed({success:true});
 		});
 	}

@@ -21,6 +21,10 @@
 		D8431A241C75269B0061A3CB /* F3BarGauge.m in Sources */ = {isa = PBXBuildFile; fileRef = D8431A231C75269B0061A3CB /* F3BarGauge.m */; };
 		D84A21141C8E6CB8006C4D63 /* LREditUserViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D84A21131C8E6CB8006C4D63 /* LREditUserViewController.m */; };
 		D84A21171C8E6CD0006C4D63 /* LRChangePasswordViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D84A21161C8E6CD0006C4D63 /* LRChangePasswordViewController.m */; };
+		D862FF441C9F5397007DF128 /* SegmentedSettingCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D862FF431C9F5397007DF128 /* SegmentedSettingCell.m */; };
+		D862FF471C9F53C2007DF128 /* ValueSettingCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D862FF461C9F53C2007DF128 /* ValueSettingCell.m */; };
+		D862FF4A1C9F53D4007DF128 /* ButtonSettingCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D862FF491C9F53D4007DF128 /* ButtonSettingCell.m */; };
+		D862FF4D1C9F53FB007DF128 /* SettingCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D862FF4C1C9F53FB007DF128 /* SettingCell.m */; };
 		D86372701C5AD58A00D02DC3 /* BroadcastManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D863726F1C5AD58A00D02DC3 /* BroadcastManager.m */; };
 		D86372731C5ADEF900D02DC3 /* BroadcastModel.m in Sources */ = {isa = PBXBuildFile; fileRef = D86372721C5ADEF900D02DC3 /* BroadcastModel.m */; };
 		D863727A1C5AFEC400D02DC3 /* DBBase.m in Sources */ = {isa = PBXBuildFile; fileRef = D86372791C5AFEC400D02DC3 /* DBBase.m */; };
@@ -51,6 +55,13 @@
 		D8B72E6F1C9A3D140081723F /* ScheduleManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D8B72E6E1C9A3D140081723F /* ScheduleManager.m */; };
 		D8B72E721C9A3FE50081723F /* DBSchedule.m in Sources */ = {isa = PBXBuildFile; fileRef = D8B72E711C9A3FE50081723F /* DBSchedule.m */; };
 		D8B72E751C9A40620081723F /* ScheduleModel.m in Sources */ = {isa = PBXBuildFile; fileRef = D8B72E741C9A40620081723F /* ScheduleModel.m */; };
+		D8B72E791C9CE4D50081723F /* LiveRosaryService.m in Sources */ = {isa = PBXBuildFile; fileRef = D8B72E781C9CE4D50081723F /* LiveRosaryService.m */; };
+		D8B72E7C1C9DE55A0081723F /* ScheduleSingleCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D8B72E7B1C9DE55A0081723F /* ScheduleSingleCell.m */; };
+		D8B72E7F1C9DEAD60081723F /* ScheduleRecurringCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D8B72E7E1C9DEAD60081723F /* ScheduleRecurringCell.m */; };
+		D8B72E841C9DECD70081723F /* ViewScheduleRecurringCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D8B72E821C9DECD70081723F /* ViewScheduleRecurringCell.m */; };
+		D8B72E851C9DECD70081723F /* ViewScheduleSingleCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D8B72E831C9DECD70081723F /* ViewScheduleSingleCell.m */; };
+		D8B72E881C9E144A0081723F /* LRBroadcastingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8B72E871C9E144A0081723F /* LRBroadcastingViewController.m */; };
+		D8B72E8B1C9E14980081723F /* LRScheduleBroadcastViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8B72E8A1C9E14980081723F /* LRScheduleBroadcastViewController.m */; };
 		D8C23FD61C51D3D10043F8BE /* TransferManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D8C23FD51C51D3D10043F8BE /* TransferManager.m */; };
 		D8C23FDB1C51E23D0043F8BE /* NSString+Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = D8C23FDA1C51E23D0043F8BE /* NSString+Utilities.m */; };
 		D8EAFEBE1C5D0EB300C38EBA /* BroadcastCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D8EAFEBD1C5D0EB300C38EBA /* BroadcastCell.m */; };
@@ -88,6 +99,14 @@
 		D84A21131C8E6CB8006C4D63 /* LREditUserViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LREditUserViewController.m; path = ViewControllers/LREditUserViewController.m; sourceTree = "<group>"; };
 		D84A21151C8E6CD0006C4D63 /* LRChangePasswordViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LRChangePasswordViewController.h; path = ViewControllers/LRChangePasswordViewController.h; sourceTree = "<group>"; };
 		D84A21161C8E6CD0006C4D63 /* LRChangePasswordViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LRChangePasswordViewController.m; path = ViewControllers/LRChangePasswordViewController.m; sourceTree = "<group>"; };
+		D862FF421C9F5397007DF128 /* SegmentedSettingCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SegmentedSettingCell.h; path = Cells/SettingCells/SegmentedSettingCell.h; sourceTree = "<group>"; };
+		D862FF431C9F5397007DF128 /* SegmentedSettingCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SegmentedSettingCell.m; path = Cells/SettingCells/SegmentedSettingCell.m; sourceTree = "<group>"; };
+		D862FF451C9F53C2007DF128 /* ValueSettingCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ValueSettingCell.h; path = Cells/SettingCells/ValueSettingCell.h; sourceTree = "<group>"; };
+		D862FF461C9F53C2007DF128 /* ValueSettingCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ValueSettingCell.m; path = Cells/SettingCells/ValueSettingCell.m; sourceTree = "<group>"; };
+		D862FF481C9F53D4007DF128 /* ButtonSettingCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ButtonSettingCell.h; path = Cells/SettingCells/ButtonSettingCell.h; sourceTree = "<group>"; };
+		D862FF491C9F53D4007DF128 /* ButtonSettingCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ButtonSettingCell.m; path = Cells/SettingCells/ButtonSettingCell.m; sourceTree = "<group>"; };
+		D862FF4B1C9F53FB007DF128 /* SettingCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SettingCell.h; path = Cells/SettingCells/SettingCell.h; sourceTree = "<group>"; };
+		D862FF4C1C9F53FB007DF128 /* SettingCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SettingCell.m; path = Cells/SettingCells/SettingCell.m; sourceTree = "<group>"; };
 		D863726E1C5AD58A00D02DC3 /* BroadcastManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BroadcastManager.h; path = Managers/BroadcastManager.h; sourceTree = "<group>"; };
 		D863726F1C5AD58A00D02DC3 /* BroadcastManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BroadcastManager.m; path = Managers/BroadcastManager.m; sourceTree = "<group>"; };
 		D86372711C5ADEF900D02DC3 /* BroadcastModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BroadcastModel.h; path = Models/BroadcastModel.h; sourceTree = "<group>"; };
@@ -141,6 +160,20 @@
 		D8B72E711C9A3FE50081723F /* DBSchedule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DBSchedule.m; path = Database/DBSchedule.m; sourceTree = "<group>"; };
 		D8B72E731C9A40620081723F /* ScheduleModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ScheduleModel.h; path = Models/ScheduleModel.h; sourceTree = "<group>"; };
 		D8B72E741C9A40620081723F /* ScheduleModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ScheduleModel.m; path = Models/ScheduleModel.m; sourceTree = "<group>"; };
+		D8B72E771C9CE4D50081723F /* LiveRosaryService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LiveRosaryService.h; path = WebServices/LiveRosaryService.h; sourceTree = "<group>"; };
+		D8B72E781C9CE4D50081723F /* LiveRosaryService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LiveRosaryService.m; path = WebServices/LiveRosaryService.m; sourceTree = "<group>"; };
+		D8B72E7A1C9DE55A0081723F /* ScheduleSingleCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ScheduleSingleCell.h; path = Cells/ScheduleSingleCell.h; sourceTree = "<group>"; };
+		D8B72E7B1C9DE55A0081723F /* ScheduleSingleCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ScheduleSingleCell.m; path = Cells/ScheduleSingleCell.m; sourceTree = "<group>"; };
+		D8B72E7D1C9DEAD60081723F /* ScheduleRecurringCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ScheduleRecurringCell.h; path = Cells/ScheduleRecurringCell.h; sourceTree = "<group>"; };
+		D8B72E7E1C9DEAD60081723F /* ScheduleRecurringCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ScheduleRecurringCell.m; path = Cells/ScheduleRecurringCell.m; sourceTree = "<group>"; };
+		D8B72E801C9DECD70081723F /* ViewScheduleSingleCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ViewScheduleSingleCell.h; path = Cells/ViewScheduleSingleCell.h; sourceTree = "<group>"; };
+		D8B72E811C9DECD70081723F /* ViewScheduleRecurringCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ViewScheduleRecurringCell.h; path = Cells/ViewScheduleRecurringCell.h; sourceTree = "<group>"; };
+		D8B72E821C9DECD70081723F /* ViewScheduleRecurringCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ViewScheduleRecurringCell.m; path = Cells/ViewScheduleRecurringCell.m; sourceTree = "<group>"; };
+		D8B72E831C9DECD70081723F /* ViewScheduleSingleCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ViewScheduleSingleCell.m; path = Cells/ViewScheduleSingleCell.m; sourceTree = "<group>"; };
+		D8B72E861C9E144A0081723F /* LRBroadcastingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LRBroadcastingViewController.h; path = ViewControllers/LRBroadcastingViewController.h; sourceTree = "<group>"; };
+		D8B72E871C9E144A0081723F /* LRBroadcastingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LRBroadcastingViewController.m; path = ViewControllers/LRBroadcastingViewController.m; sourceTree = "<group>"; };
+		D8B72E891C9E14980081723F /* LRScheduleBroadcastViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LRScheduleBroadcastViewController.h; path = ViewControllers/LRScheduleBroadcastViewController.h; sourceTree = "<group>"; };
+		D8B72E8A1C9E14980081723F /* LRScheduleBroadcastViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LRScheduleBroadcastViewController.m; path = ViewControllers/LRScheduleBroadcastViewController.m; sourceTree = "<group>"; };
 		D8C23FD41C51D3D10043F8BE /* TransferManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TransferManager.h; path = Managers/TransferManager.h; sourceTree = "<group>"; };
 		D8C23FD51C51D3D10043F8BE /* TransferManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TransferManager.m; path = Managers/TransferManager.m; sourceTree = "<group>"; };
 		D8C23FD91C51E23D0043F8BE /* NSString+Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+Utilities.h"; path = "Categories/NSString+Utilities.h"; sourceTree = "<group>"; };
@@ -214,6 +247,7 @@
 		D820FB031C4452A9000899DB /* LiveRosary */ = {
 			isa = PBXGroup;
 			children = (
+				D8B72E761C9CE4A60081723F /* Web Services */,
 				D86372771C5AFEA800D02DC3 /* Database */,
 				D8C23FD81C51E1EC0043F8BE /* Categories */,
 				D8A0EFE81C4C704B0006B910 /* Authentication */,
@@ -252,6 +286,21 @@
 				D8A027471C8B4DE700715277 /* BroadcastsView.xib */,
 			);
 			name = Views;
+			sourceTree = "<group>";
+		};
+		D862FF411C9F536B007DF128 /* Setting Cells */ = {
+			isa = PBXGroup;
+			children = (
+				D862FF4B1C9F53FB007DF128 /* SettingCell.h */,
+				D862FF4C1C9F53FB007DF128 /* SettingCell.m */,
+				D862FF421C9F5397007DF128 /* SegmentedSettingCell.h */,
+				D862FF431C9F5397007DF128 /* SegmentedSettingCell.m */,
+				D862FF451C9F53C2007DF128 /* ValueSettingCell.h */,
+				D862FF461C9F53C2007DF128 /* ValueSettingCell.m */,
+				D862FF481C9F53D4007DF128 /* ButtonSettingCell.h */,
+				D862FF491C9F53D4007DF128 /* ButtonSettingCell.m */,
+			);
+			name = "Setting Cells";
 			sourceTree = "<group>";
 		};
 		D86372771C5AFEA800D02DC3 /* Database */ = {
@@ -294,6 +343,10 @@
 				D8EAFEC01C5D29E100C38EBA /* LRListenViewController.m */,
 				D83F6A951C47054C005F07E0 /* LRBroadcastMainViewController.h */,
 				D83F6A961C47054C005F07E0 /* LRBroadcastMainViewController.m */,
+				D8B72E861C9E144A0081723F /* LRBroadcastingViewController.h */,
+				D8B72E871C9E144A0081723F /* LRBroadcastingViewController.m */,
+				D8B72E891C9E14980081723F /* LRScheduleBroadcastViewController.h */,
+				D8B72E8A1C9E14980081723F /* LRScheduleBroadcastViewController.m */,
 				D8A1B9091C75779F00CEE8D0 /* LRAdminMainViewController.h */,
 				D8A1B90A1C75779F00CEE8D0 /* LRAdminMainViewController.m */,
 				D8A0EFD91C4C220A0006B910 /* LRAdminBroadcastsViewController.h */,
@@ -313,11 +366,20 @@
 		D8A0EFD21C4C12F20006B910 /* Cells */ = {
 			isa = PBXGroup;
 			children = (
+				D862FF411C9F536B007DF128 /* Setting Cells */,
 				D8A0EFD31C4C130C0006B910 /* DrawerCell.h */,
 				D8A0EFD41C4C130C0006B910 /* DrawerCell.m */,
 				D8EAFEBC1C5D0EB300C38EBA /* BroadcastCell.h */,
 				D8EAFEBD1C5D0EB300C38EBA /* BroadcastCell.m */,
 				D8A1B9071C7568FF00CEE8D0 /* BroadcastCell.xib */,
+				D8B72E7A1C9DE55A0081723F /* ScheduleSingleCell.h */,
+				D8B72E7B1C9DE55A0081723F /* ScheduleSingleCell.m */,
+				D8B72E7D1C9DEAD60081723F /* ScheduleRecurringCell.h */,
+				D8B72E7E1C9DEAD60081723F /* ScheduleRecurringCell.m */,
+				D8B72E801C9DECD70081723F /* ViewScheduleSingleCell.h */,
+				D8B72E831C9DECD70081723F /* ViewScheduleSingleCell.m */,
+				D8B72E811C9DECD70081723F /* ViewScheduleRecurringCell.h */,
+				D8B72E821C9DECD70081723F /* ViewScheduleRecurringCell.m */,
 			);
 			name = Cells;
 			sourceTree = "<group>";
@@ -374,6 +436,15 @@
 				D8B72E611C9A394C0081723F /* TestFairy.h */,
 			);
 			path = TestFairy;
+			sourceTree = "<group>";
+		};
+		D8B72E761C9CE4A60081723F /* Web Services */ = {
+			isa = PBXGroup;
+			children = (
+				D8B72E771C9CE4D50081723F /* LiveRosaryService.h */,
+				D8B72E781C9CE4D50081723F /* LiveRosaryService.m */,
+			);
+			name = "Web Services";
 			sourceTree = "<group>";
 		};
 		D8C23FD81C51E1EC0043F8BE /* Categories */ = {
@@ -511,20 +582,26 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D8B72E7C1C9DE55A0081723F /* ScheduleSingleCell.m in Sources */,
 				D8427CF01C5F21C500A8CE5F /* LRForgotPasswordViewController.m in Sources */,
 				D8A0EFD81C4C21E80006B910 /* LRUserProfileMainViewController.m in Sources */,
 				D863727A1C5AFEC400D02DC3 /* DBBase.m in Sources */,
 				D8A1B9041C75628300CEE8D0 /* BroadcastsView.m in Sources */,
 				D81AAF7C1C45E29C00B46544 /* LRBaseViewController.m in Sources */,
 				D8A0EFDF1C4C2F1E0006B910 /* UserManager.m in Sources */,
+				D8B72E851C9DECD70081723F /* ViewScheduleSingleCell.m in Sources */,
 				D8A0EFF91C4F2B1F0006B910 /* AudioManager.m in Sources */,
 				D8B72E751C9A40620081723F /* ScheduleModel.m in Sources */,
 				D8431A241C75269B0061A3CB /* F3BarGauge.m in Sources */,
+				D8B72E791C9CE4D50081723F /* LiveRosaryService.m in Sources */,
+				D862FF4A1C9F53D4007DF128 /* ButtonSettingCell.m in Sources */,
 				D8B72E6F1C9A3D140081723F /* ScheduleManager.m in Sources */,
 				D8A0EFE31C4C30E40006B910 /* UserModel.m in Sources */,
 				D885FA671C446F49002904AC /* LRDrawerViewController.m in Sources */,
 				D8A0EFDB1C4C220A0006B910 /* LRAdminBroadcastsViewController.m in Sources */,
+				D8B72E881C9E144A0081723F /* LRBroadcastingViewController.m in Sources */,
 				D8A1B90B1C75779F00CEE8D0 /* LRAdminMainViewController.m in Sources */,
+				D862FF471C9F53C2007DF128 /* ValueSettingCell.m in Sources */,
 				D8A0EFEE1C4C70ED0006B910 /* LiveRosaryAuthenticationClient.m in Sources */,
 				D8A0EFE61C4C32290006B910 /* BaseModel.m in Sources */,
 				D8427CF41C601BDA00A8CE5F /* ConfigModel.m in Sources */,
@@ -534,6 +611,7 @@
 				D86372731C5ADEF900D02DC3 /* BroadcastModel.m in Sources */,
 				D8427CEA1C5F1FAC00A8CE5F /* LRCreateUserViewController.m in Sources */,
 				D885FA6A1C446FA2002904AC /* LRListenMainViewController.m in Sources */,
+				D8B72E8B1C9E14980081723F /* LRScheduleBroadcastViewController.m in Sources */,
 				D8A0EFEB1C4C707B0006B910 /* LiveRosaryAuthenticatedIdentityProvider.m in Sources */,
 				D86372811C5B1FFB00D02DC3 /* NSNumber+Utilities.m in Sources */,
 				D8EAFEC11C5D29E100C38EBA /* LRListenViewController.m in Sources */,
@@ -541,6 +619,10 @@
 				D8B72E721C9A3FE50081723F /* DBSchedule.m in Sources */,
 				D8C23FDB1C51E23D0043F8BE /* NSString+Utilities.m in Sources */,
 				D8C23FD61C51D3D10043F8BE /* TransferManager.m in Sources */,
+				D862FF441C9F5397007DF128 /* SegmentedSettingCell.m in Sources */,
+				D862FF4D1C9F53FB007DF128 /* SettingCell.m in Sources */,
+				D8B72E7F1C9DEAD60081723F /* ScheduleRecurringCell.m in Sources */,
+				D8B72E841C9DECD70081723F /* ViewScheduleRecurringCell.m in Sources */,
 				D8A0EFD51C4C130C0006B910 /* DrawerCell.m in Sources */,
 				D8A0274B1C8B527600715277 /* BroadcastsViewController.m in Sources */,
 				D86372701C5AD58A00D02DC3 /* BroadcastManager.m in Sources */,

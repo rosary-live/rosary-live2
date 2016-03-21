@@ -15,18 +15,18 @@
 #import <MapKit/MapKit.h>
 #import "INTULocationManager.h"
 #import <SDWebImage/UIImageView+WebCache.h>
+#import "ViewScheduleSingleCell.h"
+#import "ScheduleManager.h"
+
+typedef NS_ENUM(NSUInteger, Section) {
+    SectionBroadcasts,
+    SectionScheduledBroadcasts
+};
 
 typedef NS_ENUM(NSUInteger, Mode) {
     ModeList,
     ModeMap
 };
-
-//@interface MapAnnotation : NSObject  <MKAnnotation>
-//@end
-//
-//@implementation MapAnnotation
-//@end
-
 
 @interface BroadcastsViewController () <UITableViewDataSource, UITableViewDelegate, UIPickerViewDelegate, UIPickerViewDataSource, MKMapViewDelegate>
 
@@ -38,6 +38,8 @@ typedef NS_ENUM(NSUInteger, Mode) {
 @property (nonatomic, strong) UIPickerView* languagePickerView;
 
 @property (nonatomic, strong) NSArray<BroadcastModel *> *broadcasts;
+@property (nonatomic, strong) NSArray<ScheduleModel *> *scheduledBroadcasts;
+
 @property (nonatomic, strong) NSMutableArray<NSString*>* languages;
 @property (nonatomic, strong) CLLocation* currentLocation;
 
@@ -56,11 +58,11 @@ typedef NS_ENUM(NSUInteger, Mode) {
     [self addLanguagePickerView];
     [self centerMapView];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateBroadcasts) name:NotificationUserLoggedIn object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(update) name:NotificationUserLoggedIn object:nil];
     
     if([UserManager sharedManager].isLoggedIn)
     {
-        [self updateBroadcasts];
+        [self update];
     }
 }
 
@@ -106,12 +108,31 @@ typedef NS_ENUM(NSUInteger, Mode) {
     [self.languagePickerView selectRow:[self.languages indexOfObject:self.language.text] inComponent:0 animated:NO];
 }
 
+- (void)update
+{
+    [self updateBroadcasts];
+    [self updateScheduledBroadcasts];
+}
+
 - (void)updateBroadcasts
 {
     [[DBBroadcast sharedInstance] updateBroadcastsWithCompletion:^(NSArray<BroadcastModel *> *broadcasts, NSError *error) {
         self.broadcasts = broadcasts;
         [self filterBroadcasts];
         [self sortBroadcasts];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.tableView reloadData];
+            [self addMapPins];
+        });
+    }];
+}
+
+- (void)updateScheduledBroadcasts
+{
+    [[ScheduleManager sharedManager] allScheduledBroadcastsWithCompletion:^(NSArray<ScheduleModel *> *scheduledBroadcasts, NSError *error) {
+        self.scheduledBroadcasts = scheduledBroadcasts;
+        [self filterScheduledBroadcasts];
+        [self sortScheduledBroadcasts];
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.tableView reloadData];
             [self addMapPins];
@@ -137,6 +158,14 @@ typedef NS_ENUM(NSUInteger, Mode) {
     }
 }
 
+- (void)sortScheduledBroadcasts
+{
+}
+
+- (void)filterScheduledBroadcasts
+{
+}
+
 - (void)addMapPins
 {
     [self.mapView removeAnnotations:self.mapView.annotations];
@@ -144,11 +173,6 @@ typedef NS_ENUM(NSUInteger, Mode) {
     for(BroadcastModel* broadcast in self.broadcasts)
     {
         [self.mapView addAnnotation:broadcast];
-//        MKPointAnnotation* pin = [[MKPointAnnotation alloc] init];
-//        pin.coordinate = CLLocationCoordinate2DMake(broadcast.lat.doubleValue, broadcast.lon.doubleValue);
-//        pin.title = [NSString stringWithFormat:@"%@ - %@", broadcast.name, broadcast.language];
-//        pin.subtitle = [NSDateFormatter localizedStringFromDate:[broadcast.updated dateForNumber] dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterShortStyle];
-//        [self.mapView addAnnotation:pin];
     }
 }
 
@@ -219,26 +243,88 @@ typedef NS_ENUM(NSUInteger, Mode) {
 
 #pragma mark - UITableViewDataSource
 
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return 2;
+}
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return self.broadcasts.count;
+    switch(section)
+    {
+        case SectionBroadcasts:
+            return self.broadcasts.count;
+            
+        case SectionScheduledBroadcasts:
+            return self.scheduledBroadcasts.count;
+            
+        default:
+            return 0;
+    }
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+{
+    switch(section)
+    {
+        case SectionBroadcasts:
+            return @"Live Broadcasts";
+            
+        case SectionScheduledBroadcasts:
+            return @"Scheduled Broadcasts";
+            
+        default:
+            return nil;
+    }
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    BroadcastCell* cell = [tableView dequeueReusableCellWithIdentifier:@"BroadcastCell"];
-    
-    BroadcastModel* broadcast = self.broadcasts[indexPath.row];
-    cell.name.text = broadcast.name;
-    cell.language.text = broadcast.language;
-    cell.location.text = [NSString stringWithFormat:@"%@, %@ %@", broadcast.city, broadcast.state, broadcast.country];
-    cell.date.text = [NSDateFormatter localizedStringFromDate:[broadcast.updated dateForNumber] dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterShortStyle];
-    cell.live.text = broadcast.isLive ? @"LIVE" : @"ENDED";
-    
-    NSString* urlString = [NSString stringWithFormat:@"https://s3.amazonaws.com/liverosaryavatars/%@", [broadcast.user stringByReplacingOccurrencesOfString:@"@" withString:@"-"]];
-    [cell.avatar sd_setImageWithURL:[NSURL URLWithString:urlString] placeholderImage:[UIImage imageNamed:@"AvatarImage"] options:0];
-    
-    return cell;
+    switch(indexPath.section)
+    {
+        case SectionBroadcasts:
+        {
+            BroadcastCell* cell = [tableView dequeueReusableCellWithIdentifier:@"BroadcastCell"];
+            
+            BroadcastModel* broadcast = self.broadcasts[indexPath.row];
+            cell.name.text = broadcast.name;
+            cell.language.text = broadcast.language;
+            cell.location.text = [NSString stringWithFormat:@"%@, %@ %@", broadcast.city, broadcast.state, broadcast.country];
+            cell.date.text = [NSString stringWithFormat:@" %@ %@", [NSDateFormatter localizedStringFromDate:[broadcast.updated dateForNumber] dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterNoStyle], [NSDateFormatter localizedStringFromDate:[broadcast.updated dateForNumber] dateStyle:NSDateFormatterNoStyle timeStyle:NSDateFormatterShortStyle]];
+            cell.live.text = broadcast.isLive ? @"LIVE" : @"ENDED";
+            
+            NSString* urlString = [NSString stringWithFormat:@"https://s3.amazonaws.com/liverosaryavatars/%@", [broadcast.user stringByReplacingOccurrencesOfString:@"@" withString:@"-"]];
+            [cell.avatar sd_setImageWithURL:[NSURL URLWithString:urlString] placeholderImage:[UIImage imageNamed:@"AvatarImage"] options:0];
+            
+            return cell;
+        }
+            
+        case SectionScheduledBroadcasts:
+        {
+            ViewScheduleSingleCell* cell = [tableView dequeueReusableCellWithIdentifier:@"ViewScheduledBroadcastCell"];
+            
+            ScheduleModel* scheduledBroadcast = self.scheduledBroadcasts[indexPath.row];
+            cell.name.text = scheduledBroadcast.name;
+            cell.language.text = scheduledBroadcast.language;
+            cell.location.text = [NSString stringWithFormat:@"%@, %@ %@", scheduledBroadcast.city, scheduledBroadcast.state, scheduledBroadcast.country];
+            
+            if(scheduledBroadcast.isSingle)
+            {
+                cell.schedule.text = [NSString stringWithFormat:@"Single %@ %@", [NSDateFormatter localizedStringFromDate:[scheduledBroadcast.start dateForNumber] dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterNoStyle], [NSDateFormatter localizedStringFromDate:[scheduledBroadcast.start dateForNumber] dateStyle:NSDateFormatterNoStyle timeStyle:NSDateFormatterShortStyle]];
+            }
+            else
+            {
+            }
+            
+            NSString* urlString = [NSString stringWithFormat:@"https://s3.amazonaws.com/liverosaryavatars/%@", [scheduledBroadcast.user stringByReplacingOccurrencesOfString:@"@" withString:@"-"]];
+            [cell.avatarImage sd_setImageWithURL:[NSURL URLWithString:urlString] placeholderImage:[UIImage imageNamed:@"AvatarImage"] options:0];
+            
+            return cell;
+        }
+            
+        default:
+            return nil;
+    }
 }
 
 #pragma mark - UITableViewDelegate
@@ -255,19 +341,19 @@ typedef NS_ENUM(NSUInteger, Mode) {
 
 #pragma mark - UIPickerViewDataSource
 
--(NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView
+- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView
 {
     return 1;
 }
 
--(NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
+- (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
 {
     return self.languages.count;
 }
 
 #pragma mark - UIPickerViewDelegate
 
--(void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
+- (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
 {
     [self.language setText:[self.languages objectAtIndex:row]];
 }

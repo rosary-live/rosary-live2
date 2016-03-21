@@ -12,11 +12,11 @@
 @implementation ScheduleModel
 
 + (NSString *)dynamoDBTableName {
-    return @"LiveRosaryBroadcast";
+    return @"LiveRosarySchedule";
 }
 
 + (NSString *)hashKeyAttribute {
-    return @"bid";
+    return @"sid";
 }
 
 - (NSString*)description
@@ -57,4 +57,5 @@
         return [NSString stringWithFormat:@"%@ - %@", [NSDateFormatter localizedStringFromDate:[self.from dateForNumber] dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterNoStyle], [NSDateFormatter localizedStringFromDate:[self.to dateForNumber] dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterNoStyle]];
     }
 }
+
 @end

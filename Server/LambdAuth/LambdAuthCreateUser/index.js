@@ -100,26 +100,22 @@ exports.handler = function(event, context) {
 
 	computeHash(clearPassword, function(err, salt, hash) {
 		if (err) {
-			context.fail('Error in hash: ' + err);
+			context.fail({success: false, message: 'User already exists.', error: err});
 		} else {
 			storeUser(email, hash, salt, event, function(err, token) {
 				if (err) {
 					if (err.code == 'ConditionalCheckFailedException') {
 						// userId already found
-						context.succeed({
-							created: false
-						});
+						context.fail({success: false, message: 'User already exists.', error: err});
 					} else {
-						context.fail('Error in storeUser: ' + err);
+						context.fail({success: false, message: 'Error creating user.', error: err});
 					}
 				} else {
 					// sendVerificationEmail(email, token, function(err, data) {
 					// 	if (err) {
 					// 		context.fail('Error in sendVerificationEmail: ' + err);
 					// 	} else {
-							context.succeed({
-								created: true
-							});
+							context.succeed({success: true});
 					// 	}
 					// });
 				}

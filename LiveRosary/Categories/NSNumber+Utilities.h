@@ -8,8 +8,22 @@
 
 #import <Foundation/Foundation.h>
 
+typedef NS_ENUM(NSUInteger, Day) {
+    DaySunday,
+    DayMonday,
+    DayTuesday,
+    DayWednesday,
+    DayThursday,
+    DayFriday,
+    DaySaturday
+};
+
 @interface NSNumber (Utilities)
 
 - (NSDate*)dateForNumber;
+- (NSString*)daysString;
+- (BOOL)dayOn:(Day)day;
+- (NSInteger)hour;
+- (NSInteger)minute;
 
 @end

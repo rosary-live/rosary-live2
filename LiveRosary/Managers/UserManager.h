@@ -17,6 +17,7 @@ FOUNDATION_EXTERN NSString * const NotificationUserLoggedOut;
 @interface UserManager : NSObject
 
 @property (nonatomic, getter=isLoggedIn) BOOL loggedIn;
+@property (nonatomic, strong) NSString* email;
 @property (nonatomic, strong) UserModel* currentUser;
 @property (nonatomic, strong) UIImage* avatarImage;
 @property (nonatomic, strong) AWSServiceConfiguration* configuration;

@@ -83,34 +83,31 @@ exports.handler = function(event, context) {
 
 	getUser(email, function(err, correctHash, salt) {
 		if (err) {
-			context.fail('Error in getUser: ' + err);
+			console.log('Error in getUser: ' + err);
+			context.fail({success: false, message: 'Email or password incorrect.', error: err});
 		} else {
 			if (correctHash == null) {
 				// User not found
 				console.log('User not found: ' + email);
-				context.succeed({
-					changed: false
-				});
+				context.fail({success: false, message:'Email or password incorrect.', error: 'user not found'});
 			} else {
 				computeHash(oldPassword, salt, function(err, salt, hash) {
 					if (err) {
-						context.fail('Error in hash: ' + err);
+						context.fail({success: false, message:'Email or password incorrect.', error: err});
 					} else {
 						if (hash == correctHash) {
 							// Login ok
 							console.log('User logged in: ' + email);
 							computeHash(newPassword, function(err, newSalt, newHash) {
 								if (err) {
-									context.fail('Error in computeHash: ' + err);
+									context.fail({success: false, message:'Email or password incorrect.', error: err});
 								} else {
 									updateUser(email, newHash, newSalt, function(err, data) {
 										if (err) {
-											context.fail('Error in updateUser: ' + err);
+											context.fail({success: false, message: 'Update failed.', error: err});
 										} else {
 											console.log('User password changed: ' + email);
-											context.succeed({
-												changed: true
-											});
+											context.succeed({success: true});
 										}
 									});
 								}
@@ -118,9 +115,7 @@ exports.handler = function(event, context) {
 						} else {
 							// Login failed
 							console.log('User login failed: ' + email);
-							context.succeed({
-								changed: false
-							});
+							context.succeed({success: false, message:'Email or password incorrect.', error: 'login failed'});
 						}
 					}
 				});

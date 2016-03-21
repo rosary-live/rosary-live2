@@ -7,17 +7,16 @@
 //
 
 #import "LRBroadcastMainViewController.h"
-#import "BroadcastManager.h"
-#import "AudioManager.h"
-#import "F3BarGauge.h"
+#import "ScheduleManager.h"
+#import "ScheduleSingleCell.h"
+#import "NSNumber+Utilities.h"
+#import "LRScheduleBroadcastViewController.h"
 
-@interface LRBroadcastMainViewController ()
+@interface LRBroadcastMainViewController () <UITableViewDataSource, UITableViewDelegate>
 
-@property (nonatomic, weak) IBOutlet UIButton* startStopButton;
-@property (nonatomic, weak) IBOutlet UILabel* infoLabel;
-@property (nonatomic, weak) IBOutlet F3BarGauge* meter;
+@property (nonatomic, weak) IBOutlet UITableView* tableView;
 
-@property (nonatomic, strong) NSTimer* meterTimer;
+@property (nonatomic, strong) NSArray<ScheduleModel*>* scheduledBroadcasts;
 
 @end
 
@@ -26,11 +25,22 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    [self addDrawerButton];
+    [self addDrawerButton];    
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
     
-    self.meter.minLimit = 0.0;
-    self.meter.maxLimit = 1.0;
-    self.meter.holdPeak = NO;
+    [[ScheduleManager sharedManager] myScheduledBroadcastsWithCompletion:^(NSArray<ScheduleModel *> *scheduledBroadcasts, NSError *error) {
+        self.scheduledBroadcasts = scheduledBroadcasts;
+        [self filterScheduledBroadcasts];
+        [self sortScheduledBroadcasts];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.tableView reloadData];
+        });
+    }];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -38,36 +48,54 @@
     // Dispose of any resources that can be recreated.
 }
 
-/*
 #pragma mark - Navigation
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+    if([sender isKindOfClass:[UITableViewCell class]])
+    {
+        LRScheduleBroadcastViewController* scheduleBroadcastViewController = [segue destinationViewController];
+        NSIndexPath* indexPath = [self.tableView indexPathForCell:sender];
+        scheduleBroadcastViewController.scheduledBroadcast = self.scheduledBroadcasts[indexPath.row];
+    }
 }
-*/
 
-- (IBAction)onStartStopButton:(id)sender
+- (void)filterScheduledBroadcasts
 {
-    if([BroadcastManager sharedManager].state == BroadcastStateBroadcasting)
-    {
-        [self.startStopButton setTitle:@"Start" forState:UIControlStateNormal];
-        [[BroadcastManager sharedManager] stopBroadcasting];
-        self.meter.value = 0.0;
-    }
-    else if([BroadcastManager sharedManager].state == BroadcastStateIdle)
-    {
-        [self.startStopButton setTitle:@"Stop" forState:UIControlStateNormal];
-        [[BroadcastManager sharedManager] startBroadcasting];
-        
-        self.meterTimer = [NSTimer bk_scheduledTimerWithTimeInterval:0.05 block:^(NSTimer *timer) {
-            Float32 level;
-            Float32 peak;
-            [[AudioManager sharedManager] inputAveragePowerLevel:&level peakHoldLevel:&peak];
-            self.meter.value = pow(10, level/40);
-        } repeats:YES];
-    }
 }
+
+- (void)sortScheduledBroadcasts
+{
+}
+
+#pragma mark - UITableViewDataSource
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return self.scheduledBroadcasts.count;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    ScheduleSingleCell* cell = [tableView dequeueReusableCellWithIdentifier:@"ScheduleCell" forIndexPath:indexPath];
+    
+    ScheduleModel* schedule = self.scheduledBroadcasts[indexPath.row];
+
+    if(schedule.isSingle)
+    {
+        cell.schedule.text = [NSString stringWithFormat:@"Single broadcast %@ %@", [NSDateFormatter localizedStringFromDate:[schedule.start dateForNumber] dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterNoStyle], [NSDateFormatter localizedStringFromDate:[schedule.start dateForNumber] dateStyle:NSDateFormatterNoStyle timeStyle:NSDateFormatterShortStyle]];
+    }
+    else
+    {
+    }
+    
+    return cell;
+}
+
+
+//#pragma mark - UITableViewDelegate
+//
+//- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+//{
+//}
 
 @end

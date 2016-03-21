@@ -10,7 +10,8 @@
 #import <AWSCore/AWSCore.h>
 #import <AWSLambda/AWSLambda.h>
 #import <UICKeyChainStore/UICKeyChainStore.h>
-#import <AFNetworking/AFNetworking.h>
+//#import <AFNetworking/AFNetworking.h>
+#import "LiveRosaryService.h"
 
 NSString *const LiveRosaryAuthenticationClientDomain = @"LiveRosaryAuthenticationClientDomain";
 
@@ -65,6 +66,39 @@ NSString * const KeyToken = @"KeyToken";
 
 - (AWSTask *)login:(NSString*)email password:(NSString*)password {
     return [[AWSTask taskWithResult:nil] continueWithBlock:^id _Nullable(AWSTask * _Nonnull task) {
+        
+//        [[LiveRosaryService sharedService] loginWithEmail:email andPassword:password completion:^(id responseDict, NSError *error) {
+//            if(error != nil)
+//            {
+//                return [AWSTask taskWithError:error];
+//            }
+//            else
+//            {
+//                NSLog(@"Response: %@", responseDict);
+//                
+//                NSNumber* login = responseDict[@"login"];
+//                if(login != nil && [login boolValue])
+//                {
+//                    self.keychain[KeyEmail] = self.email = email;
+//                    self.keychain[KeyPassword] = self.password = password;
+//                    self.keychain[KeyIdentityId] = self.identityId = responseDict[@"identityId"];
+//                    self.keychain[KeyToken] = self.token = responseDict[@"token"];
+//                    
+//                    LiveRosaryAuthenticationResponse* authResponse;
+//                    authResponse = [LiveRosaryAuthenticationResponse new];
+//                    authResponse.identityId = self.identityId;
+//                    authResponse.token = self.token;
+//                    authResponse.user = responseDict[@"user"];
+//                    
+//                    return [AWSTask taskWithResult:authResponse];
+//                }
+//                else
+//                {
+//                    return [AWSTask taskWithError:[NSError errorWithDomain:LiveRosaryAuthenticationClientDomain code:-1 userInfo:nil]];
+//                }
+//            }
+//        }];
+        
         NSString* post =[NSString stringWithFormat:@"{\"email\":\"%@\",\"password\":\"%@\"}", email, password];
         NSData* postData = [post dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:NO];
         NSString* postLength = [NSString stringWithFormat:@"%d", (int)postData.length];
@@ -87,8 +121,8 @@ NSString * const KeyToken = @"KeyToken";
             {
                 NSLog(@"Response: %@", responseDict);
                 
-                NSNumber* login = responseDict[@"login"];
-                if(login != nil && [login boolValue])
+                NSNumber* success = responseDict[@"success"];
+                if(success != nil && [success boolValue])
                 {
                     self.keychain[KeyEmail] = self.email = email;
                     self.keychain[KeyPassword] = self.password = password;
@@ -105,7 +139,7 @@ NSString * const KeyToken = @"KeyToken";
                 }
                 else
                 {
-                    return [AWSTask taskWithError:[NSError errorWithDomain:LiveRosaryAuthenticationClientDomain code:-1 userInfo:nil]];
+                    return [AWSTask taskWithError:[NSError errorWithDomain:LiveRosaryAuthenticationClientDomain code:0 userInfo:@{ NSLocalizedDescriptionKey: responseDict[@"message"] }]];
                 }
             }
             else

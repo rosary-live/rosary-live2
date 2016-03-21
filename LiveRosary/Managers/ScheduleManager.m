@@ -8,12 +8,18 @@
 
 #import "ScheduleManager.h"
 #import "DBSchedule.h"
+#import "LiveRosaryService.h"
+#import "NSString+Utilities.h"
+#import "UserManager.h"
 
 NSTimeInterval const kMinIntervalBetweenUpdates = 60.0;
 
 @interface ScheduleManager ()
 
-@property (nonatomic, strong) NSDate* lastUpdate;
+@property (nonatomic, strong) NSArray<ScheduleModel*>* myScheduledBroadcasts;
+
+@property (nonatomic, strong) NSDate* lastAllUpdate;
+@property (nonatomic, strong) NSDate* lastMyUpdate;
 
 @end
 
@@ -29,11 +35,16 @@ NSTimeInterval const kMinIntervalBetweenUpdates = 60.0;
     return instance;
 }
 
-- (void)scheduledBroadcastsWithCompletion:(void (^)(NSArray<ScheduleModel*>* scheduledBroadcasts, NSError* error))completion
+- (void)allScheduledBroadcastsWithCompletion:(void (^)(NSArray<ScheduleModel*>* scheduledBroadcasts, NSError* error))completion
 {
-    if(self.lastUpdate == nil || [[NSDate date] timeIntervalSinceDate:self.lastUpdate] > kMinIntervalBetweenUpdates)
+    if(self.lastAllUpdate == nil || [[NSDate date] timeIntervalSinceDate:self.lastAllUpdate] > kMinIntervalBetweenUpdates)
     {
         [[DBSchedule sharedInstance] updateScheduledBroadcastsWithCompletion:^(NSArray<ScheduleModel *> *scheduledBroadcasts, NSError *error) {
+            if(error == nil)
+            {
+                self.lastAllUpdate = [NSDate date];
+            }
+            
             safeBlock(completion, scheduledBroadcasts, error);
         }];
     }
@@ -43,16 +54,64 @@ NSTimeInterval const kMinIntervalBetweenUpdates = 60.0;
     }
 }
 
-- (void)addScheduledBroadcastWithInfo:(NSDictionary*)info completion:(void (^)(NSString* sid, NSError* error))completion
+- (void)myScheduledBroadcastsWithCompletion:(void (^)(NSArray<ScheduleModel*>* scheduledBroadcasts, NSError* error))completion
 {
+    if(self.lastMyUpdate == nil || [[NSDate date] timeIntervalSinceDate:self.lastMyUpdate] > kMinIntervalBetweenUpdates)
+    {
+        [[DBSchedule sharedInstance] getScheduledBroadcastsByEmail:[UserManager sharedManager].email completion:^(NSArray<ScheduleModel *> *scheduledBroadcasts, NSError *error) {
+            if(error == nil)
+            {
+                self.lastMyUpdate = [NSDate date];
+                self.myScheduledBroadcasts = scheduledBroadcasts;
+            }
+            
+            safeBlock(completion, self.myScheduledBroadcasts, error);
+        }];
+    }
+    else
+    {
+        safeBlock(completion, self.myScheduledBroadcasts, nil);
+    }
 }
 
-- (void)updateScheduledBroadcastWithInfo:(NSDictionary*)info completion:(void (^)(NSError* error))completion
+- (void)addScheduledBroadcastWithDictionary:(NSDictionary*)dictionary completion:(void (^)(NSString* sid, NSError* error))completion
 {
+    NSString* sid = [NSString UUID];
+    NSMutableDictionary* dictWithSID = [dictionary mutableCopy];
+    dictWithSID[@"sid"] = sid;
+    
+    [[LiveRosaryService sharedService] addScheduledBroadcastWithDictionary:dictWithSID completion:^(NSError *error) {
+        if(error == nil)
+        {
+            self.lastMyUpdate = nil;
+        }
+        
+        safeBlock(completion, sid, error);
+    }];
+}
+
+- (void)updateScheduledBroadcastWithDictionary:(NSDictionary*)dictionary completion:(void (^)(NSError* error))completion
+{
+    [[LiveRosaryService sharedService] updateScheduledBroadcastWithDictionary:dictionary completion:^(NSError *error) {
+        if(error == nil)
+        {
+            self.lastMyUpdate = nil;
+        }
+        
+        safeBlock(completion, error);
+    }];
 }
 
 - (void)removeScheduledBroadcastWithId:(NSString*)sid completion:(void (^)(NSError* error))completion
 {
+    [[LiveRosaryService sharedService] removeScheduledBroadcastWithSID:sid completion:^(NSError *error) {
+        if(error == nil)
+        {
+            self.lastMyUpdate = nil;
+        }
+        
+        safeBlock(completion, error);
+    }];
 }
 
 - (void)addListenReminderForBroadcastWithId:(NSString*)sid completion:(void (^)(NSError* error))completion

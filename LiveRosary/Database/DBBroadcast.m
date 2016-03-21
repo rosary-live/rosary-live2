@@ -35,7 +35,7 @@
         else if(task.exception)
         {
             DDLogError(@"Scan failed. Exception: [%@]", task.exception);
-            safeBlock(completion, nil, [NSError errorWithDomain:ErrorDomainDatabase code:ErrorException userInfo:@{ @"description": task.exception.description }]);
+            safeBlock(completion, nil, [NSError errorWithDomain:ErrorDomainDatabase code:ErrorException userInfo:@{ NSLocalizedDescriptionKey: task.exception.description }]);
         }
         else if(task.result)
         {
@@ -63,7 +63,7 @@
         else if(task.exception)
         {
             DDLogError(@"Load failed. Exception: [%@]", task.exception);
-            safeBlock(completion, nil, [NSError errorWithDomain:ErrorDomainDatabase code:ErrorException userInfo:@{ @"description": task.exception.description }]);
+            safeBlock(completion, nil, [NSError errorWithDomain:ErrorDomainDatabase code:ErrorException userInfo:@{ NSLocalizedDescriptionKey: task.exception.description }]);
         }
         else if(task.result)
         {

@@ -72,8 +72,7 @@
             
             if(error != nil)
             {
-                DDLogError(@"Error logging in %@: %@", self.email.text, error);
-                [UIAlertView bk_showAlertViewWithTitle:@"Error" message:@"Error logging in." cancelButtonTitle:@"Ok" otherButtonTitles:nil handler:nil];
+                [UIAlertView bk_showAlertViewWithTitle:@"Error" message:error.localizedDescription cancelButtonTitle:@"Ok" otherButtonTitles:nil handler:nil];
             }
             else
             {

@@ -13,10 +13,11 @@
 
 + (instancetype)sharedManager;
 
-- (void)scheduledBroadcastsWithCompletion:(void (^)(NSArray<ScheduleModel*>* scheduledBroadcasts, NSError* error))completion;
+- (void)allScheduledBroadcastsWithCompletion:(void (^)(NSArray<ScheduleModel*>* scheduledBroadcasts, NSError* error))completion;
+- (void)myScheduledBroadcastsWithCompletion:(void (^)(NSArray<ScheduleModel*>* scheduledBroadcasts, NSError* error))completion;
 
-- (void)addScheduledBroadcastWithInfo:(NSDictionary*)info completion:(void (^)(NSString* sid, NSError* error))completion;
-- (void)updateScheduledBroadcastWithInfo:(NSDictionary*)info completion:(void (^)(NSError* error))completion;
+- (void)addScheduledBroadcastWithDictionary:(NSDictionary*)dictionary completion:(void (^)(NSString* sid, NSError* error))completion;
+- (void)updateScheduledBroadcastWithDictionary:(NSDictionary*)dictionary completion:(void (^)(NSError* error))completion;
 - (void)removeScheduledBroadcastWithId:(NSString*)sid completion:(void (^)(NSError* error))completion;
 
 - (void)addListenReminderForBroadcastWithId:(NSString*)sid completion:(void (^)(NSError* error))completion;

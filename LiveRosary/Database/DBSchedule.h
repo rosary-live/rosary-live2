@@ -17,5 +17,6 @@
 
 - (void)updateScheduledBroadcastsWithCompletion:(void (^)(NSArray<ScheduleModel*>* scheduledBroadcasts, NSError* error))completion;
 - (void)getScheduledBroadcastById:(NSString*)sid completion:(void (^)(ScheduleModel* scheduledBroadcast, NSError* error))completion;
+- (void)getScheduledBroadcastsByEmail:(NSString*)email completion:(void (^)(NSArray<ScheduleModel*>* scheduledBroadcasts, NSError* error))completion;
 
 @end

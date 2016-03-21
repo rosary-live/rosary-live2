@@ -58,7 +58,7 @@
 {
     self.broadcastViewController = [BroadcastsViewController instantiate];
     self.broadcastViewController.delegate = self;
-    self.broadcastViewController.liveOnly = YES;
+    self.broadcastViewController.liveOnly = NO;
     
     [self addChildViewController:self.broadcastViewController];
     [self.view addSubview:self.broadcastViewController.view];
