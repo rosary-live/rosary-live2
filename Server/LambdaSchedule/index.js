@@ -104,7 +104,7 @@ exports.handler = function(event, context) {
 	}
 	else if(event.action == "remove")
 	{		
-		updateSchedule(event, function(err) {
+		removeSchedule(event.sid, function(err) {
 			if(err) context.fail({success:false, message: 'Failed to remove scheduled broadcast.', error:err});
 			else context.succeed({success:true});
 		});

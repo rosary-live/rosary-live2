@@ -11,6 +11,10 @@
 #import "SegmentedSettingCell.h"
 #import "ValueSettingCell.h"
 #import "ButtonSettingCell.h"
+#import <MBProgressHUD/MBProgressHUD.h>
+#import "ScheduleManager.h"
+#import "UserManager.h"
+#import "NSString+Utilities.h"
 
 typedef NS_ENUM(NSUInteger, CellType) {
     CellTypeNone,
@@ -41,6 +45,8 @@ typedef NS_ENUM(NSUInteger, CellType) {
 @property (nonatomic) CellType expandedCell;
 @property (nonatomic, strong) NSIndexPath* expandedCellIndexPath;
 @property (nonatomic) CGFloat expandedCellHeight;
+
+@property (nonatomic, strong) MBProgressHUD *hud;
 
 @end
 
@@ -391,12 +397,90 @@ typedef NS_ENUM(NSUInteger, CellType) {
 
 - (IBAction)onSave:(id)sender
 {
-    [self.navigationController popViewControllerAnimated:YES];
+    self.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+
+    NSDictionary* baseDict = @{
+                           @"version": @(1),
+                           @"language": [UserManager sharedManager].currentUser.language,
+                           @"user": [UserManager sharedManager].currentUser.email,
+                           @"name": [NSString stringWithFormat:@"%@ %@", [UserManager sharedManager].currentUser.firstName, [UserManager sharedManager].currentUser.lastName],
+                           @"lat": [UserManager sharedManager].currentUser.latitude,
+                           @"lon": [UserManager sharedManager].currentUser.longitude,
+                           @"city": [UserManager sharedManager].currentUser.city,
+                           @"state": [UserManager sharedManager].currentUser.state,
+                           @"country": [UserManager sharedManager].currentUser.country,
+                        };
+    
+    NSMutableDictionary* dict = [baseDict mutableCopy];
+    dict[@"type"] = self.single ? @"single" : @"recurring";
+    dict[@"start"] = self.single ? @([self.start timeIntervalSince1970]) : @(0);
+    dict[@"from"] = self.single ? @(0) : @([self.from timeIntervalSince1970]);
+    dict[@"to"] = self.single ? @(0) : @([self.to timeIntervalSince1970]);
+    dict[@"at"] = self.single ? @(0) : self.at;
+    dict[@"days"] = self.single ? @(0) : self.days;
+    
+    if(self.existing)
+    {
+        self.hud.labelText = @"Updating Schedule";
+        
+        dict[@"sid"] = self.scheduledBroadcast.sid;
+        
+        [[ScheduleManager sharedManager] updateScheduledBroadcastWithDictionary:dict completion:^(NSError *error) {
+            [self.hud hide:YES];
+            
+            if(error != nil)
+            {
+                DDLogError(@"Error updating schedule %@: %@", dict, error);
+                [UIAlertView bk_showAlertViewWithTitle:@"Error" message:@"Error updating schedule." cancelButtonTitle:@"Ok" otherButtonTitles:nil handler:nil];
+            }
+            else
+            {
+                [self.navigationController popViewControllerAnimated:YES];
+            }
+        }];
+    }
+    else
+    {
+        self.hud.labelText = @"Creating Schedule";
+        
+        [[ScheduleManager sharedManager] addScheduledBroadcastWithDictionary:dict completion:^(NSString *sid, NSError *error) {
+            [self.hud hide:YES];
+            
+            if(error != nil)
+            {
+                DDLogError(@"Error creating new schedule %@: %@", dict, error);
+                [UIAlertView bk_showAlertViewWithTitle:@"Error" message:@"Error creating schedule." cancelButtonTitle:@"Ok" otherButtonTitles:nil handler:nil];
+            }
+            else
+            {
+                [self.navigationController popViewControllerAnimated:YES];
+            }
+        }];
+    }
 }
 
 - (IBAction)onDelete:(id)sender
 {
-    [self.navigationController popViewControllerAnimated:YES];
+    if(self.existing)
+    {
+        self.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        self.hud.labelText = @"Deleting Schedule";
+        
+        [[ScheduleManager sharedManager] removeScheduledBroadcastWithId:self.scheduledBroadcast.sid completion:^(NSError *error) {
+            [self.hud hide:YES];
+            
+            if(error != nil)
+            {
+                DDLogError(@"Error deleting schedule %@: %@", self.scheduledBroadcast.sid, error);
+                [UIAlertView bk_showAlertViewWithTitle:@"Error" message:@"Error deleting schedule." cancelButtonTitle:@"Ok" otherButtonTitles:nil handler:nil];
+            }
+            else
+            {
+                [self.navigationController popViewControllerAnimated:YES];
+            }
+        }];
+
+    }
 }
 
 @end

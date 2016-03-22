@@ -22,6 +22,6 @@
 @property (nonatomic, weak) id<BroadcastsViewDelegate> delegate;
 @property (nonatomic) BOOL liveOnly;
 
-- (void)updateBroadcasts;
+- (void)update;
 
 @end
