@@ -68,7 +68,7 @@ typedef NS_ENUM(NSUInteger, CellType) {
         self.start = [NSDate date];
         self.from = [NSDate date];
         self.to = [NSDate date];
-        self.at = @(0);
+        self.at = @(90);
         self.days = @(0);
     }
 }
@@ -145,6 +145,23 @@ typedef NS_ENUM(NSUInteger, CellType) {
     return ct;
 }
 
+- (NSString*)dateAndTimeFormat:(NSDate*)date
+{
+    return [NSString stringWithFormat:@"%@ %@", [NSDateFormatter localizedStringFromDate:date dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterNoStyle], [NSDateFormatter localizedStringFromDate:date dateStyle:NSDateFormatterNoStyle timeStyle:NSDateFormatterShortStyle]];
+}
+
+- (NSString*)dateOnlyFormat:(NSDate*)date
+{
+    return [NSDateFormatter localizedStringFromDate:date dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterNoStyle];
+}
+
+- (NSString*)timeOnlyFormat:(NSNumber*)time
+{
+    int hour = (int)[time hour];
+    int min = (int)[time minute];
+    return [NSString stringWithFormat:@"%d:%02d %@", hour > 12 ? hour - 12 : hour, min, hour > 12 ? @"PM" : @"AM"];
+}
+
 #pragma mark - UITableViewDataSource
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -201,7 +218,7 @@ typedef NS_ENUM(NSUInteger, CellType) {
         {
             ValueSettingCell* cell = [self.tableView dequeueReusableCellWithIdentifier:@"ValueSettingCell" forIndexPath:indexPath];
             cell.name.text = @"Date";
-            cell.value.text = [NSDateFormatter localizedStringFromDate:self.start dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterNoStyle];
+            cell.value.text = [self dateAndTimeFormat:self.start];
             return cell;
         }
             
@@ -209,7 +226,7 @@ typedef NS_ENUM(NSUInteger, CellType) {
         {
             ValueSettingCell* cell = [self.tableView dequeueReusableCellWithIdentifier:@"ValueSettingCell" forIndexPath:indexPath];
             cell.name.text = @"Start Date";
-            cell.value.text = [NSDateFormatter localizedStringFromDate:self.from dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterNoStyle];
+            cell.value.text = [self dateOnlyFormat:self.from];
             return cell;
         }
             
@@ -217,7 +234,7 @@ typedef NS_ENUM(NSUInteger, CellType) {
         {
             ValueSettingCell* cell = [self.tableView dequeueReusableCellWithIdentifier:@"ValueSettingCell" forIndexPath:indexPath];
             cell.name.text = @"End Date";
-            cell.value.text = [NSDateFormatter localizedStringFromDate:self.to dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterNoStyle];
+            cell.value.text = [self dateOnlyFormat:self.to];
             return cell;
         }
             
@@ -225,7 +242,7 @@ typedef NS_ENUM(NSUInteger, CellType) {
         {
             ValueSettingCell* cell = [self.tableView dequeueReusableCellWithIdentifier:@"ValueSettingCell" forIndexPath:indexPath];
             cell.name.text = @"Time";
-            cell.value.text = [NSString stringWithFormat:@"%d:%02d", (int)[self.at hour], (int)[self.at minute]];
+            cell.value.text = [self timeOnlyFormat:self.at];
             return cell;
         }
             
@@ -252,6 +269,9 @@ typedef NS_ENUM(NSUInteger, CellType) {
             [cell.button addTarget:self action:@selector(onDelete:) forControlEvents:UIControlEventTouchUpInside];
             return cell;
         }
+            
+        default:
+            break;
     }
     
     return nil;
@@ -288,30 +308,77 @@ typedef NS_ENUM(NSUInteger, CellType) {
         __weak ValueSettingCell* weakCell = cell;
         self.expandedCellIndexPath = indexPath;
         self.expandedCell = ct;
-        self.expandedCellHeight = [cell addDatePickerWithDate:[NSDate date] andMode:UIDatePickerModeDate valueChanged:^(NSDate *value) {
-            self.start = value;
-            weakCell.value.text = [NSDateFormatter localizedStringFromDate:self.start dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterNoStyle];
-        }];
+        if(ct == CellTypeDate || ct == CellTypeFrom || ct == CellTypeTo || ct == CellTypeAt)
+        {
+            UIDatePickerMode dpMode;
+            NSDate* setDate;
+            NSDate* minDate = nil;
+            NSDate* maxDate = nil;
+            NSInteger minuteInterval = 0;
+            if(ct == CellTypeDate)
+            {
+                dpMode = UIDatePickerModeDateAndTime;
+                setDate = self.start;
+                minDate = [NSDate date];
+            }
+            else if(ct == CellTypeFrom)
+            {
+                dpMode = UIDatePickerModeDate;
+                setDate = self.from;
+                minDate = [NSDate date];
+            }
+            else if(ct == CellTypeTo)
+            {
+                dpMode = UIDatePickerModeDate;
+                setDate = self.to;
+                minDate = self.from;
+            }
+            else if(ct == CellTypeAt)
+            {
+                dpMode = UIDatePickerModeTime;
+                NSDateComponents* comps = [NSDateComponents new];
+                comps.hour = [self.at hour];
+                comps.minute = [self.at minute];
+                setDate = [[NSCalendar currentCalendar] dateFromComponents:comps];
+            }
+            
+            self.expandedCellHeight = [cell addDatePickerWithDate:setDate mode:dpMode minDate:minDate maxDate:maxDate minuteInterval:minuteInterval valueChanged:^(id value) {
+                
+                NSString* valString;
+                if(ct == CellTypeDate)
+                {
+                    self.start = (NSDate*)value;
+                    valString = [self dateAndTimeFormat:self.start];
+                }
+                else if(ct == CellTypeFrom)
+                {
+                    self.from = (NSDate*)value;
+                    valString = [self dateOnlyFormat:self.from];
+                }
+                else if(ct == CellTypeTo)
+                {
+                    self.to = (NSDate*)value;
+                    valString = [self dateOnlyFormat:self.to];
+                }
+                else if(ct == CellTypeAt)
+                {
+                    NSDate* at = (NSDate*)value;
+                    NSDateComponents* comps = [[NSCalendar currentCalendar] components:NSCalendarUnitHour | NSCalendarUnitMinute fromDate:at];
+                    self.at = @(comps.hour * 60 + comps.minute);
+                    valString = [self timeOnlyFormat:self.at];
+                }
+                
+                weakCell.value.text = valString;
+            }];
+        }
+        else if(ct == CellTypeDays)
+        {
+            self.expandedCellHeight = [cell addDayPickerWithDays:self.days valueChanged:^(id value) {
+                self.days = value;
+                weakCell.value.text = [self.days daysString];
+            }];
+        }
     }
-    
-//    if(ct == CellTypeDate)
-//    {
-//        self.dateExpanded = !self.dateExpanded;
-//        
-//        ValueSettingCell* cell = [tableView cellForRowAtIndexPath:indexPath];
-//        if(self.dateExpanded)
-//        {
-//            __weak ValueSettingCell* weakCell = cell;
-//            self.dateExpandedHeight = [cell addDatePickerWithDate:[NSDate date] andMode:UIDatePickerModeDate valueChanged:^(NSDate *value) {
-//                self.start = value;
-//                weakCell.value.text = [NSDateFormatter localizedStringFromDate:self.start dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterNoStyle];
-//            }];
-//        }
-//        else
-//        {
-//            [cell removeDatePicker];
-//        }
-//    }
     
     [tableView reloadData];
 }

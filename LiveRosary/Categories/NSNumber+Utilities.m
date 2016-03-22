@@ -54,6 +54,11 @@
     return (self.unsignedIntegerValue & mask) == mask;
 }
 
+- (NSNumber*)numberWithDayOn:(Day)day
+{
+    return [NSNumber numberWithUnsignedInteger:self.unsignedIntegerValue + ((NSUInteger)1 << day)];
+}
+
 - (NSInteger)hour
 {
     return self.integerValue / 60;
