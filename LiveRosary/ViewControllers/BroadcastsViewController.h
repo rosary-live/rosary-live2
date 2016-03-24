@@ -8,10 +8,12 @@
 
 #import <UIKit/UIKit.h>
 #import "BroadcastModel.h"
+#import "ScheduleModel.h"
 
 @protocol BroadcastsViewDelegate <NSObject>
 
 - (void)selectedBroadcast:(BroadcastModel*)model;
+- (void)selectedSchedule:(ScheduleModel*)model;
 
 @end
 

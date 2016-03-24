@@ -161,13 +161,6 @@ typedef NS_ENUM(NSUInteger, CellType) {
     return [NSDateFormatter localizedStringFromDate:date dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterNoStyle];
 }
 
-- (NSString*)timeOnlyFormat:(NSNumber*)time
-{
-    int hour = (int)[time hour];
-    int min = (int)[time minute];
-    return [NSString stringWithFormat:@"%d:%02d %@", hour > 12 ? hour - 12 : hour, min, hour > 12 ? @"PM" : @"AM"];
-}
-
 #pragma mark - UITableViewDataSource
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -248,7 +241,7 @@ typedef NS_ENUM(NSUInteger, CellType) {
         {
             ValueSettingCell* cell = [self.tableView dequeueReusableCellWithIdentifier:@"ValueSettingCell" forIndexPath:indexPath];
             cell.name.text = @"Time";
-            cell.value.text = [self timeOnlyFormat:self.at];
+            cell.value.text = [self.at time];
             return cell;
         }
             
@@ -371,7 +364,7 @@ typedef NS_ENUM(NSUInteger, CellType) {
                     NSDate* at = (NSDate*)value;
                     NSDateComponents* comps = [[NSCalendar currentCalendar] components:NSCalendarUnitHour | NSCalendarUnitMinute fromDate:at];
                     self.at = @(comps.hour * 60 + comps.minute);
-                    valString = [self timeOnlyFormat:self.at];
+                    valString = [self.at time];
                 }
                 
                 weakCell.value.text = valString;
@@ -386,13 +379,30 @@ typedef NS_ENUM(NSUInteger, CellType) {
         }
     }
     
-    [tableView reloadData];
+//    [tableView reloadData];
+    [self.tableView beginUpdates];
+    [self.tableView endUpdates];
 }
 
 - (IBAction)onTypeChanged:(id)sender
 {
     self.single = self.typeControl.selectedSegmentIndex == 0;
     [self.tableView reloadData];
+    
+//    NSArray* indexes = @[[NSIndexPath indexPathForItem:1 inSection:0], [NSIndexPath indexPathForItem:2 inSection:0], [NSIndexPath indexPathForItem:3 inSection:0]];
+//    
+//    [self.tableView beginUpdates];
+//    
+//    if(self.single)
+//    {
+//        [self.tableView deleteRowsAtIndexPaths:indexes withRowAnimation:UITableViewRowAnimationAutomatic];
+//    }
+//    else
+//    {
+//        [self.tableView insertRowsAtIndexPaths:indexes withRowAnimation:UITableViewRowAnimationAutomatic];
+//    }
+//    
+//    [self.tableView endUpdates];
 }
 
 - (IBAction)onSave:(id)sender

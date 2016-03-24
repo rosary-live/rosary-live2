@@ -9,35 +9,6 @@
 #import "BaseModel.h"
 #import <MapKit/MapKit.h>
 
-/*
- version: int
- sid: UUID
- created: timestamp
- updated: timestamp
- 
- user: email string
- name: string
- language: string
- 
- city: string
- state: string,
- country: string
- lat: double
- lon: double
- 
- type: single|recurring
- 
- single fields
- start: timestamp
- 
- recurring fields
- from: date
- to: date
- at: time
- days: days of the week
- 
- */
-
 @interface ScheduleModel : BaseModel <MKAnnotation>
 
 @property (nonatomic, strong) NSNumber* version;

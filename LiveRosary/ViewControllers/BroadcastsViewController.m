@@ -174,6 +174,11 @@ typedef NS_ENUM(NSUInteger, Mode) {
     {
         [self.mapView addAnnotation:broadcast];
     }
+    
+    for(ScheduleModel* schedule in self.scheduledBroadcasts)
+    {
+        [self.mapView addAnnotation:schedule];
+    }
 }
 
 - (IBAction)onLanguagePickerDone:(id)sender
@@ -310,14 +315,28 @@ typedef NS_ENUM(NSUInteger, Mode) {
             
             if(scheduledBroadcast.isSingle)
             {
-                cell.schedule.text = [NSString stringWithFormat:@"Single %@ %@", [NSDateFormatter localizedStringFromDate:[scheduledBroadcast.start dateForNumber] dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterNoStyle], [NSDateFormatter localizedStringFromDate:[scheduledBroadcast.start dateForNumber] dateStyle:NSDateFormatterNoStyle timeStyle:NSDateFormatterShortStyle]];
+                cell.schedule.text = [NSString stringWithFormat:@"%@ %@", [NSDateFormatter localizedStringFromDate:[scheduledBroadcast.start dateForNumber] dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterNoStyle], [NSDateFormatter localizedStringFromDate:[scheduledBroadcast.start dateForNumber] dateStyle:NSDateFormatterNoStyle timeStyle:NSDateFormatterShortStyle]];
             }
             else
             {
+                cell.schedule.text = [NSString stringWithFormat:@"From %@ to %@\n%@ at %@", [NSDateFormatter localizedStringFromDate:[scheduledBroadcast.from dateForNumber] dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterNoStyle], [NSDateFormatter localizedStringFromDate:[scheduledBroadcast.to dateForNumber] dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterNoStyle], [scheduledBroadcast.days daysString], [scheduledBroadcast.at time]];
             }
             
             NSString* urlString = [NSString stringWithFormat:@"https://s3.amazonaws.com/liverosaryavatars/%@", [scheduledBroadcast.user stringByReplacingOccurrencesOfString:@"@" withString:@"-"]];
             [cell.avatarImage sd_setImageWithURL:[NSURL URLWithString:urlString] placeholderImage:[UIImage imageNamed:@"AvatarImage"] options:0];
+            
+            if([ScheduleManager sharedManager].notificationsEnabled)
+            {
+                cell.reminderButton.hidden = NO;
+                UIImage* image = [[ScheduleManager sharedManager] reminderSetForBroadcastWithId:scheduledBroadcast.sid] ? [UIImage imageNamed:@"AlarmOn"] : [UIImage imageNamed:@"AlarmOff"];
+                [cell.reminderButton setImage:image forState:UIControlStateNormal];
+                [cell.reminderButton addTarget:self action:@selector(onReminder:) forControlEvents:UIControlEventTouchUpInside];
+                cell.reminderButton.tag = indexPath.row;
+            }
+            else
+            {
+                cell.reminderButton.hidden = YES;
+            }
             
             return cell;
         }
@@ -384,7 +403,11 @@ typedef NS_ENUM(NSUInteger, Mode) {
     }
     else
     {
-        MKAnnotationView *annotationView = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:AnnotationIdentifier];
+       annotationView = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:AnnotationIdentifier];
+    }
+    
+    if([annotation isKindOfClass:[BroadcastModel class]])
+    {
         if(((BroadcastModel*)annotation).isLive)
         {
             annotationView.image = [UIImage imageNamed:@"LiveMapPin"];
@@ -393,17 +416,21 @@ typedef NS_ENUM(NSUInteger, Mode) {
         {
             annotationView.image = [UIImage imageNamed:@"EndedMapPin"];
         }
-        
-        UIButton* rightButton = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
-        [rightButton addTarget:self action:@selector(onMapPinSelected:) forControlEvents:UIControlEventTouchUpInside];
-        [rightButton setTitle:annotation.title forState:UIControlStateNormal];
-        annotationView.rightCalloutAccessoryView = rightButton;
-        annotationView.canShowCallout = YES;
-        annotationView.draggable = NO;
-        annotationView.centerOffset = CGPointMake(0.0f, -18.0f);
-        return annotationView;
     }
-    return nil;
+    else
+    {
+        annotationView.image = [UIImage imageNamed:@"FutureMapPin"];
+    }
+    
+    UIButton* rightButton = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
+    [rightButton addTarget:self action:@selector(onMapPinSelected:) forControlEvents:UIControlEventTouchUpInside];
+    [rightButton setTitle:annotation.title forState:UIControlStateNormal];
+    annotationView.rightCalloutAccessoryView = rightButton;
+    annotationView.canShowCallout = YES;
+    annotationView.draggable = NO;
+    annotationView.centerOffset = CGPointMake(0.0f, -18.0f);
+    
+    return annotationView;
 }
 
 - (void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view
@@ -422,13 +449,29 @@ typedef NS_ENUM(NSUInteger, Mode) {
     NSLog(@"onMapPinSelected %@", sender);
 }
 
-
 - (void)broadcastSelected:(BroadcastModel*)broadcast
 {
     if(self.delegate != nil && [self.delegate respondsToSelector:@selector(selectedBroadcast:)])
     {
         [self.delegate selectedBroadcast:broadcast];
     }
+}
+
+- (IBAction)onReminder:(id)sender
+{
+    NSInteger row = ((UIView*)sender).tag;
+    
+    ScheduleModel* schedule = self.scheduledBroadcasts[row];
+    if([[ScheduleManager sharedManager] reminderSetForBroadcastWithId:schedule.sid])
+    {
+        [[ScheduleManager sharedManager] removeListenReminderForBroadcastWithId:schedule.sid completion:nil];
+    }
+    else
+    {
+        [[ScheduleManager sharedManager] addListenReminderForBroadcastWithId:schedule.sid completion:nil];
+    }
+    
+    [self.tableView reloadData];
 }
 
 @end

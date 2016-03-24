@@ -46,9 +46,9 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     [self.window setRootViewController:self.drawerController];
     
-    [[ConfigModel sharedInstance] loadConfigWithCompletion:^(NSError *error) {
-        DDLogInfo(@"Got config: compressionBitRat: %d  maxBroadcastSeconds: %d  sampleRate: %d  segmentSizeSeconds: %d", (int)[ConfigModel sharedInstance].compressionBitRate, (int)[ConfigModel sharedInstance].maxBroadcastSeconds, (int)[ConfigModel sharedInstance].sampleRate, (int)[ConfigModel sharedInstance].segmentSizeSeconds);
-    }];
+    [self updateConfigFromServer];
+    
+    [self configureNotifications];
     
     return YES;
 }
@@ -72,6 +72,8 @@
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
+    
+    [self configureNotifications];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
@@ -80,6 +82,25 @@
 
 - (void)applicationWillTerminate:(UIApplication *)application {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+}
+
+- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification
+{
+    NSLog(@"Notification: %@ %@", notification, notification.userInfo);
+}
+
+- (void)updateConfigFromServer
+{
+    [[ConfigModel sharedInstance] loadConfigWithCompletion:^(NSError *error) {
+        DDLogInfo(@"Got config: compressionBitRat: %d  maxBroadcastSeconds: %d  sampleRate: %d  segmentSizeSeconds: %d", (int)[ConfigModel sharedInstance].compressionBitRate, (int)[ConfigModel sharedInstance].maxBroadcastSeconds, (int)[ConfigModel sharedInstance].sampleRate, (int)[ConfigModel sharedInstance].segmentSizeSeconds);
+    }];
+}
+
+- (void)configureNotifications
+{
+    UIUserNotificationType types = UIUserNotificationTypeSound | UIUserNotificationTypeAlert;
+    UIUserNotificationSettings* mySettings = [UIUserNotificationSettings settingsForTypes:types categories:nil];
+    [[UIApplication sharedApplication] registerUserNotificationSettings:mySettings];
 }
 
 - (IBAction)onDrawerButton:(id)sender

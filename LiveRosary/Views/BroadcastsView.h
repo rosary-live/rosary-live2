@@ -9,11 +9,11 @@
 #import <UIKit/UIKit.h>
 #import "BroadcastModel.h"
 
-@protocol BroadcastsViewDelegate <NSObject>
-
-- (void)selectedBroadcast:(BroadcastModel*)model;
-
-@end
+//@protocol BroadcastsViewDelegate <NSObject>
+//
+//- (void)selectedBroadcast:(BroadcastModel*)model;
+//
+//@end
 
 @interface BroadcastsView : UIView
 

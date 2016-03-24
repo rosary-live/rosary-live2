@@ -114,8 +114,67 @@ NSTimeInterval const kMinIntervalBetweenUpdates = 60.0;
     }];
 }
 
+- (NSString*)reminderUserDefaultKeyForId:(NSString*)sid
+{
+    return [NSString stringWithFormat:@"REMINDER-%@", sid];
+}
+
+- (BOOL)notificationsEnabled
+{
+    if ([[UIApplication sharedApplication] respondsToSelector:@selector(currentUserNotificationSettings)])
+    {
+        UIUserNotificationSettings* grantedSettings = [[UIApplication sharedApplication] currentUserNotificationSettings];
+        
+        if (grantedSettings.types != UIUserNotificationTypeNone)
+        {
+            NSLog(@"Notifications permiossion granted");
+            return YES;
+        }
+    }
+    
+    return NO;
+}
+
+- (BOOL)reminderSetForBroadcastWithId:(NSString*)sid
+{
+    id val = [[NSUserDefaults standardUserDefaults] objectForKey:[self reminderUserDefaultKeyForId:sid]];
+    if(val != nil)
+    {
+        return YES;
+    }
+    
+    return NO;
+}
+
 - (void)addListenReminderForBroadcastWithId:(NSString*)sid completion:(void (^)(NSError* error))completion
 {
+    if(![self reminderSetForBroadcastWithId:sid])
+    {
+        UILocalNotification* localNotification = [[UILocalNotification alloc] init];
+        localNotification.fireDate = [NSDate dateWithTimeIntervalSinceNow:20];
+        localNotification.alertBody = @"Your alert message";
+        localNotification.timeZone = [NSTimeZone defaultTimeZone];
+        localNotification.soundName = UILocalNotificationDefaultSoundName;
+        localNotification.userInfo = @{ @"sid": sid };
+        [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
+        
+        NSData* data = [NSKeyedArchiver archivedDataWithRootObject:localNotification];
+        [[NSUserDefaults standardUserDefaults] setObject:data forKey:[self reminderUserDefaultKeyForId:sid]];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
+}
+
+- (void)removeListenReminderForBroadcastWithId:(NSString*)sid completion:(void (^)(NSError* error))completion
+{
+    NSData* data = [[NSUserDefaults standardUserDefaults] objectForKey:[self reminderUserDefaultKeyForId:sid]];
+    if(data != nil)
+    {
+        UILocalNotification* localNotification = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+        [[UIApplication sharedApplication] cancelLocalNotification:localNotification];
+        
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey:[self reminderUserDefaultKeyForId:sid]];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
 }
 
 @end

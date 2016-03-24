@@ -7,7 +7,6 @@
 //
 
 #import "LRAdminBroadcastsViewController.h"
-#import "BroadcastsView.h"
 #import "LRListenViewController.h"
 #import "BroadcastsViewController.h"
 #import <PureLayout/PureLayout.h>
@@ -52,6 +51,10 @@
     listenViewController.broadcast = broadcast;
     listenViewController.playFromStart = YES;
     [self.navigationController pushViewController:listenViewController animated:YES];
+}
+
+- (void)selectedSchedule:(ScheduleModel *)model
+{
 }
 
 - (void)addBroadcasts

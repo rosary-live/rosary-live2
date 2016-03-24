@@ -11,6 +11,8 @@
 
 @interface ScheduleManager : NSObject
 
+@property (nonatomic, readonly) BOOL notificationsEnabled;
+
 + (instancetype)sharedManager;
 
 - (void)allScheduledBroadcastsWithCompletion:(void (^)(NSArray<ScheduleModel*>* scheduledBroadcasts, NSError* error))completion;
@@ -20,6 +22,8 @@
 - (void)updateScheduledBroadcastWithDictionary:(NSDictionary*)dictionary completion:(void (^)(NSError* error))completion;
 - (void)removeScheduledBroadcastWithId:(NSString*)sid completion:(void (^)(NSError* error))completion;
 
+- (BOOL)reminderSetForBroadcastWithId:(NSString*)sid;
 - (void)addListenReminderForBroadcastWithId:(NSString*)sid completion:(void (^)(NSError* error))completion;
+- (void)removeListenReminderForBroadcastWithId:(NSString*)sid completion:(void (^)(NSError* error))completion;
 
 @end

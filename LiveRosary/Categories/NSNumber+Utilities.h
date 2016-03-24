@@ -26,5 +26,6 @@ typedef NS_ENUM(NSUInteger, Day) {
 - (NSNumber*)numberWithDayOn:(Day)day;
 - (NSInteger)hour;
 - (NSInteger)minute;
+- (NSString*)time;
 
 @end

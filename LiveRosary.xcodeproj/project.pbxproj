@@ -32,7 +32,6 @@
 		D86372811C5B1FFB00D02DC3 /* NSNumber+Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = D86372801C5B1FFB00D02DC3 /* NSNumber+Utilities.m */; };
 		D885FA671C446F49002904AC /* LRDrawerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D885FA661C446F49002904AC /* LRDrawerViewController.m */; };
 		D885FA6A1C446FA2002904AC /* LRListenMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D885FA691C446FA2002904AC /* LRListenMainViewController.m */; };
-		D8A027481C8B4DE700715277 /* BroadcastsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = D8A027471C8B4DE700715277 /* BroadcastsView.xib */; };
 		D8A0274B1C8B527600715277 /* BroadcastsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8A0274A1C8B527600715277 /* BroadcastsViewController.m */; };
 		D8A0EFD51C4C130C0006B910 /* DrawerCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D8A0EFD41C4C130C0006B910 /* DrawerCell.m */; };
 		D8A0EFD81C4C21E80006B910 /* LRUserProfileMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8A0EFD71C4C21E80006B910 /* LRUserProfileMainViewController.m */; };
@@ -43,7 +42,6 @@
 		D8A0EFEB1C4C707B0006B910 /* LiveRosaryAuthenticatedIdentityProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = D8A0EFEA1C4C707B0006B910 /* LiveRosaryAuthenticatedIdentityProvider.m */; };
 		D8A0EFEE1C4C70ED0006B910 /* LiveRosaryAuthenticationClient.m in Sources */ = {isa = PBXBuildFile; fileRef = D8A0EFED1C4C70ED0006B910 /* LiveRosaryAuthenticationClient.m */; };
 		D8A0EFF91C4F2B1F0006B910 /* AudioManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D8A0EFF81C4F2B1F0006B910 /* AudioManager.m */; };
-		D8A1B9041C75628300CEE8D0 /* BroadcastsView.m in Sources */ = {isa = PBXBuildFile; fileRef = D8A1B9031C75628300CEE8D0 /* BroadcastsView.m */; };
 		D8A1B9081C7568FF00CEE8D0 /* BroadcastCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D8A1B9071C7568FF00CEE8D0 /* BroadcastCell.xib */; };
 		D8A1B90B1C75779F00CEE8D0 /* LRAdminMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8A1B90A1C75779F00CEE8D0 /* LRAdminMainViewController.m */; };
 		D8B72E621C9A394C0081723F /* libTestFairy.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D8B72E601C9A394C0081723F /* libTestFairy.a */; };
@@ -121,7 +119,6 @@
 		D885FA661C446F49002904AC /* LRDrawerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LRDrawerViewController.m; path = ViewControllers/LRDrawerViewController.m; sourceTree = "<group>"; };
 		D885FA681C446FA2002904AC /* LRListenMainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LRListenMainViewController.h; path = ViewControllers/LRListenMainViewController.h; sourceTree = "<group>"; };
 		D885FA691C446FA2002904AC /* LRListenMainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LRListenMainViewController.m; path = ViewControllers/LRListenMainViewController.m; sourceTree = "<group>"; };
-		D8A027471C8B4DE700715277 /* BroadcastsView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = BroadcastsView.xib; path = Views/BroadcastsView.xib; sourceTree = "<group>"; };
 		D8A027491C8B527600715277 /* BroadcastsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BroadcastsViewController.h; path = ViewControllers/BroadcastsViewController.h; sourceTree = "<group>"; };
 		D8A0274A1C8B527600715277 /* BroadcastsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BroadcastsViewController.m; path = ViewControllers/BroadcastsViewController.m; sourceTree = "<group>"; };
 		D8A0EFD31C4C130C0006B910 /* DrawerCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DrawerCell.h; path = Cells/DrawerCell.h; sourceTree = "<group>"; };
@@ -142,8 +139,6 @@
 		D8A0EFED1C4C70ED0006B910 /* LiveRosaryAuthenticationClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LiveRosaryAuthenticationClient.m; path = Authentication/LiveRosaryAuthenticationClient.m; sourceTree = "<group>"; };
 		D8A0EFF71C4F2B1F0006B910 /* AudioManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AudioManager.h; path = Managers/AudioManager.h; sourceTree = "<group>"; };
 		D8A0EFF81C4F2B1F0006B910 /* AudioManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AudioManager.m; path = Managers/AudioManager.m; sourceTree = "<group>"; };
-		D8A1B9021C75628300CEE8D0 /* BroadcastsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BroadcastsView.h; path = Views/BroadcastsView.h; sourceTree = "<group>"; };
-		D8A1B9031C75628300CEE8D0 /* BroadcastsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BroadcastsView.m; path = Views/BroadcastsView.m; sourceTree = "<group>"; };
 		D8A1B9071C7568FF00CEE8D0 /* BroadcastCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = BroadcastCell.xib; path = Cells/BroadcastCell.xib; sourceTree = "<group>"; };
 		D8A1B9091C75779F00CEE8D0 /* LRAdminMainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LRAdminMainViewController.h; path = ViewControllers/LRAdminMainViewController.h; sourceTree = "<group>"; };
 		D8A1B90A1C75779F00CEE8D0 /* LRAdminMainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LRAdminMainViewController.m; path = ViewControllers/LRAdminMainViewController.m; sourceTree = "<group>"; };
@@ -281,9 +276,6 @@
 			children = (
 				D8431A221C75269B0061A3CB /* F3BarGauge.h */,
 				D8431A231C75269B0061A3CB /* F3BarGauge.m */,
-				D8A1B9021C75628300CEE8D0 /* BroadcastsView.h */,
-				D8A1B9031C75628300CEE8D0 /* BroadcastsView.m */,
-				D8A027471C8B4DE700715277 /* BroadcastsView.xib */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -521,7 +513,6 @@
 			files = (
 				D820FB141C4452A9000899DB /* LaunchScreen.storyboard in Resources */,
 				D8A1B9081C7568FF00CEE8D0 /* BroadcastCell.xib in Resources */,
-				D8A027481C8B4DE700715277 /* BroadcastsView.xib in Resources */,
 				D820FB111C4452A9000899DB /* Assets.xcassets in Resources */,
 				D820FB0F1C4452A9000899DB /* Main.storyboard in Resources */,
 			);
@@ -586,7 +577,6 @@
 				D8427CF01C5F21C500A8CE5F /* LRForgotPasswordViewController.m in Sources */,
 				D8A0EFD81C4C21E80006B910 /* LRUserProfileMainViewController.m in Sources */,
 				D863727A1C5AFEC400D02DC3 /* DBBase.m in Sources */,
-				D8A1B9041C75628300CEE8D0 /* BroadcastsView.m in Sources */,
 				D81AAF7C1C45E29C00B46544 /* LRBaseViewController.m in Sources */,
 				D8A0EFDF1C4C2F1E0006B910 /* UserManager.m in Sources */,
 				D8B72E851C9DECD70081723F /* ViewScheduleSingleCell.m in Sources */,

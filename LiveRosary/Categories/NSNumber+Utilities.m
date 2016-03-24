@@ -69,4 +69,11 @@
     return self.integerValue % 60;
 }
 
+- (NSString*)time
+{
+    int hour = (int)[self hour];
+    int min = (int)[self minute];
+    return [NSString stringWithFormat:@"%d:%02d %@", hour > 12 ? hour - 12 : hour, min, hour > 12 ? @"PM" : @"AM"];
+}
+
 @end
