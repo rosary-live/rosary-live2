@@ -39,7 +39,10 @@
 {
     [super viewDidAppear:animated];
     
-    [self.broadcastViewController update];
+    if([UserManager sharedManager].loggedIn)
+    {
+        [self.broadcastViewController update];
+    }
 }
 
 - (void)didReceiveMemoryWarning {
@@ -79,6 +82,10 @@
     listenViewController.broadcast = broadcast;
     listenViewController.playFromStart = NO;
     [self.navigationController pushViewController:listenViewController animated:YES];
+}
+
+- (void)selectedSchedule:(ScheduleModel *)model
+{
 }
 
 @end

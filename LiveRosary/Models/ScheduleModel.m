@@ -44,7 +44,8 @@
     }
     else
     {
-        return [date compare:[self.start dateForNumber]] == NSOrderedDescending && [date compare:[self.start dateForNumber]]  == NSOrderedAscending;
+        return [date compare:[self.to dateForNumber]] == NSOrderedAscending;
+        //return [date compare:[self.start dateForNumber]] == NSOrderedDescending && [date compare:[self.start dateForNumber]]  == NSOrderedAscending;
     }
 }
 

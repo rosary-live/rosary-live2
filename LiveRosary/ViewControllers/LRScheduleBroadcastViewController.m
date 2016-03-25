@@ -429,11 +429,20 @@ typedef NS_ENUM(NSUInteger, CellType) {
     dict[@"at"] = self.single ? @(0) : self.at;
     dict[@"days"] = self.single ? @(0) : self.days;
     
+    ScheduleModel* schedule = [ScheduleModel new];
+    schedule.type = dict[@"type"];
+    schedule.start = dict[@"start"];
+    schedule.from = dict[@"from"];
+    schedule.to = dict[@"to"];
+    schedule.at = dict[@"at"];
+    schedule.days = dict[@"days"];
+    
     if(self.existing)
     {
         self.hud.labelText = @"Updating Schedule";
         
         dict[@"sid"] = self.scheduledBroadcast.sid;
+        schedule.sid = self.scheduledBroadcast.sid;
         
         [[ScheduleManager sharedManager] updateScheduledBroadcastWithDictionary:dict completion:^(NSError *error) {
             [self.hud hide:YES];
@@ -445,6 +454,8 @@ typedef NS_ENUM(NSUInteger, CellType) {
             }
             else
             {
+                [[ScheduleManager sharedManager] removeReminderForScheduledBroadcast:schedule];
+                [[ScheduleManager sharedManager] addReminderForScheduledBroadcast:schedule broadcaster:YES];
                 [self.navigationController popViewControllerAnimated:YES];
             }
         }];
@@ -463,6 +474,7 @@ typedef NS_ENUM(NSUInteger, CellType) {
             }
             else
             {
+                [[ScheduleManager sharedManager] addReminderForScheduledBroadcast:schedule broadcaster:YES];
                 [self.navigationController popViewControllerAnimated:YES];
             }
         }];
@@ -473,6 +485,8 @@ typedef NS_ENUM(NSUInteger, CellType) {
 {
     if(self.existing)
     {
+        [[ScheduleManager sharedManager] removeReminderForScheduledBroadcast:self.scheduledBroadcast];
+
         self.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
         self.hud.labelText = @"Deleting Schedule";
         

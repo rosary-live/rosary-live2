@@ -160,12 +160,14 @@ typedef NS_ENUM(NSUInteger, Mode) {
 
 - (void)sortScheduledBroadcasts
 {
+    NSSortDescriptor* byDate = [NSSortDescriptor sortDescriptorWithKey:@"nextScheduledBroadcast" ascending:YES];
+    self.scheduledBroadcasts = [self.scheduledBroadcasts sortedArrayUsingDescriptors:@[byDate]];
 }
 
 - (void)filterScheduledBroadcasts
 {
     NSPredicate* filter = [NSPredicate predicateWithBlock:^BOOL(id  _Nonnull evaluatedObject, NSDictionary<NSString *,id> * _Nullable bindings) {
-        return ((ScheduleModel*)evaluatedObject).isActive;
+        return ((ScheduleModel*)evaluatedObject).isActive && ![((ScheduleModel*)evaluatedObject).user isEqualToString:[UserManager sharedManager].email];
     }];
     
     self.scheduledBroadcasts = [self.scheduledBroadcasts filteredArrayUsingPredicate:filter];
@@ -469,11 +471,11 @@ typedef NS_ENUM(NSUInteger, Mode) {
     ScheduleModel* schedule = self.scheduledBroadcasts[row];
     if([[ScheduleManager sharedManager] reminderSetForBroadcastWithId:schedule.sid])
     {
-        [[ScheduleManager sharedManager] removeListenReminderForScheduledBroadcast:schedule];
+        [[ScheduleManager sharedManager] removeReminderForScheduledBroadcast:schedule];
     }
     else
     {
-        [[ScheduleManager sharedManager] addListenReminderForScheduledBroadcast:schedule];
+        [[ScheduleManager sharedManager] addReminderForScheduledBroadcast:schedule broadcaster:NO];
     }
     
     [self.tableView reloadData];

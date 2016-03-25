@@ -59,13 +59,21 @@
     }
 }
 
-- (void)filterScheduledBroadcasts
-{
-}
-
 - (void)sortScheduledBroadcasts
 {
+    NSSortDescriptor* byDate = [NSSortDescriptor sortDescriptorWithKey:@"nextScheduledBroadcast" ascending:YES];
+    self.scheduledBroadcasts = [self.scheduledBroadcasts sortedArrayUsingDescriptors:@[byDate]];
 }
+
+- (void)filterScheduledBroadcasts
+{
+    NSPredicate* filter = [NSPredicate predicateWithBlock:^BOOL(id  _Nonnull evaluatedObject, NSDictionary<NSString *,id> * _Nullable bindings) {
+        return ((ScheduleModel*)evaluatedObject).isActive;
+    }];
+    
+    self.scheduledBroadcasts = [self.scheduledBroadcasts filteredArrayUsingPredicate:filter];
+}
+
 
 #pragma mark - UITableViewDataSource
 

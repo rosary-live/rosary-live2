@@ -11,6 +11,7 @@
 #import "LiveRosaryService.h"
 #import "NSString+Utilities.h"
 #import "UserManager.h"
+#import "NSNumber+Utilities.h"
 
 NSTimeInterval const kMinIntervalBetweenUpdates = 60.0;
 
@@ -146,16 +147,34 @@ NSTimeInterval const kMinIntervalBetweenUpdates = 60.0;
     return NO;
 }
 
-- (void)addListenReminderForScheduledBroadcast:(ScheduleModel*)schedule completion:(void (^)(NSError* error))completion
+- (void)addReminderForScheduledBroadcast:(ScheduleModel*)schedule broadcaster:(BOOL)broadcaster
 {
     if(![self reminderSetForBroadcastWithId:schedule.sid])
     {
         UILocalNotification* localNotification = [[UILocalNotification alloc] init];
-        localNotification.fireDate = [NSDate dateWithTimeIntervalSinceNow:10];
-        localNotification.alertBody = [NSString stringWithFormat:@"Broadcast coming up at "];
+        localNotification.fireDate = [[schedule nextScheduledBroadcast] dateByAddingTimeInterval:-900]; // - 15 minutes
+        
+        if(schedule.isSingle)
+        {
+            localNotification.alertBody = [NSString stringWithFormat:@"Broadcast coming up at %@", [NSDateFormatter localizedStringFromDate:[schedule.start dateForNumber] dateStyle:NSDateFormatterNoStyle timeStyle:NSDateFormatterShortStyle]];
+        }
+        else
+        {
+            localNotification.alertBody = [NSString stringWithFormat:@"Broadcast coming up at %@", [schedule.at time]];
+            localNotification.repeatInterval = NSCalendarUnitYear;
+        }
+        
         localNotification.timeZone = [NSTimeZone defaultTimeZone];
         localNotification.soundName = UILocalNotificationDefaultSoundName;
-        localNotification.userInfo = @{ @"sid": schedule.sid };
+        localNotification.userInfo = @{ @"sid": schedule.sid,
+                                        @"type": schedule.type,
+                                        @"start": schedule.start,
+                                        @"from": schedule.from,
+                                        @"to": schedule.to,
+                                        @"at": schedule.at,
+                                        @"days": schedule.days,
+                                        @"broadcaster": @(broadcaster)};
+        
         [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
         
         NSData* data = [NSKeyedArchiver archivedDataWithRootObject:localNotification];
@@ -164,7 +183,7 @@ NSTimeInterval const kMinIntervalBetweenUpdates = 60.0;
     }
 }
 
-- (void)removeListenReminderForScheduledBroadcast:(ScheduleModel*)schedule  completion:(void (^)(NSError* error))completion
+- (void)removeReminderForScheduledBroadcast:(ScheduleModel*)schedule
 {
     NSData* data = [[NSUserDefaults standardUserDefaults] objectForKey:[self reminderUserDefaultKeyForId:schedule.sid]];
     if(data != nil)
@@ -177,6 +196,41 @@ NSTimeInterval const kMinIntervalBetweenUpdates = 60.0;
     }
 }
 
+- (void)cleanupNotifications
+{
+    NSArray<UILocalNotification *>* notifications = [UIApplication sharedApplication].scheduledLocalNotifications;
+    NSLog(@"notifications: %@", notifications);
+    for(UILocalNotification* notification in notifications)
+    {
+        if(notification.userInfo[@"sid"] != nil)
+        {
+            ScheduleModel* schedule = [ScheduleModel new];
+            schedule.sid = notification.userInfo[@"sid"];
+            schedule.type = notification.userInfo[@"type"];
+            schedule.start = notification.userInfo[@"start"];
+            schedule.from = notification.userInfo[@"from"];
+            schedule.to = notification.userInfo[@"to"];
+            schedule.at = notification.userInfo[@"at"];
+            schedule.days = notification.userInfo[@"days"];
+            
+            BOOL broadcaster = notification.userInfo[@"broadcaster"] ? ((NSNumber*)notification.userInfo[@"broadcaster"]).boolValue : NO;
+            
+            if(schedule.isRecurring)
+            {
+                if([[NSDate date] compare:notification.fireDate] == NSOrderedDescending)
+                {
+                    [self removeReminderForScheduledBroadcast:schedule];
+                    
+                    if(schedule.isActive)
+                    {
+                        [self addReminderForScheduledBroadcast:schedule broadcaster:broadcaster];
+                    }
+                }
+            }
+        }
+    }
+}
+
 - (void)configureNotifications
 {
     UIUserNotificationType types = UIUserNotificationTypeSound | UIUserNotificationTypeAlert;
@@ -186,6 +240,7 @@ NSTimeInterval const kMinIntervalBetweenUpdates = 60.0;
 
 - (void)handleLocalNotification:(UILocalNotification*)notification
 {
+    [UIAlertView bk_showAlertViewWithTitle:@"Reminder" message:notification.alertBody cancelButtonTitle:@"Ok" otherButtonTitles:nil handler:nil];
 }
 
 @end
