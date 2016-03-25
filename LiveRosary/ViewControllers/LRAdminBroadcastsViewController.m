@@ -24,7 +24,7 @@
 
     [self addBroadcasts];
     
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self.broadcastViewController action:@selector(updateBroadcasts)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self.broadcastViewController action:@selector(update)];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -62,6 +62,7 @@
     self.broadcastViewController = [BroadcastsViewController instantiate];
     self.broadcastViewController.delegate = self;
     self.broadcastViewController.liveOnly = NO;
+    self.broadcastViewController.allScheduledBroadcasts = YES;
     
     [self addChildViewController:self.broadcastViewController];
     [self.view addSubview:self.broadcastViewController.view];

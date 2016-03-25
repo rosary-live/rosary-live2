@@ -166,11 +166,14 @@ typedef NS_ENUM(NSUInteger, Mode) {
 
 - (void)filterScheduledBroadcasts
 {
-    NSPredicate* filter = [NSPredicate predicateWithBlock:^BOOL(id  _Nonnull evaluatedObject, NSDictionary<NSString *,id> * _Nullable bindings) {
-        return ((ScheduleModel*)evaluatedObject).isActive && ![((ScheduleModel*)evaluatedObject).user isEqualToString:[UserManager sharedManager].email];
-    }];
-    
-    self.scheduledBroadcasts = [self.scheduledBroadcasts filteredArrayUsingPredicate:filter];
+    if(!self.allScheduledBroadcasts)
+    {
+        NSPredicate* filter = [NSPredicate predicateWithBlock:^BOOL(id  _Nonnull evaluatedObject, NSDictionary<NSString *,id> * _Nullable bindings) {
+            return ((ScheduleModel*)evaluatedObject).isActive && ![((ScheduleModel*)evaluatedObject).user isEqualToString:[UserManager sharedManager].email];
+        }];
+        
+        self.scheduledBroadcasts = [self.scheduledBroadcasts filteredArrayUsingPredicate:filter];
+    }
 }
 
 - (void)addMapPins
