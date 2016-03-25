@@ -117,7 +117,7 @@ NSTimeInterval const kMinIntervalBetweenUpdates = 60.0;
 
 - (NSString*)reminderUserDefaultKeyForId:(NSString*)sid
 {
-    return [NSString stringWithFormat:@"REMINDER-%@", sid];
+    return [NSString stringWithFormat:@"REMINDER-%@-%@", [UserManager sharedManager].email, sid];
 }
 
 - (BOOL)notificationsEnabled

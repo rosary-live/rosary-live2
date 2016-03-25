@@ -407,6 +407,20 @@ typedef NS_ENUM(NSUInteger, CellType) {
 
 - (IBAction)onSave:(id)sender
 {
+    if(!self.single)
+    {
+        if([self.from compare:self.to] != NSOrderedAscending)
+        {
+            [UIAlertView bk_showAlertViewWithTitle:@"Error" message:@"The End Date must be after the Start Date." cancelButtonTitle:@"Ok" otherButtonTitles:nil handler:nil];
+            return;
+        }
+        else if(self.days.integerValue == 0)
+        {
+            [UIAlertView bk_showAlertViewWithTitle:@"Error" message:@"You must select at least one day." cancelButtonTitle:@"Ok" otherButtonTitles:nil handler:nil];
+            return;
+        }
+    }
+    
     self.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
 
     NSDictionary* baseDict = @{
@@ -474,6 +488,8 @@ typedef NS_ENUM(NSUInteger, CellType) {
             }
             else
             {
+                schedule.sid = sid;
+
                 [[ScheduleManager sharedManager] addReminderForScheduledBroadcast:schedule broadcaster:YES];
                 [self.navigationController popViewControllerAnimated:YES];
             }
