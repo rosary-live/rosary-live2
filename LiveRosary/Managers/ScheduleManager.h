@@ -23,7 +23,10 @@
 - (void)removeScheduledBroadcastWithId:(NSString*)sid completion:(void (^)(NSError* error))completion;
 
 - (BOOL)reminderSetForBroadcastWithId:(NSString*)sid;
-- (void)addListenReminderForBroadcastWithId:(NSString*)sid completion:(void (^)(NSError* error))completion;
-- (void)removeListenReminderForBroadcastWithId:(NSString*)sid completion:(void (^)(NSError* error))completion;
+- (void)addListenReminderForScheduledBroadcast:(ScheduleModel*)schedule;
+- (void)removeListenReminderForScheduledBroadcast:(ScheduleModel*)schedule;
+
+- (void)configureNotifications;
+- (void)handleLocalNotification:(UILocalNotification*)notification;
 
 @end

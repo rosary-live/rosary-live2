@@ -39,9 +39,12 @@
 
 @property (nonatomic, readonly) BOOL isSingle;
 @property (nonatomic, readonly) BOOL isRecurring;
+@property (nonatomic, readonly) BOOL isActive;
 
 @property (nonatomic, readonly) CLLocationCoordinate2D coordinate;
 @property (nonatomic, readonly, copy, nullable) NSString* title;
 @property (nonatomic, readonly, copy, nullable) NSString* subtitle;
+
+- (NSDate*)nextScheduledBroadcast;
 
 @end

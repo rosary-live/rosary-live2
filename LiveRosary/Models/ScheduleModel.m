@@ -34,6 +34,20 @@
     return [self.type isEqualToString:@"recurring"];
 }
 
+- (BOOL)isActive
+{
+    NSDate* date = [NSDate date];
+    
+    if(self.isSingle)
+    {
+        return [date compare:[self.start dateForNumber]] == NSOrderedAscending;
+    }
+    else
+    {
+        return [date compare:[self.start dateForNumber]] == NSOrderedDescending && [date compare:[self.start dateForNumber]]  == NSOrderedAscending;
+    }
+}
+
 #pragma mark - MKAnnotation
 
 - (CLLocationCoordinate2D)coordinate
@@ -56,6 +70,58 @@
     {
         return [NSString stringWithFormat:@"%@ - %@", [NSDateFormatter localizedStringFromDate:[self.from dateForNumber] dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterNoStyle], [NSDateFormatter localizedStringFromDate:[self.to dateForNumber] dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterNoStyle]];
     }
+}
+
+- (NSDate*)scheduledTimeForDate:(NSDate*)date
+{
+    NSDateComponents* comps = [[NSCalendar currentCalendar] components:NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay | NSCalendarUnitHour | NSCalendarUnitMinute  fromDate:date];
+    comps.hour = [self.at hour];
+    comps.minute = [self.at minute];
+    comps.second = 0;
+    return [[NSCalendar currentCalendar] dateFromComponents:comps];
+}
+
+- (NSDate*)nextScheduledBroadcast
+{
+    if(self.isActive)
+    {
+        if(self.isSingle)
+        {
+            return [self.start dateForNumber];
+        }
+        else
+        {
+            NSDate* now = [NSDate date];
+            NSDateComponents* comps = [[NSCalendar currentCalendar] components:NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitWeekday fromDate:now];
+            
+            NSInteger currentWeekday = comps.weekday;
+            NSNumber* currentTime = @(comps.hour * 60 + comps.minute);
+            
+            for(NSInteger idx = currentWeekday; idx < currentWeekday + 7; idx++)
+            {
+                NSInteger weekday = idx >= 7 ? idx - 7 : idx;
+                if([self.days dayOn:weekday])
+                {
+                    if(idx == 0)
+                    {
+                        if(currentTime.integerValue < self.at.integerValue)
+                        {
+                            return [self scheduledTimeForDate:now];
+                        }
+                    }
+                    else
+                    {
+                        NSDateComponents *dayComponent = [[NSDateComponents alloc] init];
+                        dayComponent.day = idx;
+                        NSDate* weekdayDate = [[NSCalendar currentCalendar] dateByAddingComponents:dayComponent toDate:now options:0];
+                        return [self scheduledTimeForDate:weekdayDate];
+                    }
+                }
+            }
+        }
+    }
+    
+    return nil;
 }
 
 @end

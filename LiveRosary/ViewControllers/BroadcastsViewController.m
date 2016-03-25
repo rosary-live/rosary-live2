@@ -164,6 +164,11 @@ typedef NS_ENUM(NSUInteger, Mode) {
 
 - (void)filterScheduledBroadcasts
 {
+    NSPredicate* filter = [NSPredicate predicateWithBlock:^BOOL(id  _Nonnull evaluatedObject, NSDictionary<NSString *,id> * _Nullable bindings) {
+        return ((ScheduleModel*)evaluatedObject).isActive;
+    }];
+    
+    self.scheduledBroadcasts = [self.scheduledBroadcasts filteredArrayUsingPredicate:filter];
 }
 
 - (void)addMapPins
@@ -464,11 +469,11 @@ typedef NS_ENUM(NSUInteger, Mode) {
     ScheduleModel* schedule = self.scheduledBroadcasts[row];
     if([[ScheduleManager sharedManager] reminderSetForBroadcastWithId:schedule.sid])
     {
-        [[ScheduleManager sharedManager] removeListenReminderForBroadcastWithId:schedule.sid completion:nil];
+        [[ScheduleManager sharedManager] removeListenReminderForScheduledBroadcast:schedule];
     }
     else
     {
-        [[ScheduleManager sharedManager] addListenReminderForBroadcastWithId:schedule.sid completion:nil];
+        [[ScheduleManager sharedManager] addListenReminderForScheduledBroadcast:schedule];
     }
     
     [self.tableView reloadData];
