@@ -49,7 +49,6 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     [self.window setRootViewController:self.drawerController];
     
-    [self updateConfigFromServer];
     [[ScheduleManager sharedManager] configureNotifications];
     
 //    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -91,6 +90,7 @@
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
     
+    [self updateConfigFromServer];
     [[ScheduleManager sharedManager] cleanupNotifications];
 }
 
@@ -107,7 +107,7 @@
 - (void)updateConfigFromServer
 {
     [[ConfigModel sharedInstance] loadConfigWithCompletion:^(NSError *error) {
-        DDLogInfo(@"Got config: compressionBitRat: %d  maxBroadcastSeconds: %d  sampleRate: %d  segmentSizeSeconds: %d", (int)[ConfigModel sharedInstance].compressionBitRate, (int)[ConfigModel sharedInstance].maxBroadcastSeconds, (int)[ConfigModel sharedInstance].sampleRate, (int)[ConfigModel sharedInstance].segmentSizeSeconds);
+        DDLogInfo(@"Got config:  maxBroadcastSeconds: %d  sampleRate: %d  segmentSizeSeconds: %d", (int)[ConfigModel sharedInstance].maxBroadcastSeconds, (int)[ConfigModel sharedInstance].sampleRate, (int)[ConfigModel sharedInstance].segmentSizeSeconds);
     }];
 }
 

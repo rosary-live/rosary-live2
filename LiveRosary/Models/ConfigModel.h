@@ -15,7 +15,9 @@
 @property (nonatomic, readonly) NSInteger sampleRate;
 @property (nonatomic, readonly) double segmentSizeSeconds;
 @property (nonatomic, readonly) NSInteger maxBroadcastSeconds;
-@property (nonatomic, readonly) NSInteger compressionBitRate;
+@property (nonatomic, readonly) NSInteger slideShowStartDelay;
+@property (nonatomic, readonly) NSInteger slideShowChangeInterval;
+@property (nonatomic, strong, readonly) NSArray* slideImageURLs;
 
 + (instancetype)sharedInstance;
 

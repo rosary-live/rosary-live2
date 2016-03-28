@@ -36,10 +36,11 @@ NSString * const UserDefaultsKeyConfigSettings = @"ConfigSettings";
         else
         {
             // Set defaults
-            _compressionBitRate = 10000;
             _maxBroadcastSeconds = 1800;
             _sampleRate = 11025;
             _segmentSizeSeconds = 5.0;
+            _slideShowStartDelay = 5;
+            _slideShowChangeInterval = 10;
         }
     }
     return self;
@@ -79,6 +80,9 @@ NSString * const UserDefaultsKeyConfigSettings = @"ConfigSettings";
     _maxBroadcastSeconds = ((NSNumber*)configDict[@"maxBroadcastSeconds"]).integerValue;
     _sampleRate = ((NSNumber*)configDict[@"sampleRate"]).integerValue;
     _segmentSizeSeconds = ((NSNumber*)configDict[@"segmentSizeSeconds"]).doubleValue;
+    _slideShowStartDelay = ((NSNumber*)configDict[@"slideShowStartDelay"]).integerValue;
+    _slideShowChangeInterval = ((NSNumber*)configDict[@"slideShowChangeInterval"]).integerValue;
+    _slideImageURLs = configDict[@"slideImageURLs"];
 }
 
 @end

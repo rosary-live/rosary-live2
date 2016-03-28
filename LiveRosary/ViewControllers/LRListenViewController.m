@@ -11,6 +11,9 @@
 #import "DBBroadcast.h"
 #import "NSNumber+Utilities.h"
 #import <MBProgressHUD/MBProgressHUD.h>
+#import "SlideShow.h"
+#import "ConfigModel.h"
+#import <SDWebImage/UIImageView+WebCache.h>
 
 @interface LRListenViewController () <BroadcastManagerDelegate>
 
@@ -20,6 +23,8 @@
 @property (nonatomic, weak) IBOutlet UILabel* date;
 @property (nonatomic, weak) IBOutlet UILabel* location;
 @property (nonatomic, weak) IBOutlet UILabel* status;
+@property (nonatomic, weak) IBOutlet SlideShow* slideShow;
+@property (nonatomic, weak) IBOutlet UIButton* resumeSlideShow;
 
 @property (nonnull, strong) MBProgressHUD *hud;
 
@@ -39,6 +44,10 @@
     self.location.text = [NSString stringWithFormat:@"%@, %@ %@", self.broadcast.city, self.broadcast.state, self.broadcast.country];
     self.date.text = [NSDateFormatter localizedStringFromDate:[self.broadcast.updated dateForNumber] dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterShortStyle];
     self.status.text = @"Loading";
+    
+    NSString* urlString = [NSString stringWithFormat:@"https://s3.amazonaws.com/liverosaryavatars/%@", [self.broadcast.user stringByReplacingOccurrencesOfString:@"@" withString:@"-"]];
+    [self.avatar sd_setImageWithURL:[NSURL URLWithString:urlString] placeholderImage:[UIImage imageNamed:@"AvatarImage"] options:0];
+
     
     self.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     self.hud.labelText = @"Loading";
@@ -69,6 +78,14 @@
             }
         });
     }];
+    
+    self.slideShow.changeInterval = [ConfigModel sharedInstance].slideShowChangeInterval;
+    self.resumeSlideShow.hidden = YES;
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)([ConfigModel sharedInstance].slideShowStartDelay * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self startSlideShow];
+        self.resumeSlideShow.hidden = NO;
+    });
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -81,6 +98,11 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (IBAction)onResumeSlideShow:(id)sender
+{
+    [self startSlideShow];
 }
 
 /*
@@ -99,7 +121,39 @@
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         self.status.text = @"Broadcast Has Ended";
+        [self stopSlideShow];
+        self.resumeSlideShow.hidden = YES;
     });
+}
+
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
+{
+    if(!self.slideShow.hidden)
+    {
+        [self stopSlideShow];
+    }
+}
+
+- (void)startSlideShow
+{
+    self.slideShow.alpha = 0.0;
+    self.slideShow.hidden = NO;
+    [self.slideShow start];
+    [[self navigationController] setNavigationBarHidden:YES animated:YES];
+    [UIView animateWithDuration:0.5 animations:^{
+        self.slideShow.alpha = 1.0;
+    }];
+}
+
+- (void)stopSlideShow
+{
+    [self.slideShow stop];
+    [UIView animateWithDuration:1.0 animations:^{
+        self.slideShow.alpha = 0.0;
+    } completion:^(BOOL finished) {
+        self.slideShow.hidden = YES;
+        [[self navigationController] setNavigationBarHidden:NO animated:YES];
+    }];
 }
 
 @end

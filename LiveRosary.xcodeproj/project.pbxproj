@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		975C1B3D1CA9873D009536CF /* SlideShow.m in Sources */ = {isa = PBXBuildFile; fileRef = 975C1B3C1CA9873D009536CF /* SlideShow.m */; };
 		D81AAF7C1C45E29C00B46544 /* LRBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D81AAF7B1C45E29C00B46544 /* LRBaseViewController.m */; };
 		D820FB061C4452A9000899DB /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D820FB051C4452A9000899DB /* main.m */; };
 		D820FB091C4452A9000899DB /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D820FB081C4452A9000899DB /* AppDelegate.m */; };
@@ -69,6 +70,8 @@
 
 /* Begin PBXFileReference section */
 		0A322FD56E2A135557AC420B /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
+		975C1B3B1CA9873D009536CF /* SlideShow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SlideShow.h; path = Views/SlideShow.h; sourceTree = "<group>"; };
+		975C1B3C1CA9873D009536CF /* SlideShow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SlideShow.m; path = Views/SlideShow.m; sourceTree = "<group>"; };
 		BD4753DF687E71C09BECA0B1 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		D81AAF7A1C45E29C00B46544 /* LRBaseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LRBaseViewController.h; path = ViewControllers/LRBaseViewController.h; sourceTree = "<group>"; };
 		D81AAF7B1C45E29C00B46544 /* LRBaseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LRBaseViewController.m; path = ViewControllers/LRBaseViewController.m; sourceTree = "<group>"; };
@@ -276,6 +279,8 @@
 			children = (
 				D8431A221C75269B0061A3CB /* F3BarGauge.h */,
 				D8431A231C75269B0061A3CB /* F3BarGauge.m */,
+				975C1B3B1CA9873D009536CF /* SlideShow.h */,
+				975C1B3C1CA9873D009536CF /* SlideShow.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -597,6 +602,7 @@
 				D8427CF41C601BDA00A8CE5F /* ConfigModel.m in Sources */,
 				D820FB091C4452A9000899DB /* AppDelegate.m in Sources */,
 				D84A21171C8E6CD0006C4D63 /* LRChangePasswordViewController.m in Sources */,
+				975C1B3D1CA9873D009536CF /* SlideShow.m in Sources */,
 				D863727D1C5AFED900D02DC3 /* DBBroadcast.m in Sources */,
 				D86372731C5ADEF900D02DC3 /* BroadcastModel.m in Sources */,
 				D8427CEA1C5F1FAC00A8CE5F /* LRCreateUserViewController.m in Sources */,
