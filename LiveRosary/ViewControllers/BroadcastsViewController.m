@@ -37,8 +37,11 @@ typedef NS_ENUM(NSUInteger, Mode) {
 
 @property (nonatomic, strong) UIPickerView* languagePickerView;
 
-@property (nonatomic, strong) NSArray<BroadcastModel *> *broadcasts;
-@property (nonatomic, strong) NSArray<ScheduleModel *> *scheduledBroadcasts;
+@property (nonatomic, strong) NSArray<BroadcastModel *>* fullBroadcasts;
+@property (nonatomic, strong) NSArray<BroadcastModel *>* broadcasts;
+
+@property (nonatomic, strong) NSArray<ScheduleModel *>* fullScheduledBroadcasts;
+@property (nonatomic, strong) NSArray<ScheduleModel *>* scheduledBroadcasts;
 
 @property (nonatomic, strong) NSMutableArray<NSString*>* languages;
 @property (nonatomic, strong) CLLocation* currentLocation;
@@ -84,7 +87,7 @@ typedef NS_ENUM(NSUInteger, Mode) {
 -(void)addLanguagePickerView
 {
     self.languages = [[UserManager sharedManager].languages mutableCopy];
-    [self.languages insertObject:@"All Languages" atIndex:0];
+    [self.languages insertObject:ALL_LANGUAGES atIndex:0];
     
     self.languagePickerView = [[UIPickerView alloc] init];
     self.languagePickerView.dataSource = self;
@@ -117,7 +120,7 @@ typedef NS_ENUM(NSUInteger, Mode) {
 - (void)updateBroadcasts
 {
     [[DBBroadcast sharedInstance] updateBroadcastsWithCompletion:^(NSArray<BroadcastModel *> *broadcasts, NSError *error) {
-        self.broadcasts = broadcasts;
+        self.fullBroadcasts = broadcasts;
         [self filterBroadcasts];
         [self sortBroadcasts];
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -130,7 +133,7 @@ typedef NS_ENUM(NSUInteger, Mode) {
 - (void)updateScheduledBroadcasts
 {
     [[ScheduleManager sharedManager] allScheduledBroadcastsWithCompletion:^(NSArray<ScheduleModel *> *scheduledBroadcasts, NSError *error) {
-        self.scheduledBroadcasts = scheduledBroadcasts;
+        self.fullScheduledBroadcasts = scheduledBroadcasts;
         [self filterScheduledBroadcasts];
         [self sortScheduledBroadcasts];
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -148,10 +151,22 @@ typedef NS_ENUM(NSUInteger, Mode) {
 
 - (void)filterBroadcasts
 {
+    self.broadcasts = [self.fullBroadcasts copy];
+
     if(self.liveOnly)
     {
         NSPredicate* filter = [NSPredicate predicateWithBlock:^BOOL(id  _Nonnull evaluatedObject, NSDictionary<NSString *,id> * _Nullable bindings) {
             return ((BroadcastModel*)evaluatedObject).isLive;
+        }];
+        
+        self.broadcasts = [self.broadcasts filteredArrayUsingPredicate:filter];
+    }
+
+    // Language filter
+    if(![self.language.text isEqualToString:ALL_LANGUAGES])
+    {
+        NSPredicate* filter = [NSPredicate predicateWithBlock:^BOOL(id  _Nonnull evaluatedObject, NSDictionary<NSString *,id> * _Nullable bindings) {
+            return [((BroadcastModel*)evaluatedObject).language isEqualToString:self.language.text];
         }];
         
         self.broadcasts = [self.broadcasts filteredArrayUsingPredicate:filter];
@@ -166,10 +181,22 @@ typedef NS_ENUM(NSUInteger, Mode) {
 
 - (void)filterScheduledBroadcasts
 {
+    self.scheduledBroadcasts = [self.fullScheduledBroadcasts copy];
+    
     if(!self.allScheduledBroadcasts)
     {
         NSPredicate* filter = [NSPredicate predicateWithBlock:^BOOL(id  _Nonnull evaluatedObject, NSDictionary<NSString *,id> * _Nullable bindings) {
             return ((ScheduleModel*)evaluatedObject).isActive && ![((ScheduleModel*)evaluatedObject).user isEqualToString:[UserManager sharedManager].email];
+        }];
+        
+        self.scheduledBroadcasts = [self.scheduledBroadcasts filteredArrayUsingPredicate:filter];
+    }
+    
+    // Language filter
+    if(![self.language.text isEqualToString:ALL_LANGUAGES])
+    {
+        NSPredicate* filter = [NSPredicate predicateWithBlock:^BOOL(id  _Nonnull evaluatedObject, NSDictionary<NSString *,id> * _Nullable bindings) {
+            return [((ScheduleModel*)evaluatedObject).language isEqualToString:self.language.text];
         }];
         
         self.scheduledBroadcasts = [self.scheduledBroadcasts filteredArrayUsingPredicate:filter];
@@ -388,6 +415,9 @@ typedef NS_ENUM(NSUInteger, Mode) {
 - (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
 {
     [self.language setText:[self.languages objectAtIndex:row]];
+    [self filterBroadcasts];
+    [self filterScheduledBroadcasts];
+    [self.tableView reloadData];
 }
 
 - (NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component

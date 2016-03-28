@@ -20,6 +20,8 @@
 #define DDLogInfo(frmt, ...) NSLog(frmt, ##__VA_ARGS__);
 #define DDLogDebug(frmt, ...) NSLog(frmt, ##__VA_ARGS__);
 
+#define ALL_LANGUAGES @"All Languages"
+
 #import <BlocksKit/BlocksKit.h>
 #import <BlocksKit+UIKit.h>
 #import <extobjc.h>
