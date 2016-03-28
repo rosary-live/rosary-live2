@@ -40,6 +40,11 @@ NSString * const AEAudioFileWriterErrorDomain = @"com.theamazingaudioengine.AEAu
 @implementation AEAudioFileWriter
 @synthesize path = _path;
 
+- (ExtAudioFileRef)audioFileRef
+{
+    return _audioFile;
+}
+
 + (BOOL)AACEncodingAvailable {
 #if !TARGET_OS_IPHONE
     return YES;

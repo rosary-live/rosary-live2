@@ -29,10 +29,10 @@ typedef NS_ENUM(NSUInteger, BroadcastState) {
 
 + (instancetype)sharedManager;
 
-- (NSString*)startBroadcasting;
+- (void)startBroadcastingWithCompletion:(void (^)(NSString* brodcastId, BOOL insufficientBandwidth))completion;
 - (void)stopBroadcasting;
 
-- (void)startPlayingBroadcastWithId:(NSString*)broadcastId atSequence:(NSInteger)sequence;
+- (void)startPlayingBroadcastWithId:(NSString*)broadcastId atSequence:(NSInteger)sequence completion:(void (^)(BOOL insufficientBandwidth))completion;
 - (void)stopPlaying;
 
 @end

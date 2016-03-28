@@ -13,7 +13,7 @@
 @property (nonatomic, readonly, getter=isLoaded) BOOL loaded;
 
 @property (nonatomic, readonly) NSInteger sampleRate;
-@property (nonatomic, readonly) NSInteger segmentSizeSeconds;
+@property (nonatomic, readonly) double segmentSizeSeconds;
 @property (nonatomic, readonly) NSInteger maxBroadcastSeconds;
 @property (nonatomic, readonly) NSInteger compressionBitRate;
 

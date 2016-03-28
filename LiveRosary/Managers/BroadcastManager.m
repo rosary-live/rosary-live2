@@ -32,30 +32,38 @@
     return instance;
 }
 
-- (NSString*)startBroadcasting
+- (void)startBroadcastingWithCompletion:(void (^)(NSString* brodcastId, BOOL insufficientBandwidth))completion
 {
     if(self.state == BroadcastStateIdle)
     {
-        _state = BroadcastStateBroadcasting;
-        _broadcastId = [NSString UUID];
-        
-        [TransferManager sharedManager].delegate = self;
-        [[TransferManager sharedManager] startSending:self.broadcastId];
-        NSString* filename = [NSString filenameForBroadcastId:self.broadcastId andSequence:0];
-        [[self infoDataForBroadcastId:self.broadcastId] writeToFile:filename atomically:NO];
-        [[TransferManager sharedManager] addSequenceFile:filename lastFile:NO];
-        
-        [AudioManager sharedManager].delegate = self;
-        [AudioManager sharedManager].sampleRate = [ConfigModel sharedInstance].sampleRate;
-        [AudioManager sharedManager].channels = 1;
-        [AudioManager sharedManager].secondsPerSegment = [ConfigModel sharedInstance].segmentSizeSeconds;
-        [[AudioManager sharedManager] startRecording:self.broadcastId];
-        
-        return self.broadcastId;
-    }
-    else
-    {
-        return nil;
+        [[TransferManager sharedManager] checkBroadcastBandwidthWithCompletion:^(double averageBytesPerSecond) {
+            float minimumBytesPerSecond = (float)[ConfigModel sharedInstance].sampleRate / 11025.0f * 4000.0f * 3;
+            if(averageBytesPerSecond > minimumBytesPerSecond)
+            {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    _state = BroadcastStateBroadcasting;
+                    _broadcastId = [NSString UUID];
+                    
+                    [TransferManager sharedManager].delegate = self;
+                    [[TransferManager sharedManager] startSending:self.broadcastId];
+                    NSString* filename = [NSString filenameForBroadcastId:self.broadcastId andSequence:0];
+                    [[self infoDataForBroadcastId:self.broadcastId] writeToFile:filename atomically:NO];
+                    [[TransferManager sharedManager] addSequenceFile:filename lastFile:NO];
+                    
+                    [AudioManager sharedManager].delegate = self;
+                    [AudioManager sharedManager].sampleRate = [ConfigModel sharedInstance].sampleRate;
+                    [AudioManager sharedManager].channels = 1;
+                    [AudioManager sharedManager].secondsPerSegment = [ConfigModel sharedInstance].segmentSizeSeconds;
+                    [[AudioManager sharedManager] startRecording:self.broadcastId];
+                    
+                    safeBlock(completion, _broadcastId, NO);
+                });
+            }
+            else
+            {
+                safeBlock(completion, nil, YES);
+            }
+        }];
     }
 }
 
@@ -67,20 +75,34 @@
     }
 }
 
-- (void)startPlayingBroadcastWithId:(NSString*)broadcastId atSequence:(NSInteger)sequence
+- (void)startPlayingBroadcastWithId:(NSString*)broadcastId atSequence:(NSInteger)sequence completion:(void (^)(BOOL insufficientBandwidth))completion
 {
     if(self.state == BroadcastStateIdle)
     {
-        _state = BroadcastStatePlaying;
-        _startSequence = sequence;
-        
-        [AudioManager sharedManager].delegate = self;
-        [AudioManager sharedManager].sampleRate = 11025.0;
-        [AudioManager sharedManager].channels = 1;
-        [TransferManager sharedManager].delegate = self;
-        [[TransferManager sharedManager] startReceiving:broadcastId atSequence:sequence];
-        
-        [[AudioManager sharedManager] prepareToPlay];
+        [[TransferManager sharedManager] checkListenBandwidthWithCompletion:^(double averageBytesPerSecond) {
+            float minimumBytesPerSecond = (float)[ConfigModel sharedInstance].sampleRate / 11025.0f * 4000.0f * 3;
+            if(averageBytesPerSecond > minimumBytesPerSecond)
+            {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    _state = BroadcastStatePlaying;
+                    _startSequence = sequence;
+                    
+                    [AudioManager sharedManager].delegate = self;
+                    [AudioManager sharedManager].sampleRate = [ConfigModel sharedInstance].sampleRate;
+                    [AudioManager sharedManager].channels = 1;
+                    [TransferManager sharedManager].delegate = self;
+                    [[TransferManager sharedManager] startReceiving:broadcastId atSequence:sequence];
+                    
+                    [[AudioManager sharedManager] prepareToPlay];
+                    
+                    safeBlock(completion, NO);
+                });
+            }
+            else
+            {
+                safeBlock(completion, YES);
+            }
+        }];
     }
 }
 

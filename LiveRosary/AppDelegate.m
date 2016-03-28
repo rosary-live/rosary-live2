@@ -13,6 +13,8 @@
 #import "ScheduleManager.h"
 #import "TestFairy.h"
 
+#import "TransferManager.h"
+
 @interface AppDelegate ()
 
 @property (nonatomic,strong) MMDrawerController* drawerController;
@@ -49,6 +51,16 @@
     
     [self updateConfigFromServer];
     [[ScheduleManager sharedManager] configureNotifications];
+    
+//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//        [[TransferManager sharedManager] checkBroadcastBandwidthWithCompletion:^(double averageBytesPerSecond) {
+//            NSLog(@"averageBytesPerSecond: %g", averageBytesPerSecond);
+//        }];
+    
+//        [[TransferManager sharedManager] checkListenBandwidthWithCompletion:^(double averageBytesPerSecond) {
+//            NSLog(@"averageBytesPerSecond: %g", averageBytesPerSecond);
+//        }];
+//    });
     
     return YES;
 }

@@ -52,7 +52,16 @@
             if(broadcast.isLive || self.playFromStart)
             {
                 self.status.text = @"Playing";
-                [[BroadcastManager sharedManager] startPlayingBroadcastWithId:self.broadcast.bid atSequence:self.playFromStart ? 1 : broadcast.sequence.integerValue];
+                [[BroadcastManager sharedManager] startPlayingBroadcastWithId:self.broadcast.bid atSequence:self.playFromStart ? 1 : broadcast.sequence.integerValue completion:^(BOOL insufficientBandwidth) {
+                    if(insufficientBandwidth)
+                    {
+                        [UIAlertView bk_showAlertViewWithTitle:nil message:@"Insufficient bandwidth to listen." cancelButtonTitle:@"Ok" otherButtonTitles:nil handler:^(UIAlertView *alertView, NSInteger buttonIndex) {
+                            
+                            [self.navigationController popViewControllerAnimated:YES];
+                        }];
+                    }
+                    
+                }];
             }
             else
             {

@@ -39,7 +39,7 @@ NSString * const UserDefaultsKeyConfigSettings = @"ConfigSettings";
             _compressionBitRate = 10000;
             _maxBroadcastSeconds = 1800;
             _sampleRate = 11025;
-            _segmentSizeSeconds = 5;
+            _segmentSizeSeconds = 5.0;
         }
     }
     return self;
@@ -51,6 +51,7 @@ NSString * const UserDefaultsKeyConfigSettings = @"ConfigSettings";
     AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];
     
     NSMutableURLRequest* request = [[AFJSONRequestSerializer serializer] requestWithMethod:@"GET" URLString:@"https://s3.amazonaws.com/liverosaryweb/config.json" parameters:nil error:nil];
+    request.cachePolicy = NSURLRequestReloadIgnoringLocalCacheData;
     
     NSURLSessionDataTask *dataTask = [manager dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
         if (error) {
@@ -75,10 +76,9 @@ NSString * const UserDefaultsKeyConfigSettings = @"ConfigSettings";
 
 - (void)loadSettingsFromDictionary:(NSDictionary*)configDict
 {
-    for(NSString* key in configDict)
-    {
-        [self setValue:configDict[key] forKey:key];
-    }
+    _maxBroadcastSeconds = ((NSNumber*)configDict[@"maxBroadcastSeconds"]).integerValue;
+    _sampleRate = ((NSNumber*)configDict[@"sampleRate"]).integerValue;
+    _segmentSizeSeconds = ((NSNumber*)configDict[@"segmentSizeSeconds"]).doubleValue;
 }
 
 @end

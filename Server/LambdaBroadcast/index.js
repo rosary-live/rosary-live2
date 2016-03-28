@@ -105,7 +105,7 @@ function process(bucket, key, bid, seq, callback) {
 
 // Filename format
 //	 B077647E-F1A6-419B-906D-065F4E55A58D/1-000003
-// 
+//   test/*
 exports.handler = function(event, context) {
     var bucket = event.Records[0].s3.bucket.name;
     var key = event.Records[0].s3.object.key;
@@ -113,7 +113,14 @@ exports.handler = function(event, context) {
     console.log("key = " + key);
 
     var parts = key.split('/');
-    if(parts.length == 2) {
+    if(parts[0] == "test" && key != "test/")
+    {
+		s3.deleteObject({ Bucket: bucket, Key: key}, function(err, data) {
+			if(err) context.fail({success:false, error:err});
+			else context.succeed({success:true, message:'Deleted test file'});
+		});
+    }
+    else if(parts.length == 2) {
     	process(bucket, key, parts[0], parts[1], function(err, result) {
     		if(err) context.fail({success:false, error:err});
     		else context.succeed({success: true});

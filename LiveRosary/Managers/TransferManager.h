@@ -34,4 +34,7 @@
 - (void)startReceiving:(NSString*)broadcastId atSequence:(NSInteger)sequence;
 - (void)stopReceiving;
 
+- (void)checkBroadcastBandwidthWithCompletion:(void (^)(double averageBytesPerSecond))completion;
+- (void)checkListenBandwidthWithCompletion:(void (^)(double averageBytesPerSecond))completion;
+
 @end

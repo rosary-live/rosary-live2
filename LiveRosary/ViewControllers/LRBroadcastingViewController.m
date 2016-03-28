@@ -33,14 +33,24 @@
 {
     [super viewDidAppear:animated];
     
-    [[BroadcastManager sharedManager] startBroadcasting];
-    
-    self.meterTimer = [NSTimer bk_scheduledTimerWithTimeInterval:0.05 block:^(NSTimer *timer) {
-        Float32 level;
-        Float32 peak;
-        [[AudioManager sharedManager] inputAveragePowerLevel:&level peakHoldLevel:&peak];
-        self.meter.value = pow(10, level/40);
-    } repeats:YES];
+    [[BroadcastManager sharedManager] startBroadcastingWithCompletion:^(NSString *brodcastId, BOOL insufficientBandwidth) {
+        if(insufficientBandwidth)
+        {
+            [UIAlertView bk_showAlertViewWithTitle:nil message:@"Insufficient bandwidth to broadcast." cancelButtonTitle:@"Ok" otherButtonTitles:nil handler:^(UIAlertView *alertView, NSInteger buttonIndex) {
+                
+                [self.navigationController popViewControllerAnimated:YES];
+            }];
+        }
+        else
+        {
+            self.meterTimer = [NSTimer bk_scheduledTimerWithTimeInterval:0.05 block:^(NSTimer *timer) {
+                Float32 level;
+                Float32 peak;
+                [[AudioManager sharedManager] inputAveragePowerLevel:&level peakHoldLevel:&peak];
+                self.meter.value = pow(10, level/40);
+            } repeats:YES];
+        }
+    }];
 }
 
 - (void)viewWillDisappear:(BOOL)animated

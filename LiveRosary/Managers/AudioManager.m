@@ -144,18 +144,67 @@
 {
     self.totalFramesForFile = 0;
     self.fileWriter = [[AEAudioFileWriter alloc] initWithAudioDescription:rawFormat];
+    
     self.currentFileName = [NSString filenameForBroadcastId:self.broadcastId andSequence:self.sequence];
     [self.fileWriter beginWritingToFileAtPath:self.currentFileName fileType:kAudioFileM4AType error:nil];
+
+//    ExtAudioFileRef extAFRef = self.fileWriter.audioFileRef;
+//    AudioConverterRef outConverter;
+//    UInt32 size = sizeof(outConverter);
+//    OSStatus err = ExtAudioFileGetProperty(extAFRef,
+//                                           kExtAudioFileProperty_AudioConverter, &size, &outConverter);
+//    
+//    if (!err) {
+//        
+//        UInt32 outSize;
+//        Boolean outWritable;
+//        AudioConverterGetPropertyInfo(outConverter,
+//                                      kAudioConverterAvailableEncodeBitRates,
+//                                      &outSize,
+//                                      &outWritable);
+//        
+//        AudioValueRange* rates = (AudioValueRange *)malloc(outSize);
+//        err = AudioConverterGetProperty(outConverter, kAudioConverterAvailableEncodeBitRates, &outSize, rates);
+//        
+//        int num = outSize / sizeof(AudioValueRange);
+//        for(int i = 0; i < num; i++)
+//        {
+//            NSLog(@"*** RLT *** %g -> %g", rates[i].mMinimum, rates[i].mMaximum);
+//        }
+//        
+//        free(rates);
+//        
+//        UInt32 prop;
+//        prop = 64000;
+//        err = AudioConverterSetProperty(outConverter,
+//                                  kAudioConverterEncodeBitRate,
+//                                  sizeof(prop), &prop);
+//        
+//        CFArrayRef config = NULL;
+//        err = ExtAudioFileSetProperty(extAFRef,
+//                                      kExtAudioFileProperty_ConverterConfig, sizeof(config), &config);
+//    }
 }
 
 - (void)finishRecordFile
 {
     [self.fileWriter finishWriting];
     
+    NSError *error = nil;
+    NSDictionary *attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:self.currentFileName error:&error];
+    
+    if(!error)
+    {
+        NSNumber *size = [attributes objectForKey:NSFileSize];
+        NSLog(@"*****RLT***** file size %llu", size.unsignedLongLongValue);
+    }
+    
     if(self.delegate != nil && [self.delegate respondsToSelector:@selector(capturedAudioFile:sequence:secondsOfAudio:lastFile:)])
     {
         DDLogDebug(@"Completed file %@  %@", self.currentFileName, !self.isRecording ? @"LAST" : @"");
-        [self.delegate capturedAudioFile:self.currentFileName sequence:self.sequence secondsOfAudio:10 lastFile:!self.isRecording];
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            [self.delegate capturedAudioFile:self.currentFileName sequence:self.sequence secondsOfAudio:self.secondsPerBuffer lastFile:!self.isRecording];
+        });
     }
     
     ++_sequence;
@@ -469,7 +518,7 @@
     aacFormat.mSampleRate = self.sampleRate;
     aacFormat.mFormatID = kAudioFormatMPEG4AAC;
     aacFormat.mChannelsPerFrame = 1;
-    
+        
     UInt32 size = sizeof(aacFormat);
     AudioFormatGetProperty(kAudioFormatProperty_FormatInfo, 0, NULL, &size, &aacFormat);
     

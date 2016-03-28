@@ -45,6 +45,10 @@
     {
         self.sendQueue = [NSMutableArray new];
         self.sendCondition = [NSCondition new];
+        
+        AWSServiceConfiguration* configuration = [UserManager sharedManager].configuration;
+        [AWSS3 registerS3WithConfiguration:configuration forKey:@"TestSender"];
+        
     }
     return self;
 }
@@ -261,6 +265,88 @@
     
     DDLogInfo(@"TransferManager receiveThread stopping");
 
+}
+
+- (CFTimeInterval)uploadTestFileWithSize:(NSInteger)size
+{
+    AWSS3* s3 = [AWSS3 S3ForKey:@"TestSender"];
+    
+    char* bytes = malloc(size);
+    NSData* data = [NSData dataWithBytesNoCopy:bytes length:size];
+    
+    AWSS3PutObjectRequest* putRequest = [AWSS3PutObjectRequest new];
+    putRequest.bucket = @"liverosarybroadcast";
+    putRequest.key = [NSString stringWithFormat:@"test/%@-%d",  [NSString UUID], (int)size];
+    putRequest.contentLength = @(data.length);
+    putRequest.ACL = AWSS3BucketCannedACLPublicRead;
+    putRequest.metadata = @{ @"Test-File": @"1" };
+    putRequest.contentType = @"binary/octet-stream";
+    putRequest.body = data;
+    
+    CFTimeInterval startInterval = CACurrentMediaTime();
+    AWSTask* task = [s3 putObject:putRequest];
+    [task waitUntilFinished];
+    
+    if(task.error)
+    {
+        return 0.0;
+    }
+    else if(task.exception)
+    {
+        return 0.0;
+    }
+    else
+    {
+        return (CFTimeInterval)data.length / (CACurrentMediaTime() - startInterval);
+    }
+
+}
+
+- (void)checkBroadcastBandwidthWithCompletion:(void (^)(double averageBytesPerSecond))completion
+{
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        CFTimeInterval total = 0.0;
+        for(NSInteger i = 0; i < 5; i++)
+        {
+            total += [self uploadTestFileWithSize:(i+1) * 10000];
+        }
+        
+        safeBlock(completion, total / 5.0);
+    });
+}
+
+- (CFTimeInterval)downloadTestFileWithNumber:(NSInteger)number
+{
+    NSURL* url = [NSURL URLWithString:[NSString stringWithFormat:@"https://s3.amazonaws.com/liverosaryweb/test%d", (int)number]];
+    NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL:url];
+    request.cachePolicy = NSURLRequestReloadIgnoringLocalAndRemoteCacheData;
+    request.timeoutInterval = 10;
+
+    NSURLResponse* response;
+    NSError* error;
+    CFTimeInterval startInterval = CACurrentMediaTime();
+    NSData* data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+    if(data != nil && error == nil)
+    {
+        return (CFTimeInterval)data.length / (CACurrentMediaTime() - startInterval);
+    }
+    else
+    {
+        return 0.0;
+    }
+}
+
+- (void)checkListenBandwidthWithCompletion:(void (^)(double averageBytesPerSecond))completion
+{
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        CFTimeInterval total = 0.0;
+        for(NSInteger i = 0; i < 5; i++)
+        {
+            total += [self downloadTestFileWithNumber:i + 1];
+        }
+        
+        safeBlock(completion, total / 5.0);
+    });
 }
 
 #pragma mark - AFURLResponseSerialization
