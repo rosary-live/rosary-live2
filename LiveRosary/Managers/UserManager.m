@@ -56,6 +56,21 @@ NSString * const NotificationUserLoggedOut = @"NotificationUserLoggedOut";
     return self;
 }
 
+- (NSDictionary*)userDictionary
+{
+    return  @{
+              @"email": self.currentUser.email,
+              @"firstName": self.currentUser.firstName,
+              @"lastName": self.currentUser.lastName,
+              @"city": self.currentUser.city,
+              @"state": self.currentUser.state,
+              @"country": self.currentUser.country,
+              @"language": self.currentUser.language,
+              @"lat": self.currentUser.latitude,
+              @"lon": self.currentUser.longitude,
+              };
+}
+
 - (void)populateLanguages
 {
     NSMutableArray<NSString*>* languages = [NSMutableArray new];

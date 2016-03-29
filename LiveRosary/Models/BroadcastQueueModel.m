@@ -141,6 +141,17 @@ NSString * const kBroadcastQueueURL = @"https://sqs.us-east-1.amazonaws.com/7676
     [self sendMessage:messageDict];
 }
 
+- (void)sendUpdateForBroadcastId:(NSString*)bid withDictionary:(NSDictionary*)dictionary
+{
+    NSDictionary* messageDict = @{
+                                  @"type": @"update",
+                                  @"bid": bid,
+                                  @"event": dictionary
+                                  };
+    
+    [self sendMessage:messageDict];
+}
+
 - (void)sendExitForBroadcastId:(NSString*)bid withDictionary:(NSDictionary*)dictionary
 {
     NSDictionary* messageDict = @{
@@ -156,11 +167,24 @@ NSString * const kBroadcastQueueURL = @"https://sqs.us-east-1.amazonaws.com/7676
 {
     AWSSQSSendMessageRequest* req = [AWSSQSSendMessageRequest new];
     req.queueUrl = kBroadcastQueueURL;
-    NSData* jsonData = [NSJSONSerialization  dataWithJSONObject:dictionary options:0 error:nil];
+    NSData* jsonData = [NSJSONSerialization dataWithJSONObject:dictionary options:0 error:nil];
     req.messageBody = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
     req.delaySeconds = 0;
     [[self.sqs sendMessage:req] continueWithBlock:^id _Nullable(AWSTask * _Nonnull task) {
-        return nil;
+        if(task.error)
+        {
+            DDLogError(@"Message send error: %@", task.error);
+        }
+        else if(task.exception)
+        {
+            DDLogError(@"Message send exception: %@", task.exception);
+        }
+        else if(task.result)
+        {
+            DDLogInfo(@"Message sent");
+        }
+        
+        return [AWSTask taskWithResult:nil];
     }];
 }
 

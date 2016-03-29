@@ -14,8 +14,12 @@
 #import "SlideShow.h"
 #import "ConfigModel.h"
 #import <SDWebImage/UIImageView+WebCache.h>
+#import "BroadcastQueueModel.h"
+#import "UserManager.h"
 
-@interface LRListenViewController () <BroadcastManagerDelegate>
+NSString * const kLastIntentionKey = @"LastIntention";
+
+@interface LRListenViewController () <BroadcastManagerDelegate, UITextViewDelegate>
 
 @property (nonatomic, weak) IBOutlet UIImageView* avatar;
 @property (nonatomic, weak) IBOutlet UILabel* name;
@@ -25,8 +29,13 @@
 @property (nonatomic, weak) IBOutlet UILabel* status;
 @property (nonatomic, weak) IBOutlet SlideShow* slideShow;
 @property (nonatomic, weak) IBOutlet UIButton* resumeSlideShow;
+@property (nonatomic, weak) IBOutlet UILabel* intentionLabel;
+@property (nonatomic, weak) IBOutlet UITextView* intention;
 
-@property (nonnull, strong) MBProgressHUD *hud;
+@property (nonatomic, strong) MBProgressHUD *hud;
+
+@property (nonatomic) BOOL editingIntention;
+@property (nonatomic, strong) NSString* lastIntention;
 
 @end
 
@@ -36,6 +45,19 @@
     [super viewDidLoad];
     
     self.navigationController.navigationBar.topItem.title = @"Stop";
+    
+    if(self.playFromStart)
+    {
+        self.intentionLabel.hidden = YES;
+        self.intention.hidden = YES;
+    }
+    else
+    {
+        self.lastIntention = [[NSUserDefaults standardUserDefaults] objectForKey:kLastIntentionKey];
+        if(self.lastIntention == nil) self.lastIntention = @"";
+        
+        self.intention.text = self.lastIntention;
+    }
     
     [BroadcastManager sharedManager].delegate = self;
     
@@ -69,6 +91,15 @@
                             [self.navigationController popViewControllerAnimated:YES];
                         }];
                     }
+                    else
+                    {
+                        if(!self.playFromStart)
+                        {
+                            NSMutableDictionary* userDict = [[UserManager sharedManager].userDictionary mutableCopy];
+                            userDict[@"intention"] = self.intention.text != nil ? self.intention.text : @"";
+                            [[BroadcastQueueModel sharedInstance] sendEnterForBroadcastId:self.broadcast.bid withDictionary:userDict];
+                        }
+                    }
                     
                 }];
             }
@@ -82,22 +113,38 @@
     self.slideShow.changeInterval = [ConfigModel sharedInstance].slideShowChangeInterval;
     self.resumeSlideShow.hidden = YES;
     
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)([ConfigModel sharedInstance].slideShowStartDelay * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [self startSlideShow];
-        self.resumeSlideShow.hidden = NO;
-    });
+    [self startSlideShowTimer];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
     
-    [[BroadcastManager sharedManager] stopPlaying];
+    if(!self.playFromStart)
+    {
+        [[BroadcastManager sharedManager] stopPlaying];
+        [[BroadcastQueueModel sharedInstance] sendExitForBroadcastId:self.broadcast.bid withDictionary:[UserManager sharedManager].userDictionary];
+    }
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)startSlideShowTimer
+{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)([ConfigModel sharedInstance].slideShowStartDelay * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        if(self.editingIntention)
+        {
+            [self startSlideShowTimer];
+        }
+        else
+        {
+            [self startSlideShow];
+            self.resumeSlideShow.hidden = NO;
+        }
+    });
 }
 
 - (IBAction)onResumeSlideShow:(id)sender
@@ -154,6 +201,38 @@
         self.slideShow.hidden = YES;
         [[self navigationController] setNavigationBarHidden:NO animated:YES];
     }];
+}
+
+- (void)textViewDidBeginEditing:(UITextView *)textView
+{
+    self.editingIntention = YES;
+}
+
+- (void)textViewDidEndEditing:(UITextView *)textView
+{
+    self.editingIntention = NO;
+}
+
+- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
+    
+    if([text isEqualToString:@"\n"])
+    {
+        if(![self.lastIntention isEqualToString:self.intention.text])
+        {
+            NSMutableDictionary* userDict = [[UserManager sharedManager].userDictionary mutableCopy];
+            self.lastIntention = self.intention.text;
+            [[NSUserDefaults standardUserDefaults] setObject:self.lastIntention forKey:kLastIntentionKey];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+            
+            userDict[@"intention"] = self.intention.text != nil ? self.intention.text : @"";
+            [[BroadcastQueueModel sharedInstance] sendUpdateForBroadcastId:self.broadcast.bid withDictionary:userDict];
+        }
+        
+        [textView resignFirstResponder];
+        return NO;
+    }
+    
+    return YES;
 }
 
 @end

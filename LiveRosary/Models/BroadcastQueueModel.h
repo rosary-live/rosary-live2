@@ -18,6 +18,7 @@ typedef void (^EventReceive)(NSArray* events);
 - (void)stopReceiving;
 
 - (void)sendEnterForBroadcastId:(NSString*)bid withDictionary:(NSDictionary*)dictionary;
+- (void)sendUpdateForBroadcastId:(NSString*)bid withDictionary:(NSDictionary*)dictionary;
 - (void)sendExitForBroadcastId:(NSString*)bid withDictionary:(NSDictionary*)dictionary;
 
 @end

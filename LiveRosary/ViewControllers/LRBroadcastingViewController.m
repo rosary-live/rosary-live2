@@ -16,9 +16,10 @@
 @interface LRBroadcastingViewController ()
 
 @property (nonatomic, weak) IBOutlet F3BarGauge* meter;
+@property (nonatomic, weak) IBOutlet UITableView* tableView;
 
 @property (nonatomic, strong) NSTimer* meterTimer;
-@property (nonatomic, strong) NSArray* listeners;
+@property (nonatomic, strong) NSMutableArray* listeners;
 
 @end
 
@@ -30,6 +31,9 @@
     self.meter.minLimit = 0.0;
     self.meter.maxLimit = 1.0;
     self.meter.holdPeak = NO;
+    
+    self.listeners = [NSMutableArray new];
+    
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -55,11 +59,46 @@
             
             [[BroadcastQueueModel sharedInstance] startReceivingForBroadcastId:brodcastId event:^(NSArray *events) {
                 NSLog(@"events %@", events);
+                
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    for(NSDictionary* event in events)
+                    {
+                        NSString* type = event[@"type"];
+                        if([type isEqualToString:@"enter"])
+                        {
+                            NSDictionary* listener = event[@"event"];
+                            if([self listerForEmail:listener[@"email"]] == nil)
+                            {
+                                [self.listeners addObject:listener];
+                            }
+                        }
+                        else if([type isEqualToString:@"exit"])
+                        {
+                            NSDictionary* listener = event[@"event"];
+                            NSDictionary* existingListener = [self listerForEmail:listener[@"email"]];
+                            if(existingListener != nil)
+                            {
+                                [self.listeners removeObject:existingListener];
+                            }
+                        }
+                        else if([type isEqualToString:@"update"])
+                        {
+                            NSDictionary* listener = event[@"event"];
+                            NSDictionary* existingListener = [self listerForEmail:listener[@"email"]];
+                            if(existingListener != nil)
+                            {
+                                NSUInteger index = [self.listeners indexOfObject:existingListener];
+                                if(index != NSNotFound)
+                                {
+                                    [self.listeners replaceObjectAtIndex:index withObject:listener];
+                                }
+                            }
+                        }
+                    }
+                    
+                    [self.tableView reloadData];
+                });
             }];
-//
-//            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-//                [[BroadcastQueueModel sharedInstance] sendEnterForBroadcastId:brodcastId withDictionary:@{ @"test": @"this is a test" }];
-//            });
         }
     }];
 }
@@ -85,6 +124,21 @@
     // Pass the selected object to the new view controller.
 }
 */
+
+- (NSDictionary*)listerForEmail:(NSString*)email
+{
+    if(email != nil && email.length > 0)
+    {
+        NSPredicate* byEmail = [NSPredicate predicateWithFormat:@"email == %@", email];
+        NSArray* result = [self.listeners filteredArrayUsingPredicate:byEmail];
+        if(result != nil && result.count > 0)
+        {
+            return result[0];
+        }
+    }
+    
+    return nil;
+}
 
 - (IBAction)onStopRecording:(id)sender
 {
@@ -113,6 +167,10 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     ListenerCell* cell = [tableView dequeueReusableCellWithIdentifier:@"ListenerCell" forIndexPath:indexPath];
+    NSDictionary* listener = self.listeners[indexPath.row];
+    cell.name.text = [NSString stringWithFormat:@"%@ %@", listener[@"firstName"], listener[@"lastName"]];
+    cell.location.text = [NSString stringWithFormat:@"%@ %@ %@", listener[@"city"], listener[@"state"], listener[@"country"]];
+    cell.intention.text = listener[@"intention"];
     return cell;
 }
 
