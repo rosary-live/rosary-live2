@@ -130,11 +130,20 @@
                 }
                 else
                 {
-                    [UIAlertView bk_showAlertViewWithTitle:nil message:@"We were unable to determine your location." cancelButtonTitle:@"Ok" otherButtonTitles:nil handler:nil];
+                    [self showLocationError];
                 }
             });
         }];
     }
+    else
+    {
+        [self showLocationError];
+    }
+}
+
+- (void)showLocationError
+{
+    [UIAlertView bk_showAlertViewWithTitle:nil message:@"We were unable to determine your location." cancelButtonTitle:@"Ok" otherButtonTitles:nil handler:nil];
 }
 
 - (IBAction)onUpdateAvatar:(id)sender
@@ -208,7 +217,7 @@
             if(error != nil)
             {
                 DDLogError(@"Error creating new user %@: %@", settings, error);
-                [UIAlertView bk_showAlertViewWithTitle:@"Error" message:@"Error creating user." cancelButtonTitle:@"Ok" otherButtonTitles:nil handler:nil];
+                [UIAlertView bk_showAlertViewWithTitle:@"Error" message:@"Error updating user." cancelButtonTitle:@"Ok" otherButtonTitles:nil handler:nil];
             }
             else
             {
@@ -224,7 +233,7 @@
                             if(error != nil)
                             {
                                 DDLogError(@"Error uploading avatar image: %@", error);
-                                [UIAlertView bk_showAlertViewWithTitle:@"Error" message:@"Error uploading photo." cancelButtonTitle:@"Ok" otherButtonTitles:nil handler:nil];
+                                [UIAlertView bk_showAlertViewWithTitle:@"Error" message:@"Error updating photo." cancelButtonTitle:@"Ok" otherButtonTitles:nil handler:nil];
                             }
                             else
                             {

@@ -341,14 +341,29 @@ NSString * const NotificationUserLoggedOut = @"NotificationUserLoggedOut";
         return [AWSTask taskWithResult:nil];
     }];
 }
-
+ 
 - (void)updateUserInfoWithDictionary:(NSDictionary*)info completion:(void (^)(NSError* error))completion;
 {
     NSMutableDictionary* newDict = [info mutableCopy];
     newDict[@"email"] = self.email;
     newDict[@"password"] = self.password;
     
-    [[LiveRosaryService sharedService] updateUserWithDictionary:newDict completion:completion];
+    [[LiveRosaryService sharedService] updateUserWithDictionary:newDict completion:^(NSError *error) {
+        if(error == nil)
+        {
+            self.currentUser.firstName = info[@"firstName"];
+            self.currentUser.lastName = info[@"lastName"];
+            self.currentUser.city = info[@"city"];
+            self.currentUser.state = info[@"state"];
+            self.currentUser.country = info[@"country"];
+            self.currentUser.language = info[@"language"];
+            self.currentUser.avatar = info[@"avatar"];
+            self.currentUser.latitude = info[@"lat"];
+            self.currentUser.longitude = info[@"lon"];
+        }
+        
+        safeBlock(completion, error);
+    }];
 }
 
 - (void)refreshTokenWithCompletion:(void (^)(NSError* error))completion
