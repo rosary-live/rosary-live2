@@ -136,7 +136,7 @@
             wrapper.buferList = audio;
             wrapper.frames = frames;
             wrapper.sequence = self.audioBufferSequence;
-            NSLog(@"XXXX new audio buffer %d %d", (int)self.audioBufferSequence, audio[0].mBuffers[0].mDataByteSize);
+            //NSLog(@"XXXX new audio buffer %d %d", (int)self.audioBufferSequence, audio[0].mBuffers[0].mDataByteSize);
             ++self.audioBufferSequence;
             [self pushCompressQueueBuffer:wrapper];
         }
@@ -152,7 +152,7 @@
     self.fileWriter = [[AEAudioFileWriter alloc] initWithAudioDescription:rawFormat];
     
     self.currentFileName = [NSString filenameForBroadcastId:self.broadcastId andSequence:self.sequence];
-    NSLog(@"XXXX new file %d", (int)self.sequence);
+    //NSLog(@"XXXX new file %d", (int)self.sequence);
     [self.fileWriter beginWritingToFileAtPath:self.currentFileName fileType:kAudioFileM4AType error:nil];
 
 //    ExtAudioFileRef extAFRef = self.fileWriter.audioFileRef;
@@ -197,7 +197,7 @@
 {
     [self.fileWriter finishWriting];
     
-    NSLog(@"XXXX file done %d", (int)self.sequence);
+    //NSLog(@"XXXX file done %d", (int)self.sequence);
     
     NSError *error = nil;
     NSDictionary *attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:self.currentFileName error:&error];
@@ -441,7 +441,7 @@
             BufferWrapper* buffer = [self popCompressQueueBuffer];
             if(buffer != nil)
             {
-                NSLog(@"XXXX writing to file %d %d", (int)self.audioBufferSequence, buffer.buferList[0].mBuffers[0].mDataByteSize);
+                //NSLog(@"XXXX writing to file %d %d", (int)self.audioBufferSequence, buffer.buferList[0].mBuffers[0].mDataByteSize);
                 AEAudioFileWriterAddAudioSynchronously(self.fileWriter, buffer.buferList, buffer.frames);
                 self.totalFramesForFile += buffer.frames;
                 double totalSecondsForFile = (double)self.totalFramesForFile / self.sampleRate;

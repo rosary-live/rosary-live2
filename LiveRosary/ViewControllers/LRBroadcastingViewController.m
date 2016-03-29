@@ -10,6 +10,7 @@
 #import "BroadcastManager.h"
 #import "AudioManager.h"
 #import "F3BarGauge.h"
+#import "BroadcastQueueModel.h"
 
 @interface LRBroadcastingViewController ()
 
@@ -49,6 +50,14 @@
                 [[AudioManager sharedManager] inputAveragePowerLevel:&level peakHoldLevel:&peak];
                 self.meter.value = pow(10, level/40);
             } repeats:YES];
+            
+//            [[BroadcastQueueModel sharedInstance] startReceivingForBroadcastId:brodcastId event:^(NSArray *events) {
+//                NSLog(@"events %@", events);
+//            }];
+//            
+//            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//                [[BroadcastQueueModel sharedInstance] sendEnterForBroadcastId:brodcastId withDictionary:@{ @"test": @"this is a test" }];
+//            });
         }
     }];
 }
@@ -57,8 +66,7 @@
 {
     [super viewWillDisappear:animated];
     
-    [[BroadcastManager sharedManager] stopBroadcasting];
-    self.meter.value = 0.0;
+    [self stopBroadcasting];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -78,6 +86,12 @@
 
 - (IBAction)onStopRecording:(id)sender
 {
+    [self stopBroadcasting];
+}
+
+- (void)stopBroadcasting
+{
+    [[BroadcastQueueModel sharedInstance] stopReceiving];
     [[BroadcastManager sharedManager] stopBroadcasting];
     self.meter.value = 0.0;
 }

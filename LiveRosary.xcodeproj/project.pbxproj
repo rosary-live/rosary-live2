@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		975C1B3D1CA9873D009536CF /* SlideShow.m in Sources */ = {isa = PBXBuildFile; fileRef = 975C1B3C1CA9873D009536CF /* SlideShow.m */; };
+		975C1B401CA9CEDC009536CF /* BroadcastQueueModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 975C1B3F1CA9CEDC009536CF /* BroadcastQueueModel.m */; };
 		D81AAF7C1C45E29C00B46544 /* LRBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D81AAF7B1C45E29C00B46544 /* LRBaseViewController.m */; };
 		D820FB061C4452A9000899DB /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D820FB051C4452A9000899DB /* main.m */; };
 		D820FB091C4452A9000899DB /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D820FB081C4452A9000899DB /* AppDelegate.m */; };
@@ -72,6 +73,8 @@
 		0A322FD56E2A135557AC420B /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		975C1B3B1CA9873D009536CF /* SlideShow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SlideShow.h; path = Views/SlideShow.h; sourceTree = "<group>"; };
 		975C1B3C1CA9873D009536CF /* SlideShow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SlideShow.m; path = Views/SlideShow.m; sourceTree = "<group>"; };
+		975C1B3E1CA9CEDC009536CF /* BroadcastQueueModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BroadcastQueueModel.h; path = Models/BroadcastQueueModel.h; sourceTree = "<group>"; };
+		975C1B3F1CA9CEDC009536CF /* BroadcastQueueModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BroadcastQueueModel.m; path = Models/BroadcastQueueModel.m; sourceTree = "<group>"; };
 		BD4753DF687E71C09BECA0B1 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		D81AAF7A1C45E29C00B46544 /* LRBaseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LRBaseViewController.h; path = ViewControllers/LRBaseViewController.h; sourceTree = "<group>"; };
 		D81AAF7B1C45E29C00B46544 /* LRBaseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LRBaseViewController.m; path = ViewControllers/LRBaseViewController.m; sourceTree = "<group>"; };
@@ -411,6 +414,8 @@
 				D8427CF31C601BDA00A8CE5F /* ConfigModel.m */,
 				D8B72E731C9A40620081723F /* ScheduleModel.h */,
 				D8B72E741C9A40620081723F /* ScheduleModel.m */,
+				975C1B3E1CA9CEDC009536CF /* BroadcastQueueModel.h */,
+				975C1B3F1CA9CEDC009536CF /* BroadcastQueueModel.m */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -615,6 +620,7 @@
 				D8B72E721C9A3FE50081723F /* DBSchedule.m in Sources */,
 				D8C23FDB1C51E23D0043F8BE /* NSString+Utilities.m in Sources */,
 				D8C23FD61C51D3D10043F8BE /* TransferManager.m in Sources */,
+				975C1B401CA9CEDC009536CF /* BroadcastQueueModel.m in Sources */,
 				D862FF441C9F5397007DF128 /* SegmentedSettingCell.m in Sources */,
 				D862FF4D1C9F53FB007DF128 /* SettingCell.m in Sources */,
 				D8B72E7F1C9DEAD60081723F /* ScheduleRecurringCell.m in Sources */,
