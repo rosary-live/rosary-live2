@@ -10,6 +10,15 @@
 
 @interface LRReportBroadcastViewController ()
 
+@property (nonatomic, weak) IBOutlet UIImageView* avatar;
+@property (nonatomic, weak) IBOutlet UILabel* name;
+@property (nonatomic, weak) IBOutlet UILabel* language;
+@property (nonatomic, weak) IBOutlet UILabel* date;
+@property (nonatomic, weak) IBOutlet UILabel* location;
+@property (nonatomic, weak) IBOutlet UIButton* report;
+@property (nonatomic, weak) IBOutlet UILabel* whyLabel;
+@property (nonatomic, weak) IBOutlet UITextView* why;
+
 @end
 
 @implementation LRReportBroadcastViewController
