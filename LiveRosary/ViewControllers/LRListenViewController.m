@@ -152,6 +152,10 @@ NSString * const kLastIntentionKey = @"LastIntention";
     [self startSlideShow];
 }
 
+- (IBAction)onReportBroadcast:(id)sender
+{
+}
+
 /*
 #pragma mark - Navigation
 

@@ -250,6 +250,17 @@
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7kw-g5-iwD">
+                                <rect key="frame" x="218" y="285" width="164" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="30f-oF-r1J"/>
+                                    <constraint firstAttribute="width" constant="164" id="i5r-c2-4Jb"/>
+                                </constraints>
+                                <state key="normal" title="Report Broadcast"/>
+                                <connections>
+                                    <action selector="onReportBroadcast:" destination="AKf-93-N7p" eventType="touchUpInside" id="prI-ks-lvM"/>
+                                </connections>
+                            </button>
                             <view hidden="YES" opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8sQ-yS-9cH" customClass="SlideShow">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
@@ -257,6 +268,7 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="7kw-g5-iwD" firstAttribute="top" secondItem="vBt-NZ-LcG" secondAttribute="bottom" constant="4" id="8v1-Xc-ldR"/>
                             <constraint firstItem="vBt-NZ-LcG" firstAttribute="top" secondItem="qJg-JO-dnz" secondAttribute="bottom" constant="2" id="A9a-ZR-Aex"/>
                             <constraint firstItem="K85-tR-qd1" firstAttribute="top" secondItem="OSC-L7-hIj" secondAttribute="bottom" constant="4" id="CDf-Rb-Q8x"/>
                             <constraint firstItem="OE0-G7-3ZR" firstAttribute="leading" secondItem="wsm-ew-C4i" secondAttribute="trailing" constant="18" id="CMf-YS-UmU"/>
@@ -268,6 +280,7 @@
                             <constraint firstItem="le9-v0-HcO" firstAttribute="leading" secondItem="wsm-ew-C4i" secondAttribute="trailing" constant="18" id="FRZ-Ci-bxc"/>
                             <constraint firstAttribute="trailing" secondItem="K85-tR-qd1" secondAttribute="trailing" constant="20" id="Fht-xb-QpE"/>
                             <constraint firstAttribute="trailing" secondItem="8sQ-yS-9cH" secondAttribute="trailing" id="HVT-Oc-Y4b"/>
+                            <constraint firstItem="7kw-g5-iwD" firstAttribute="centerX" secondItem="TJO-nR-m8A" secondAttribute="centerX" id="J09-8c-qeH"/>
                             <constraint firstItem="wsm-ew-C4i" firstAttribute="top" secondItem="dHP-Cw-Sl2" secondAttribute="bottom" constant="8" id="MkM-GF-9wB"/>
                             <constraint firstItem="bEI-lf-4sV" firstAttribute="centerX" secondItem="TJO-nR-m8A" secondAttribute="centerX" id="PM7-3p-gqM"/>
                             <constraint firstItem="OE0-G7-3ZR" firstAttribute="top" secondItem="K85-tR-qd1" secondAttribute="bottom" constant="8" id="SgO-P3-7HZ"/>

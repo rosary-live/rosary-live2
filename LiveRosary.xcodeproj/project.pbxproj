@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		974C30DC1CAB43B40053CA55 /* LRReportBroadcastViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 974C30DB1CAB43B40053CA55 /* LRReportBroadcastViewController.m */; };
 		975C1B3D1CA9873D009536CF /* SlideShow.m in Sources */ = {isa = PBXBuildFile; fileRef = 975C1B3C1CA9873D009536CF /* SlideShow.m */; };
 		975C1B401CA9CEDC009536CF /* BroadcastQueueModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 975C1B3F1CA9CEDC009536CF /* BroadcastQueueModel.m */; };
 		D81AAF7C1C45E29C00B46544 /* LRBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D81AAF7B1C45E29C00B46544 /* LRBaseViewController.m */; };
@@ -72,6 +73,8 @@
 
 /* Begin PBXFileReference section */
 		0A322FD56E2A135557AC420B /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
+		974C30DA1CAB43B40053CA55 /* LRReportBroadcastViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LRReportBroadcastViewController.h; path = ViewControllers/LRReportBroadcastViewController.h; sourceTree = "<group>"; };
+		974C30DB1CAB43B40053CA55 /* LRReportBroadcastViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LRReportBroadcastViewController.m; path = ViewControllers/LRReportBroadcastViewController.m; sourceTree = "<group>"; };
 		975C1B3B1CA9873D009536CF /* SlideShow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SlideShow.h; path = Views/SlideShow.h; sourceTree = "<group>"; };
 		975C1B3C1CA9873D009536CF /* SlideShow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SlideShow.m; path = Views/SlideShow.m; sourceTree = "<group>"; };
 		975C1B3E1CA9CEDC009536CF /* BroadcastQueueModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BroadcastQueueModel.h; path = Models/BroadcastQueueModel.h; sourceTree = "<group>"; };
@@ -362,6 +365,8 @@
 				D84A21161C8E6CD0006C4D63 /* LRChangePasswordViewController.m */,
 				D8A027491C8B527600715277 /* BroadcastsViewController.h */,
 				D8A0274A1C8B527600715277 /* BroadcastsViewController.m */,
+				974C30DA1CAB43B40053CA55 /* LRReportBroadcastViewController.h */,
+				974C30DB1CAB43B40053CA55 /* LRReportBroadcastViewController.m */,
 			);
 			name = "View Controllers";
 			sourceTree = "<group>";
@@ -609,6 +614,7 @@
 				D862FF471C9F53C2007DF128 /* ValueSettingCell.m in Sources */,
 				D874848A1CAA067000C99A2D /* ListenerCell.m in Sources */,
 				D8A0EFEE1C4C70ED0006B910 /* LiveRosaryAuthenticationClient.m in Sources */,
+				974C30DC1CAB43B40053CA55 /* LRReportBroadcastViewController.m in Sources */,
 				D8A0EFE61C4C32290006B910 /* BaseModel.m in Sources */,
 				D8427CF41C601BDA00A8CE5F /* ConfigModel.m in Sources */,
 				D820FB091C4452A9000899DB /* AppDelegate.m in Sources */,
