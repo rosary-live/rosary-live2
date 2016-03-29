@@ -11,12 +11,14 @@
 #import "AudioManager.h"
 #import "F3BarGauge.h"
 #import "BroadcastQueueModel.h"
+#import "ListenerCell.h"
 
 @interface LRBroadcastingViewController ()
 
 @property (nonatomic, weak) IBOutlet F3BarGauge* meter;
 
 @property (nonatomic, strong) NSTimer* meterTimer;
+@property (nonatomic, strong) NSArray* listeners;
 
 @end
 
@@ -51,10 +53,10 @@
                 self.meter.value = pow(10, level/40);
             } repeats:YES];
             
-//            [[BroadcastQueueModel sharedInstance] startReceivingForBroadcastId:brodcastId event:^(NSArray *events) {
-//                NSLog(@"events %@", events);
-//            }];
-//            
+            [[BroadcastQueueModel sharedInstance] startReceivingForBroadcastId:brodcastId event:^(NSArray *events) {
+                NSLog(@"events %@", events);
+            }];
+//
 //            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
 //                [[BroadcastQueueModel sharedInstance] sendEnterForBroadcastId:brodcastId withDictionary:@{ @"test": @"this is a test" }];
 //            });
@@ -94,6 +96,31 @@
     [[BroadcastQueueModel sharedInstance] stopReceiving];
     [[BroadcastManager sharedManager] stopBroadcasting];
     self.meter.value = 0.0;
+}
+
+#pragma mark - UITableViewDataSource
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return self.listeners.count;
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+{
+    return @"Listeners";
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    ListenerCell* cell = [tableView dequeueReusableCellWithIdentifier:@"ListenerCell" forIndexPath:indexPath];
+    return cell;
+}
+
+#pragma mark - UITableViewDelegate
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 70.0f;
 }
 
 @end

@@ -32,6 +32,7 @@
 		D863727A1C5AFEC400D02DC3 /* DBBase.m in Sources */ = {isa = PBXBuildFile; fileRef = D86372791C5AFEC400D02DC3 /* DBBase.m */; };
 		D863727D1C5AFED900D02DC3 /* DBBroadcast.m in Sources */ = {isa = PBXBuildFile; fileRef = D863727C1C5AFED900D02DC3 /* DBBroadcast.m */; };
 		D86372811C5B1FFB00D02DC3 /* NSNumber+Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = D86372801C5B1FFB00D02DC3 /* NSNumber+Utilities.m */; };
+		D874848A1CAA067000C99A2D /* ListenerCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D87484891CAA067000C99A2D /* ListenerCell.m */; };
 		D885FA671C446F49002904AC /* LRDrawerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D885FA661C446F49002904AC /* LRDrawerViewController.m */; };
 		D885FA6A1C446FA2002904AC /* LRListenMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D885FA691C446FA2002904AC /* LRListenMainViewController.m */; };
 		D8A0274B1C8B527600715277 /* BroadcastsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8A0274A1C8B527600715277 /* BroadcastsViewController.m */; };
@@ -121,6 +122,8 @@
 		D863727C1C5AFED900D02DC3 /* DBBroadcast.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DBBroadcast.m; path = Database/DBBroadcast.m; sourceTree = "<group>"; };
 		D863727F1C5B1FFB00D02DC3 /* NSNumber+Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSNumber+Utilities.h"; path = "Categories/NSNumber+Utilities.h"; sourceTree = "<group>"; };
 		D86372801C5B1FFB00D02DC3 /* NSNumber+Utilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSNumber+Utilities.m"; path = "Categories/NSNumber+Utilities.m"; sourceTree = "<group>"; };
+		D87484881CAA067000C99A2D /* ListenerCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ListenerCell.h; path = Cells/ListenerCell.h; sourceTree = "<group>"; };
+		D87484891CAA067000C99A2D /* ListenerCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ListenerCell.m; path = Cells/ListenerCell.m; sourceTree = "<group>"; };
 		D885FA651C446F49002904AC /* LRDrawerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LRDrawerViewController.h; path = ViewControllers/LRDrawerViewController.h; sourceTree = "<group>"; };
 		D885FA661C446F49002904AC /* LRDrawerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LRDrawerViewController.m; path = ViewControllers/LRDrawerViewController.m; sourceTree = "<group>"; };
 		D885FA681C446FA2002904AC /* LRListenMainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LRListenMainViewController.h; path = ViewControllers/LRListenMainViewController.h; sourceTree = "<group>"; };
@@ -380,6 +383,8 @@
 				D8B72E831C9DECD70081723F /* ViewScheduleSingleCell.m */,
 				D8B72E811C9DECD70081723F /* ViewScheduleRecurringCell.h */,
 				D8B72E821C9DECD70081723F /* ViewScheduleRecurringCell.m */,
+				D87484881CAA067000C99A2D /* ListenerCell.h */,
+				D87484891CAA067000C99A2D /* ListenerCell.m */,
 			);
 			name = Cells;
 			sourceTree = "<group>";
@@ -602,6 +607,7 @@
 				D8B72E881C9E144A0081723F /* LRBroadcastingViewController.m in Sources */,
 				D8A1B90B1C75779F00CEE8D0 /* LRAdminMainViewController.m in Sources */,
 				D862FF471C9F53C2007DF128 /* ValueSettingCell.m in Sources */,
+				D874848A1CAA067000C99A2D /* ListenerCell.m in Sources */,
 				D8A0EFEE1C4C70ED0006B910 /* LiveRosaryAuthenticationClient.m in Sources */,
 				D8A0EFE61C4C32290006B910 /* BaseModel.m in Sources */,
 				D8427CF41C601BDA00A8CE5F /* ConfigModel.m in Sources */,
