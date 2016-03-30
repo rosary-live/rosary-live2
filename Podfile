@@ -20,3 +20,4 @@ pod 'INTULocationManager'
 pod 'PureLayout'
 pod 'SDWebImage'
 pod 'THSegmentedControl'
+pod "Branch"

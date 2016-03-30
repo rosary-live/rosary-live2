@@ -24,10 +24,10 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string>LiveRosary</string>
+			<string>liverosary</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>LiveRosary</string>
+				<string>liverosary</string>
 			</array>
 		</dict>
 	</array>
@@ -61,5 +61,7 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>branch_key</key>
+	<string>key_test_ccaXsJfw3T0iTHgq6ExiGeectEcr1pRN</string>
 </dict>
 </plist>

@@ -40,6 +40,7 @@ PODS:
   - BlocksKit/UIKit (2.2.5):
     - BlocksKit/Core
     - BlocksKit/DynamicDelegate
+  - Branch (0.11.18)
   - CocoaLumberjack (2.2.0):
     - CocoaLumberjack/Default (= 2.2.0)
     - CocoaLumberjack/Extensions (= 2.2.0)
@@ -121,6 +122,7 @@ DEPENDENCIES:
   - AWSS3
   - AWSSQS
   - BlocksKit
+  - Branch
   - CocoaLumberjack
   - CZPhotoPickerController
   - FCCurrentLocationGeocoder
@@ -144,6 +146,7 @@ SPEC CHECKSUMS:
   AWSS3: 675f59e0c338e61441117f03018187b9deb359c4
   AWSSQS: 6b150bbdc971582104ddc1f8660581ff9e21a762
   BlocksKit: 7f422b971407001178d181a43b99014ea2591fe6
+  Branch: 64f4f08eaf69bdb5b1f46d4f1f4479494755a073
   CocoaLumberjack: 17fe8581f84914d5d7e6360f7c70022b173c3ae0
   CZPhotoPickerController: b8d2c5fe286e9b8d1b1143a69975d9d9eabee047
   FCCurrentLocationGeocoder: b4aa2f877a2c25eee94b17fd040125edf9c5d888

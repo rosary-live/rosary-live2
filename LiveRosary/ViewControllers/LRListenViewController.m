@@ -17,6 +17,9 @@
 #import "BroadcastQueueModel.h"
 #import "UserManager.h"
 
+#import "BranchUniversalObject.h"
+#import "BranchLinkProperties.h"
+
 NSString * const kLastIntentionKey = @"LastIntention";
 
 @interface LRListenViewController () <BroadcastManagerDelegate, UITextViewDelegate>
@@ -51,7 +54,7 @@ NSString * const kLastIntentionKey = @"LastIntention";
     {
         self.intentionLabel.hidden = YES;
         self.intention.hidden = YES;
-        self.report.hidden = YES;
+        //self.report.hidden = YES;
     }
     else
     {
@@ -161,6 +164,21 @@ NSString * const kLastIntentionKey = @"LastIntention";
 
 - (IBAction)onReportBroadcast:(id)sender
 {
+    BranchUniversalObject *branchUniversalObject = [[BranchUniversalObject alloc] initWithCanonicalIdentifier:[NSString stringWithFormat:@"%@/%@", self.broadcast.bid, [UserManager sharedManager].email]];
+    branchUniversalObject.title = @"Report Broadcast";
+    branchUniversalObject.contentDescription = [NSString stringWithFormat:@"Report Broadcast by %@ for %@", [UserManager sharedManager].email, self.broadcast.user];
+    //branchUniversalObject.imageUrl = @"https://example.com/mycontent-12345.png";
+    [branchUniversalObject addMetadataKey:@"reporter" value:[UserManager sharedManager].email];
+    [branchUniversalObject addMetadataKey:@"reportee" value:self.broadcast.user];
+    [branchUniversalObject addMetadataKey:@"broadcast" value:self.broadcast.bid];
+
+    BranchLinkProperties *linkProperties = [[BranchLinkProperties alloc] init];
+
+    [branchUniversalObject getShortUrlWithLinkProperties:linkProperties andCallback:^(NSString *url, NSError *error) {
+        if (!error) {
+            NSLog(@"success getting url! %@", url);
+        }
+    }];
 }
 
 /*
