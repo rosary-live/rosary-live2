@@ -10,4 +10,6 @@
 
 @interface LRReportBroadcastViewController : LRBaseViewController
 
+@property (nonatomic, strong) BroadcastModel* broadcast;
+
 @end

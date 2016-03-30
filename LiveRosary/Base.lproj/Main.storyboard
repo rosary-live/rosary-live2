@@ -258,7 +258,7 @@
                                 </constraints>
                                 <state key="normal" title="Report Broadcast"/>
                                 <connections>
-                                    <action selector="onReportBroadcast:" destination="AKf-93-N7p" eventType="touchUpInside" id="prI-ks-lvM"/>
+                                    <segue destination="HeL-qt-Yjp" kind="show" id="uL2-4L-cNm"/>
                                 </connections>
                             </button>
                             <view hidden="YES" opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8sQ-yS-9cH" customClass="SlideShow">
@@ -317,6 +317,63 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="238-ec-7pc" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2174" y="438"/>
+        </scene>
+        <!--Report Broadcast-->
+        <scene sceneID="GYN-59-S6n">
+            <objects>
+                <viewController id="HeL-qt-Yjp" customClass="LRReportBroadcastViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="VQ3-fj-LSo"/>
+                        <viewControllerLayoutGuide type="bottom" id="ECV-Go-BNv"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="bxY-Be-iDG">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="LxA-1d-7UM">
+                                <rect key="frame" x="20" y="63" width="560" height="128"/>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="0.12946051520270271" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="128" id="jQz-WW-mj2"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Reason" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XDa-wt-TF1">
+                                <rect key="frame" x="20" y="40" width="70" height="21"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="21" id="EFK-lL-0mm"/>
+                                    <constraint firstAttribute="width" constant="70" id="IdT-0G-3cV"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Kam-eM-VTT">
+                                <rect key="frame" x="264" y="199" width="73" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="73" id="1mH-tR-BFN"/>
+                                    <constraint firstAttribute="height" constant="30" id="Sfc-FV-0t5"/>
+                                </constraints>
+                                <state key="normal" title="Report"/>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="LxA-1d-7UM" secondAttribute="trailing" constant="20" id="7St-Ic-XYA"/>
+                            <constraint firstItem="Kam-eM-VTT" firstAttribute="top" secondItem="LxA-1d-7UM" secondAttribute="bottom" constant="8" id="O3d-6K-chq"/>
+                            <constraint firstItem="XDa-wt-TF1" firstAttribute="leading" secondItem="bxY-Be-iDG" secondAttribute="leading" constant="20" id="XdO-gM-L3R"/>
+                            <constraint firstItem="XDa-wt-TF1" firstAttribute="top" secondItem="VQ3-fj-LSo" secondAttribute="bottom" constant="20" id="YSi-Ps-6DP"/>
+                            <constraint firstItem="LxA-1d-7UM" firstAttribute="top" secondItem="XDa-wt-TF1" secondAttribute="bottom" constant="2" id="iIy-2X-7TL"/>
+                            <constraint firstItem="Kam-eM-VTT" firstAttribute="centerX" secondItem="bxY-Be-iDG" secondAttribute="centerX" id="x0k-37-VFt"/>
+                            <constraint firstItem="LxA-1d-7UM" firstAttribute="leading" secondItem="bxY-Be-iDG" secondAttribute="leading" constant="20" id="yeC-TM-Q2a"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" title="Report Broadcast" id="xsO-SP-owy"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="jcB-qr-1ZN" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2849" y="442"/>
         </scene>
         <!--Broadcast-->
         <scene sceneID="siP-Yy-MBV">
