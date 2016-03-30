@@ -93,6 +93,8 @@ NSString * const kLastIntentionKey = @"LastIntention";
                     }
                     else
                     {
+                        [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
+
                         if(!self.playFromStart)
                         {
                             NSMutableDictionary* userDict = [[UserManager sharedManager].userDictionary mutableCopy];
@@ -120,6 +122,8 @@ NSString * const kLastIntentionKey = @"LastIntention";
 {
     [super viewWillDisappear:animated];
     
+    [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
+
     if(!self.playFromStart)
     {
         [[BroadcastManager sharedManager] stopPlaying];

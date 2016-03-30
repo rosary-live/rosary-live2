@@ -57,6 +57,8 @@
                 self.meter.value = pow(10, level/40);
             } repeats:YES];
             
+            [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
+            
             [[BroadcastQueueModel sharedInstance] startReceivingForBroadcastId:brodcastId event:^(NSArray *events) {
                 NSLog(@"events %@", events);
                 
@@ -67,7 +69,7 @@
                         if([type isEqualToString:@"enter"])
                         {
                             NSDictionary* listener = event[@"event"];
-                            if([self listerForEmail:listener[@"email"]] == nil)
+                            if([self listenerForEmail:listener[@"email"]] == nil)
                             {
                                 [self.listeners addObject:listener];
                             }
@@ -75,7 +77,7 @@
                         else if([type isEqualToString:@"exit"])
                         {
                             NSDictionary* listener = event[@"event"];
-                            NSDictionary* existingListener = [self listerForEmail:listener[@"email"]];
+                            NSDictionary* existingListener = [self listenerForEmail:listener[@"email"]];
                             if(existingListener != nil)
                             {
                                 [self.listeners removeObject:existingListener];
@@ -84,7 +86,7 @@
                         else if([type isEqualToString:@"update"])
                         {
                             NSDictionary* listener = event[@"event"];
-                            NSDictionary* existingListener = [self listerForEmail:listener[@"email"]];
+                            NSDictionary* existingListener = [self listenerForEmail:listener[@"email"]];
                             if(existingListener != nil)
                             {
                                 NSUInteger index = [self.listeners indexOfObject:existingListener];
@@ -125,7 +127,7 @@
 }
 */
 
-- (NSDictionary*)listerForEmail:(NSString*)email
+- (NSDictionary*)listenerForEmail:(NSString*)email
 {
     if(email != nil && email.length > 0)
     {
@@ -147,6 +149,8 @@
 
 - (void)stopBroadcasting
 {
+    [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
+    
     [[BroadcastQueueModel sharedInstance] stopReceiving];
     [[BroadcastManager sharedManager] stopBroadcasting];
     self.meter.value = 0.0;
