@@ -306,9 +306,11 @@
                         <outlet property="avatar" destination="wsm-ew-C4i" id="oJ7-aQ-JTF"/>
                         <outlet property="date" destination="OE0-G7-3ZR" id="lTG-Kl-I9k"/>
                         <outlet property="intention" destination="vBt-NZ-LcG" id="znx-rg-AAi"/>
+                        <outlet property="intentionLabel" destination="qJg-JO-dnz" id="UMg-dx-Ar9"/>
                         <outlet property="language" destination="le9-v0-HcO" id="Yj0-1S-VMI"/>
                         <outlet property="location" destination="K85-tR-qd1" id="vwK-rP-kL5"/>
                         <outlet property="name" destination="OSC-L7-hIj" id="0Us-qX-NvB"/>
+                        <outlet property="report" destination="7kw-g5-iwD" id="NCZ-fW-FOn"/>
                         <outlet property="resumeSlideShow" destination="bEI-lf-4sV" id="RQ9-9a-nnT"/>
                         <outlet property="slideShow" destination="8sQ-yS-9cH" id="lMd-YM-X96"/>
                         <outlet property="status" destination="AFB-d7-Xtv" id="cKa-Sk-OL5"/>

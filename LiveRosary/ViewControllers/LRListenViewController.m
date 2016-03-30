@@ -31,6 +31,7 @@ NSString * const kLastIntentionKey = @"LastIntention";
 @property (nonatomic, weak) IBOutlet UIButton* resumeSlideShow;
 @property (nonatomic, weak) IBOutlet UILabel* intentionLabel;
 @property (nonatomic, weak) IBOutlet UITextView* intention;
+@property (nonatomic, weak) IBOutlet UIButton* report;
 
 @property (nonatomic, strong) MBProgressHUD *hud;
 
@@ -50,6 +51,7 @@ NSString * const kLastIntentionKey = @"LastIntention";
     {
         self.intentionLabel.hidden = YES;
         self.intention.hidden = YES;
+        self.report.hidden = YES;
     }
     else
     {
