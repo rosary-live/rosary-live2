@@ -126,9 +126,10 @@ NSString * const kLastIntentionKey = @"LastIntention";
     
     [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
 
+    [[BroadcastManager sharedManager] stopPlaying];
+    
     if(!self.playFromStart)
     {
-        [[BroadcastManager sharedManager] stopPlaying];
         [[BroadcastQueueModel sharedInstance] sendExitForBroadcastId:self.broadcast.bid withDictionary:[UserManager sharedManager].userDictionary];
     }
 }

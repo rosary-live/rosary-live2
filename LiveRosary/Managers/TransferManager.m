@@ -187,7 +187,7 @@
     DDLogInfo(@"TransferManager receiveThread starting");
     
     NSCondition* condition = [NSCondition new];
-    __block NSDate* lastSuccessfulReceiveDate = nil;
+    __block NSDate* lastSuccessfulReceiveDate = [NSDate date];
     __block NSError* lastError;
     
     while(self.isReceiving)
