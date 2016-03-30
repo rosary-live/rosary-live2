@@ -8,8 +8,9 @@ var config = require('./config.json');
 
 // Get reference to AWS clients
 var dynamodb = new AWS.DynamoDB();
+var ses = new AWS.SES();
 
-function addSchedule(event, callback) {
+function addReport(event, callback) {
 	var now = moment().utc().format('X');
 
 	// Add DDB record
@@ -19,9 +20,9 @@ function addSchedule(event, callback) {
 			bid: { S: event.bid },
 			version: { N: event.version.toString() },
 			created: { N: now },
-			reporter: { S: event.reporter },
+			reporter_email: { S: event.reporter },
 			reporter_name: { S: event.reporter_name },
-			report: { S: event.report },
+			reason: { S: event.report },
 
 			language: { S: event.language },
 			user: { S: event.user },
@@ -30,7 +31,9 @@ function addSchedule(event, callback) {
 			state: { S: event.state },
 			country: { S: event.country },
 			lat: { S: event.lat },
-			lon: { S: event.lon }
+			lon: { S: event.lon },
+
+			link: { S: event.link }
 		},
 		ReturnValues: 'NONE'
 	}, function(err, data) {
@@ -41,8 +44,7 @@ function addSchedule(event, callback) {
 }
 
 function sendReportEmail(email, event, fn) {
-	var subject = 'Broadcast Report for ' + event.name + ' by ' + event.reporter_name;
-	var verificationLink = config.VERIFICATION_PAGE + '?email=' + encodeURIComponent(email) + '&verify=' + token;
+	var subject = 'Broadcast Report for ' + event.user + ' by ' + event.reporter_name + '(' + event.reporter_email + ')';
 	ses.sendEmail({
 		Source: config.EMAIL_SOURCE,
 		Destination: {
@@ -60,9 +62,8 @@ function sendReportEmail(email, event, fn) {
 					+ '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />'
 					+ '<title>' + subject + '</title>'
 					+ '</head><body>'
-					+ 'Please <a href="' + verificationLink + '">click here to verify your email address</a> or copy & paste the following link in a browser:'
+					+ 'Reported broadcast link (click on phone to launch LiveRosary App): <a href="' + event.link + '">Broadcast</a>'
 					+ '<br><br>'
-					+ '<a href="' + verificationLink + '">' + verificationLink + '</a>'
 					+ '</body></html>'
 				}
 			}
@@ -74,7 +75,9 @@ exports.handler = function(event, context) {
 	console.log("event: " + util.inspect(event));
 
 	addReport(event, function(err, result) {
-		if(err) context.fail({success:false, message: 'Failed to add report.', error:err});
-		else context.succeed({success:true});
+		sendReportEmail('northorn@gmail.com', event, function(err, data) {
+			if(err) context.fail({success:false, message: 'Failed to add report.', error:err});
+			else context.succeed({success:true});
+		});
 	});
 }

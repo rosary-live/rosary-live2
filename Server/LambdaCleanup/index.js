@@ -40,7 +40,11 @@ exports.handler = function(event, context) {
     console.log("key = " + key);
 
     var parts = key.split('/');
-    if(parts.length == 2) {
+    if(parts[0] == "test" && key != "test/")
+    {
+    	context.fail({success:false, error:'test file ignored'});
+    }
+    else if(parts.length == 2) {
     	process(bucket, key, parts[0], parts[1], function(err) {
     		if(err) context.fail({success:false, error:err});
     		else context.succeed({success: true});

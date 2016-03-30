@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "BroadcastModel.h"
 
 @interface LiveRosaryService : NSObject
 
@@ -20,5 +21,7 @@
 - (void)addScheduledBroadcastWithDictionary:(NSDictionary*)dictionary completion:(void (^)(NSError* error))completion;
 - (void)updateScheduledBroadcastWithDictionary:(NSDictionary*)dictionary completion:(void (^)(NSError* error))completion;
 - (void)removeScheduledBroadcastWithSID:(NSString*)sid completion:(void (^)(NSError* error))completion;
+
+- (void)reportBroadcast:(BroadcastModel*)broadcast reporterName:(NSString*)reporterName reporterEmail:(NSString*)reporterEmail reason:(NSString*)reason link:(NSString*)link completion:(void (^)(NSError* error))completion;
 
 @end

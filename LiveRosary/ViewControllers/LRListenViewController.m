@@ -16,6 +16,7 @@
 #import <SDWebImage/UIImageView+WebCache.h>
 #import "BroadcastQueueModel.h"
 #import "UserManager.h"
+#import "LRReportBroadcastViewController.h"
 
 NSString * const kLastIntentionKey = @"LastIntention";
 
@@ -31,11 +32,15 @@ NSString * const kLastIntentionKey = @"LastIntention";
 @property (nonatomic, weak) IBOutlet UIButton* resumeSlideShow;
 @property (nonatomic, weak) IBOutlet UILabel* intentionLabel;
 @property (nonatomic, weak) IBOutlet UITextView* intention;
+@property (nonatomic, weak) IBOutlet UIButton* report;
 
 @property (nonatomic, strong) MBProgressHUD *hud;
 
 @property (nonatomic) BOOL editingIntention;
 @property (nonatomic, strong) NSString* lastIntention;
+
+@property (nonatomic) BOOL reporting;
+
 
 @end
 
@@ -50,6 +55,7 @@ NSString * const kLastIntentionKey = @"LastIntention";
     {
         self.intentionLabel.hidden = YES;
         self.intention.hidden = YES;
+        //self.report.hidden = YES;
     }
     else
     {
@@ -118,15 +124,22 @@ NSString * const kLastIntentionKey = @"LastIntention";
     [self startSlideShowTimer];
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    self.reporting = NO;
+}
+
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
     
     [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
 
+    [[BroadcastManager sharedManager] stopPlaying];
+    
     if(!self.playFromStart)
     {
-        [[BroadcastManager sharedManager] stopPlaying];
         [[BroadcastQueueModel sharedInstance] sendExitForBroadcastId:self.broadcast.bid withDictionary:[UserManager sharedManager].userDictionary];
     }
 }
@@ -139,7 +152,7 @@ NSString * const kLastIntentionKey = @"LastIntention";
 - (void)startSlideShowTimer
 {
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)([ConfigModel sharedInstance].slideShowStartDelay * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        if(self.editingIntention)
+        if(self.editingIntention || self.reporting)
         {
             [self startSlideShowTimer];
         }
@@ -156,19 +169,14 @@ NSString * const kLastIntentionKey = @"LastIntention";
     [self startSlideShow];
 }
 
-- (IBAction)onReportBroadcast:(id)sender
-{
-}
-
-/*
 #pragma mark - Navigation
 
 // In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+    LRReportBroadcastViewController* reportViewController = [segue destinationViewController];
+    reportViewController.broadcast = self.broadcast;
+    self.reporting = YES;
 }
-*/
 
 #pragma mark - BroadcastManagerDelegate
 

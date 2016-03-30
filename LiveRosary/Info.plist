@@ -24,15 +24,15 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string>LiveRosary</string>
+			<string>liverosary</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>LiveRosary</string>
+				<string>liverosary</string>
 			</array>
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>7</string>
+	<string>8</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -61,5 +61,7 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>branch_key</key>
+	<string>key_test_ccaXsJfw3T0iTHgq6ExiGeectEcr1pRN</string>
 </dict>
 </plist>

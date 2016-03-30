@@ -163,11 +163,11 @@ NSString * const KeyToken = @"KeyToken";
 
 - (AWSTask *)getToken
 {
-    if (![self isAuthenticated]) {
-        return [AWSTask taskWithError:[NSError errorWithDomain:LiveRosaryAuthenticationClientDomain
-                                                          code:LiveRosaryAuthenticationClientLoginError
-                                                      userInfo:nil]];
-    }
+//    if (![self isAuthenticated]) {
+//        return [AWSTask taskWithError:[NSError errorWithDomain:LiveRosaryAuthenticationClientDomain
+//                                                          code:LiveRosaryAuthenticationClientLoginError
+//                                                      userInfo:nil]];
+//    }
     
     return [self login:self.email password:self.password];
 }

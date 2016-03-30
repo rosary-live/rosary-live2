@@ -7,6 +7,7 @@
 //
 
 #import "LRBaseViewController.h"
+#import "BroadcastModel.h"
 
 @interface LRReportBroadcastViewController : LRBaseViewController
 
