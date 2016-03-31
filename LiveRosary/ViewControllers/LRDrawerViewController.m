@@ -11,6 +11,13 @@
 #import "UIViewController+MMDrawerController.h"
 #import "UserManager.h"
 
+typedef NS_ENUM(NSUInteger, MenuOption) {
+    MenuOptionListen,
+    MenuOptionBroadcast,
+    MenuOptionAdmin,
+    MenuOptionProfile
+};
+
 @interface LRDrawerViewController () <UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic, weak) IBOutlet UIImageView* avatarImageView;
@@ -18,6 +25,8 @@
 @property (nonatomic, weak) IBOutlet UILabel* lastName;
 @property (nonatomic, weak) IBOutlet UILabel* language;
 @property (nonatomic, weak) IBOutlet UITableView* tableView;
+
+@property (nonnull, strong) NSMutableArray* menuOptions;
 
 @end
 
@@ -31,7 +40,7 @@
     {
         [self showAuthentication];
     }
-    
+        
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userLoggedOut) name:NotificationUserLoggedOut object:nil];
     
 }
@@ -40,13 +49,35 @@
 {
     [super viewWillAppear:animated];
     
-    if([UserManager sharedManager].currentUser != nil)
+    self.menuOptions = [NSMutableArray new];
+    
+    UserModel* user = [UserManager sharedManager].currentUser;
+    if(user != nil)
     {
         self.avatarImageView.image = [UserManager sharedManager].avatarImage;
-        self.firstName.text = [UserManager sharedManager].currentUser.firstName;
-        self.lastName.text = [UserManager sharedManager].currentUser.lastName;
-        self.language.text = [UserManager sharedManager].currentUser.language;
+        self.firstName.text = user.firstName;
+        self.lastName.text = user.lastName;
+        self.language.text = user.language;
+        
+        if(user.userLevel != UserLevelBanned)
+        {
+            [self.menuOptions addObject:@(MenuOptionListen)];
+            
+            if(user.userLevel == UserLevelBroadcaster || user.userLevel == UserLevelAdmin)
+            {
+                [self.menuOptions addObject:@(MenuOptionBroadcast)];
+            }
+
+            if(user.userLevel == UserLevelAdmin)
+            {
+                [self.menuOptions addObject:@(MenuOptionAdmin)];
+            }
+            
+            [self.menuOptions addObject:@(MenuOptionProfile)];
+        }
     }
+    
+    [self.tableView reloadData];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -83,7 +114,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 4;
+    return self.menuOptions.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -91,32 +122,32 @@
     DrawerCell* cell = [tableView dequeueReusableCellWithIdentifier:@"DrawerCell" forIndexPath:indexPath];
     
     BOOL selected = NO;
-    switch(indexPath.row)
+    switch(((NSNumber*)self.menuOptions[indexPath.row]).integerValue)
     {
-        case 0:
+        case MenuOptionListen:
             if(self.mm_drawerController.centerViewController == self.listenMainViewController) selected = YES;
             cell.title.text = @"Listen";
             break;
             
-        case 1:
+        case MenuOptionBroadcast:
             if(self.mm_drawerController.centerViewController == self.broadcastMainViewController) selected = YES;
             cell.title.text = @"Broadcast";
             break;
             
-        case 2:
+        case MenuOptionAdmin:
             if(self.mm_drawerController.centerViewController == self.adminMainViewController) selected = YES;
             cell.title.text = @"Admin";
             break;
             
-        case 3:
+        case MenuOptionProfile:
             if(self.mm_drawerController.centerViewController == self.userProfileMainMainViewController) selected = YES;
             cell.title.text = @"User Profile";
             break;
     }
     
-        dispatch_async(dispatch_get_main_queue(), ^{
-            cell.selected = selected;
-        });
+    dispatch_async(dispatch_get_main_queue(), ^{
+        cell.selected = selected;
+    });
     
     return cell;
 }
@@ -131,21 +162,21 @@
     }];
     
     UIViewController* centerViewController;
-    switch(indexPath.row)
+    switch(((NSNumber*)self.menuOptions[indexPath.row]).integerValue)
     {
-        case 0:
+        case MenuOptionListen:
             centerViewController = self.listenMainViewController;
             break;
             
-        case 1:
+        case MenuOptionBroadcast:
             centerViewController = self.broadcastMainViewController;
             break;
             
-        case 2:
+        case MenuOptionAdmin:
             centerViewController = self.adminMainViewController;
             break;
             
-        case 3:
+        case MenuOptionProfile:
             centerViewController = self.userProfileMainMainViewController;
             break;
     }

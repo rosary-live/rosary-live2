@@ -90,7 +90,6 @@
     {
         NSNumber* val = @(0);
         
-        NSOrderedSet* set = self.dayPicker.selectedIndexes;
         for(NSNumber* dayIndex in self.dayPicker.selectedIndexes)
         {
             val = [val numberWithDayOn:dayIndex.integerValue];

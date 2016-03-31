@@ -52,6 +52,7 @@ function storeUser(email, password, salt, event, fn) {
 				avatar: { N: event.avatar.toString() },
 				lat: { N: event.lat.toString() },
 				lon: { N: event.lon.toString() },
+				level: { S: 'listener'}
 
 				verified: { BOOL: true }//,
 //				verifyToken: { S: token }

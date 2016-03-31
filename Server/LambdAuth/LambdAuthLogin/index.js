@@ -55,7 +55,8 @@ function getUser(email, fn) {
 							 "language": data.Item.language.S,
 							 "avatar": data.Item.avatar.N,
 							 "lat": data.Item.lat.N,
-							 "lon": data.Item.lon.N };
+							 "lon": data.Item.lon.N,
+							 "level": data.Item.level.S };
 				fn(null, hash, salt, verified, user);
 			} else {
 				fn(null, null); // User not found

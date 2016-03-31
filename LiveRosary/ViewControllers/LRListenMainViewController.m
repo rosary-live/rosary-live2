@@ -20,7 +20,11 @@
 
 @property (nonatomic, strong) BroadcastsViewController* broadcastViewController;
 
+@property (nonatomic, strong) UIView* loadingView;
+@property (nonatomic, strong) UIActivityIndicatorView* spinner;
+
 @property (nonatomic, strong) NSArray<BroadcastModel *> *broadcasts;
+
 
 @end
 
@@ -33,15 +37,30 @@
     [self addBroadcasts];
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self.broadcastViewController action:@selector(update)];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loggedIn) name:NotificationUserLoggedIn object:nil];
+    
+    [[self navigationController] setNavigationBarHidden:YES animated:NO];
+    self.loadingView = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    self.loadingView.backgroundColor = [UIColor whiteColor];
+    self.spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    self.spinner.center = CGPointMake([[UIScreen mainScreen]bounds].size.width/2, [[UIScreen mainScreen]bounds].size.height/2);
+    [self.spinner startAnimating];
+    [self.loadingView addSubview:self.spinner];
+    [self.view addSubview:self.loadingView];
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
     
-    if([UserManager sharedManager].loggedIn)
+    if([UserManager sharedManager].isAuthenticated)
     {
-        [self.broadcastViewController update];
+        if([UserManager sharedManager].currentUser.userLevel != UserLevelBanned)
+        {
+            [self removeSpinner];
+            [self.broadcastViewController update];
+        }
     }
 }
 
@@ -60,6 +79,25 @@
 //    listenViewController.broadcast = self.broadcasts[indexPath.row];
 //    listenViewController.playFromStart = NO;
 //}
+
+- (void)removeSpinner
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [[self navigationController] setNavigationBarHidden:NO animated:NO];
+        [self.spinner stopAnimating];
+        [self.spinner removeFromSuperview];
+        [self.loadingView removeFromSuperview];
+    });
+}
+
+- (void)loggedIn
+{
+    if([UserManager sharedManager].currentUser.userLevel != UserLevelBanned)
+    {
+        [self removeSpinner];
+        [self.broadcastViewController update];
+    }
+}
 
 - (void)addBroadcasts
 {

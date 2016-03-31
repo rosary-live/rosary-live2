@@ -33,9 +33,18 @@
         self.latitude = dict[@"lat"];
         self.longitude = dict[@"lon"];
         self.avatar = dict[@"avatar"];
+        self.level = dict[@"level"];
     }
     
     return self;
+}
+
+- (UserLevel)userLevel
+{
+    if([self.level isEqualToString:@"admin"]) return UserLevelAdmin;
+    else if([self.level isEqualToString:@"broadcaster"]) return UserLevelBroadcaster;
+    else if([self.level isEqualToString:@"listener"]) return UserLevelListener;
+    else return UserLevelBanned;
 }
 
 @end

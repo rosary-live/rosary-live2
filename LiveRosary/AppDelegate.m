@@ -11,6 +11,7 @@
 #import "LRDrawerViewController.h"
 #import "LRListenMainViewController.h"
 #import "ScheduleManager.h"
+#import "UserManager.h"
 #import "TestFairy.h"
 #import "Branch.h"
 
@@ -77,6 +78,8 @@
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userLoggedIn) name:NotificationUserLoggedIn object:nil];
+
     return YES;
 }
 
@@ -135,6 +138,18 @@
     [self.drawerController toggleDrawerSide:MMDrawerSideLeft animated:YES completion:^(BOOL finished) {
         DDLogDebug(@"Drawer Toggle now %@", self.drawerController.openSide == MMDrawerSideNone ? @"Closed" : @"Open");
     }];
+}
+
+- (void)userLoggedIn
+{
+    if([UserManager sharedManager].currentUser.userLevel == UserLevelBanned)
+    {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [UIAlertView bk_showAlertViewWithTitle:@"Banned" message:@"You're account has been banned." cancelButtonTitle:@"Ok" otherButtonTitles:nil handler:^(UIAlertView *alertView, NSInteger buttonIndex) {
+                exit(0);
+            }];
+        });
+    }
 }
 
 @end

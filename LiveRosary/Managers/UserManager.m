@@ -116,6 +116,11 @@ NSString * const NotificationUserLoggedOut = @"NotificationUserLoggedOut";
     return self.email != nil;
 }
 
+- (BOOL)isAuthenticated
+{
+    return self.currentUser != nil && self.currentUser.email != nil;
+}
+
 - (void)initializeCognitoWithCompletion:(void (^)(NSError* error))completion
 {
     if(self.isLoggedIn)

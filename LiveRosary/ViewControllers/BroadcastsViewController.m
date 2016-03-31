@@ -60,13 +60,11 @@ typedef NS_ENUM(NSUInteger, Mode) {
         
     [self addLanguagePickerView];
     [self centerMapView];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(update) name:NotificationUserLoggedIn object:nil];
-    
-    if([UserManager sharedManager].isLoggedIn)
-    {
-        [self update];
-    }
+        
+//    if([UserManager sharedManager].isLoggedIn)
+//    {
+//        [self update];
+//    }
 }
 
 - (void)didReceiveMemoryWarning {

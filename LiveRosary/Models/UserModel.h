@@ -8,6 +8,13 @@
 
 #import "BaseModel.h"
 
+typedef NS_ENUM(NSUInteger, UserLevel) {
+    UserLevelAdmin,
+    UserLevelBroadcaster,
+    UserLevelListener,
+    UserLevelBanned
+};
+
 @interface UserModel : BaseModel
 
 @property (nonatomic, strong) NSString* email;
@@ -20,7 +27,10 @@
 @property (nonatomic, strong) NSString* state;
 @property (nonatomic, strong) NSString* country;
 @property (nonatomic, strong) NSNumber* avatar;
+@property (nonatomic, strong) NSString* level;
+@property (nonatomic, readonly) UserLevel userLevel;
 
 - (id)initWithDict:(NSDictionary*)dict;
+
 
 @end
