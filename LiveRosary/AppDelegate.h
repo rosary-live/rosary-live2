@@ -7,9 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "LRBaseViewController.h"
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate, DrawerButtonDelegate>
+@interface AppDelegate : UIResponder <UIApplicationDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
 

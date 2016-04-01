@@ -6,8 +6,8 @@
 //  Copyright © 2016 PocketCake. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "LRBaseViewController.h"
 
-@interface LRChangePasswordViewController : UIViewController
+@interface LRChangePasswordViewController : LRBaseViewController
 
 @end

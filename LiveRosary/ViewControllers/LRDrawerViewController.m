@@ -88,6 +88,11 @@ typedef NS_ENUM(NSUInteger, MenuOption) {
     // Dispose of any resources that can be recreated.
 }
 
+- (NSString*)screenName
+{
+    return @"Drawer";
+}
+
 /*
 #pragma mark - Navigation
 

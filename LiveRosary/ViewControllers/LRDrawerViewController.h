@@ -6,9 +6,9 @@
 //  Copyright © 2016 PocketCake. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "LRBaseViewController.h"
 
-@interface LRDrawerViewController : UIViewController
+@interface LRDrawerViewController : LRBaseViewController
 
 @property (nonatomic, strong) UINavigationController* listenMainViewController;
 @property (nonatomic, strong) UINavigationController* broadcastMainViewController;

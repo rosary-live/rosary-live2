@@ -57,6 +57,11 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (NSString*)screenName
+{
+    return @"Create User";
+}
+
 /*
 #pragma mark - Navigation
 

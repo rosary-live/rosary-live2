@@ -11,6 +11,8 @@
 
 @interface LRBaseViewController ()
 
+@property (nonatomic) 
+
 @end
 
 @implementation LRBaseViewController
@@ -18,6 +20,17 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    [[AnalyticsManager sharedManager] screen:[self screenName]];
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -39,6 +52,12 @@
 {
     MMDrawerBarButtonItem* button = [[MMDrawerBarButtonItem alloc] initWithTarget:[[UIApplication sharedApplication] delegate] action:@selector(onDrawerButton:)];
     [self.navigationItem setLeftBarButtonItem:button];
+}
+
+- (NSString*)screenName
+{
+    NSAssert(NO, @"Must override screenName!");
+    return nil;
 }
 
 @end

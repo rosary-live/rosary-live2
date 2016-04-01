@@ -348,11 +348,11 @@
 		D885FA641C446EBF002904AC /* View Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				D81AAF7A1C45E29C00B46544 /* LRBaseViewController.h */,
+				D81AAF7B1C45E29C00B46544 /* LRBaseViewController.m */,
 				D863727E1C5B1E6C00D02DC3 /* Authentication */,
 				D885FA651C446F49002904AC /* LRDrawerViewController.h */,
 				D885FA661C446F49002904AC /* LRDrawerViewController.m */,
-				D81AAF7A1C45E29C00B46544 /* LRBaseViewController.h */,
-				D81AAF7B1C45E29C00B46544 /* LRBaseViewController.m */,
 				D885FA681C446FA2002904AC /* LRListenMainViewController.h */,
 				D885FA691C446FA2002904AC /* LRListenMainViewController.m */,
 				D8EAFEBF1C5D29E100C38EBA /* LRListenViewController.h */,

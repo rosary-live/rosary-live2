@@ -48,6 +48,11 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (NSString*)screenName
+{
+    return @"Broadcast Main";
+}
+
 #pragma mark - Navigation
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {

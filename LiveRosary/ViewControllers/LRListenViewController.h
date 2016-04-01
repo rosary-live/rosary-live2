@@ -6,10 +6,10 @@
 //  Copyright © 2016 PocketCake. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "LRBaseViewController.h"
 #import "BroadcastModel.h"
 
-@interface LRListenViewController : UIViewController
+@interface LRListenViewController : LRBaseViewController
 
 @property (nonatomic, strong) BroadcastModel* broadcast;
 @property (nonatomic) BOOL playFromStart;

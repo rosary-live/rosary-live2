@@ -69,6 +69,11 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (NSString*)screenName
+{
+    return @"Listen Main";
+}
+
 #pragma mark - Navigation
 
 // In a storyboard-based application, you will often want to do a little preparation before navigation

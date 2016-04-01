@@ -7,7 +7,6 @@
 //
 
 #import "LRAdminMainViewController.h"
-#import "MMDrawerBarButtonItem.h"
 
 @interface LRAdminMainViewController ()
 
@@ -35,5 +34,10 @@
     // Pass the selected object to the new view controller.
 }
 */
+
+- (NSString*)screenName
+{
+    return @"Admin Main";
+}
 
 @end

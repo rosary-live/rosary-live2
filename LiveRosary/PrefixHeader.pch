@@ -29,6 +29,7 @@
 #import <EXTKeyPathCoding.h>
 #import "NSString+Utilities.h"
 #import "ConfigModel.h"
+#import "AnalyticsManager.h"
 
 #endif
 

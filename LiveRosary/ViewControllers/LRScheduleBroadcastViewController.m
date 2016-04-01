@@ -84,6 +84,11 @@ typedef NS_ENUM(NSUInteger, CellType) {
     // Dispose of any resources that can be recreated.
 }
 
+- (NSString*)screenName
+{
+    return @"Schedule Broadcast";
+}
+
 /*
 #pragma mark - Navigation
 

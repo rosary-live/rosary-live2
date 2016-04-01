@@ -13,7 +13,10 @@
 + (instancetype)sharedManager;
 
 - (void)screen:(NSString*)screenName;
-- (void)event:(NSString*)event info:(NSDictionary*)info;
+- (void)event:(NSString*)eventName info:(NSDictionary*)info;
 - (void)error:(NSError*)error;
+- (void)logRequest:(NSURLRequest*)request response:(NSHTTPURLResponse*)response duration:(CFTimeInterval)duration successful:(BOOL)successful message:(NSString*)message error:(NSString*)error;
+
+- (void)flushEvents;
 
 @end

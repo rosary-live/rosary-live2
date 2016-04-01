@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@protocol DrawerButtonDelegate<NSObject>
+@protocol DrawerButtonDelegate <NSObject>
 
 - (IBAction)onDrawerButton:(id)sender;
 
@@ -17,5 +17,6 @@
 @interface LRBaseViewController : UIViewController
 
 - (void)addDrawerButton;
+- (NSString*)screenName;
 
 @end

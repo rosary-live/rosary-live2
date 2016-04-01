@@ -149,6 +149,11 @@ NSString * const kLastIntentionKey = @"LastIntention";
     // Dispose of any resources that can be recreated.
 }
 
+- (NSString*)screenName
+{
+    return @"Listen";
+}
+
 - (void)startSlideShowTimer
 {
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)([ConfigModel sharedInstance].slideShowStartDelay * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{

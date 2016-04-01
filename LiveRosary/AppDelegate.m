@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+//#import "LRBaseViewController.h"
 #import "MMDrawerController.h"
 #import "LRDrawerViewController.h"
 #import "LRListenMainViewController.h"
@@ -16,7 +17,7 @@
 #import "Branch.h"
 #import "AnalyticsManager.h"
 
-@interface AppDelegate ()
+@interface AppDelegate () <DrawerButtonDelegate>
 
 @property (nonatomic, strong) MMDrawerController* drawerController;
 @property (nonatomic, strong) LRDrawerViewController* drawerViewController;

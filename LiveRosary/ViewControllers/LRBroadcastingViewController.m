@@ -117,6 +117,11 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (NSString*)screenName
+{
+    return @"Broadcasting";
+}
+
 /*
 #pragma mark - Navigation
 

@@ -39,14 +39,72 @@
 
 - (void)screen:(NSString*)screenName
 {
+    id<AWSMobileAnalyticsEventClient> eventClient = self.analytics.eventClient;
+    id<AWSMobileAnalyticsEvent> event = [eventClient createEventWithEventType:@"Screen"];
+    [event addAttribute:screenName forKey:@"ScreenName"];
+    [eventClient recordEvent:event];
 }
 
-- (void)event:(NSString*)event info:(NSDictionary*)info
+- (void)event:(NSString*)eventName info:(NSDictionary*)info
 {
+    id<AWSMobileAnalyticsEventClient> eventClient = self.analytics.eventClient;
+    id<AWSMobileAnalyticsEvent> event = [eventClient createEventWithEventType:eventName];
+    
+    if(info != nil)
+    {
+        for(NSString* key in info.allKeys)
+        {
+            id value = [info valueForKey:key];
+            if([value isKindOfClass:[NSString class]])
+            {
+                [event addAttribute:value forKey:key];
+            }
+            else if([value isKindOfClass:[NSNumber class]])
+            {
+                [event addMetric:value forKey:key];
+            }
+        }
+    }
+    
+    [eventClient recordEvent:event];
 }
 
 - (void)error:(NSError*)error
 {
+    id<AWSMobileAnalyticsEventClient> eventClient = self.analytics.eventClient;
+    id<AWSMobileAnalyticsEvent> event = [eventClient createEventWithEventType:@"Error"];
+    [event addAttribute:error.domain forKey:@"Domain"];
+    [event addAttribute:[NSString stringWithFormat:@"%d", (int)error.code] forKey:@"Code"];
+    [event addAttribute:error.description forKey:@"Description"];
+    [eventClient recordEvent:event];
+}
+
+- (void)logRequest:(NSURLRequest*)request response:(NSHTTPURLResponse*)response duration:(CFTimeInterval)duration successful:(BOOL)successful message:(NSString*)message error:(NSString*)error
+{
+    id<AWSMobileAnalyticsEventClient> eventClient = self.analytics.eventClient;
+    id<AWSMobileAnalyticsEvent> event = [eventClient createEventWithEventType:@"Request"];
+    [event addAttribute:request.URL.absoluteString forKey:@"URL"];
+    [event addMetric:[NSNumber numberWithDouble:duration] forKey:@"Duration"];
+    [event addMetric:[NSNumber numberWithInteger:response.statusCode] forKey:@"StatusCode"];
+    [event addAttribute:successful ? @"YES" : @"NO" forKey:@"Successful"];
+    
+    if(message != nil)
+    {
+        [event addAttribute:message forKey:@"Message"];
+    }
+    
+    if(error != nil)
+    {
+        [event addAttribute:error forKey:@"Error"];
+    }
+    
+    [eventClient recordEvent:event];
+}
+
+- (void)flushEvents
+{
+    id<AWSMobileAnalyticsEventClient> eventClient = self.analytics.eventClient;
+    [eventClient submitEvents];
 }
 
 @end

@@ -31,6 +31,11 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (NSString*)screenName
+{
+    return @"Reset Password";
+}
+
 /*
 #pragma mark - Navigation
 

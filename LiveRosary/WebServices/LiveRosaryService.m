@@ -58,21 +58,25 @@ NSString* const kBaseURL = @"https://9wwr7dvesk.execute-api.us-east-1.amazonaws.
     [request setValue:kApiKey forHTTPHeaderField:@"x-api-key"];
     [request setHTTPBody:postData];
     
+    CFTimeInterval startTime = CACurrentMediaTime();
     NSURLSessionDataTask *dataTask = [self.manager dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
         if(error != nil)
         {
+            [[AnalyticsManager sharedManager] logRequest:request response:(NSHTTPURLResponse*)response duration:CACurrentMediaTime() - startTime successful:NO message:nil error:nil];
             safeBlock(completion, nil, error);
         }
         else
         {
             NSNumber* success = responseObject[@"success"];
             NSError* errorReturn = nil;
-            if(success != nil && ![success boolValue])
+            if(success != nil && !success.boolValue)
             {
                 DDLogError(@"LiveRosary API Error for %@: %@ - %@", method, responseObject[@"message"], responseObject[@"error"]);
                 errorReturn = [NSError errorWithDomain:@"" code:0 userInfo:@{ NSLocalizedDescriptionKey: responseObject[@"message"] }];
             }
             
+            [[AnalyticsManager sharedManager] logRequest:request response:(NSHTTPURLResponse*)response duration:CACurrentMediaTime() - startTime successful:success.boolValue message:responseObject[@"message"] error:responseObject[@"error"]];
+
             safeBlock(completion, responseObject, errorReturn);
         }
     }];
