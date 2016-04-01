@@ -18,7 +18,8 @@
 
 @interface AppDelegate ()
 
-@property (nonatomic,strong) MMDrawerController* drawerController;
+@property (nonatomic, strong) MMDrawerController* drawerController;
+@property (nonatomic, strong) LRDrawerViewController* drawerViewController;
 
 @end
 
@@ -32,16 +33,16 @@
     
     DDLogInfo(@"App Startup");
     
-    LRDrawerViewController* drawerViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"DrawerViewController"];
+    self.drawerViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"DrawerViewController"];
     
-    drawerViewController.listenMainViewController = (UINavigationController*)[[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"Listen"];
-    drawerViewController.broadcastMainViewController = (UINavigationController*)[[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"Broadcast"];
-    drawerViewController.adminMainViewController = (UINavigationController*)[[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"Admin"];
-    drawerViewController.userProfileMainMainViewController = (UINavigationController*)[[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"UserProfile"];
+    self.drawerViewController.listenMainViewController = (UINavigationController*)[[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"Listen"];
+    self.drawerViewController.broadcastMainViewController = (UINavigationController*)[[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"Broadcast"];
+    self.drawerViewController.adminMainViewController = (UINavigationController*)[[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"Admin"];
+    self.drawerViewController.userProfileMainMainViewController = (UINavigationController*)[[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"UserProfile"];
     
     self.drawerController = [[MMDrawerController alloc]
-                             initWithCenterViewController:drawerViewController.listenMainViewController
-                             leftDrawerViewController:drawerViewController];
+                             initWithCenterViewController:self.drawerViewController.listenMainViewController
+                             leftDrawerViewController:self.drawerViewController];
     [self.drawerController setShowsShadow:YES];
     [self.drawerController setMaximumRightDrawerWidth:200.0];
     [self.drawerController setOpenDrawerGestureModeMask:MMOpenDrawerGestureModeAll];
@@ -60,17 +61,29 @@
     [AWSLogger defaultLogger].logLevel = AWSLogLevelVerbose;
     [AnalyticsManager sharedManager];
     
-    Branch *branch = [Branch getInstance];
-    [branch initSessionWithLaunchOptions:launchOptions andRegisterDeepLinkHandler:^(NSDictionary *params, NSError *error) {
-        // params are the deep linked params associated with the link that the user clicked before showing up.
-        NSLog(@"deep link data: %@", [params description]);
-    }];
-    
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userLoggedIn) name:NotificationUserLoggedIn object:nil];
 
+    Branch *branch = [Branch getInstance];
+    [branch initSessionWithLaunchOptions:launchOptions andRegisterDeepLinkHandler:^(NSDictionary *params, NSError *error) {
+        // params are the deep linked params associated with the link that the user clicked before showing up.
+        NSLog(@"deep link data: %@", [params description]);
+        
+        NSNumber* branchLinkClicked = params[@"+clicked_branch_link"];
+        if(branchLinkClicked != nil && branchLinkClicked.boolValue)
+        {
+            NSString* identifier = params[@"$canonical_identifier"];
+            if([identifier isEqualToString:@"LostPassword"])
+            {
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                    [self.drawerViewController showPasswordReset];
+                });
+            }
+        }
+    }];
+    
     return YES;
 }
 

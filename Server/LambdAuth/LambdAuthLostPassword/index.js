@@ -58,9 +58,8 @@ function storeLostToken(email, fn) {
 	});
 }
 
-function sendLostPasswordEmail(email, token, fn) {
-	var subject = 'Password Lost for ' + config.EXTERNAL_NAME;
-	var lostLink = config.RESET_PAGE + '?email=' + email + '&lost=' + token;
+function sendLostPasswordEmail(email, link, fn) {
+	var subject = 'Password Reset for ' + config.EXTERNAL_NAME;
 	ses.sendEmail({
 		Source: config.EMAIL_SOURCE,
 		Destination: {
@@ -78,9 +77,8 @@ function sendLostPasswordEmail(email, token, fn) {
 					+ '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />'
 					+ '<title>' + subject + '</title>'
 					+ '</head><body>'
-					+ 'Please <a href="' + lostLink + '">click here to reset your password</a> or copy & paste the following link in a browser:'
+					+ 'Please <a href="' + link + '">click here on your device to open LiveRosary and reset your password</a>.'
 					+ '<br><br>'
-					+ '<a href="' + lostLink + '">' + lostLink + '</a>'
 					+ '</body></html>'
 				}
 			}
@@ -103,12 +101,13 @@ exports.handler = function(event, context) {
 				if (err) {
 					context.succeed({success: false, message: 'Error in storing token', error: err});
 				} else {
-					sendLostPasswordEmail(email, token, function(err, data) {
+					sendLostPasswordEmail(email, link, function(err, data) {
 						if (err) {
 							context.succeed({success: false, message: 'Error sending email', error: err});
 						} else {
 							console.log('User found: ' + email);
-							context.succeed({success: true});
+							console.log('lost token: ' + token);
+							context.succeed({success: true, token: token});
 						}
 					});
 				}

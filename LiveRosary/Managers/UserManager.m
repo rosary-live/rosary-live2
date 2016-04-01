@@ -415,6 +415,7 @@ NSString * const NotificationUserLoggedOut = @"NotificationUserLoggedOut";
         }
         else
         {
+            NSLog(@"lost token: %@", token);
             [[NSUserDefaults standardUserDefaults] setObject:token forKey:UserDefaultLostPasswordToken];
             [[NSUserDefaults standardUserDefaults] synchronize];
             
@@ -430,6 +431,8 @@ NSString * const NotificationUserLoggedOut = @"NotificationUserLoggedOut";
     
     if(email != nil && email.length > 0 && token != nil && token.length > 0)
     {
+        NSLog(@"lost email: %@", email);
+        NSLog(@"lost token: %@", token);
         [[LiveRosaryService sharedService] resetPasswordWithToken:token newPassword:newPassword forEmail:email completion:^(NSError *error) {
             if(error != nil)
             {

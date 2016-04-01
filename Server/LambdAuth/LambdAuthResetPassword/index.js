@@ -8,24 +8,26 @@ var config = require('./config.json');
 // Get reference to AWS clients
 var dynamodb = new AWS.DynamoDB();
 
-function computeHash(password, salt, fn) {
+function computeHash2(password, salt, fn) {
 	// Bytesize
 	var len = 128;
 	var iterations = 4096;
 
-	if (3 == arguments.length) {
-		crypto.pbkdf2(password, salt, iterations, len, function(err, derivedKey) {
-			if (err) return fn(err);
-			else fn(null, salt, derivedKey.toString('base64'));
-		});
-	} else {
-		fn = salt;
-		crypto.randomBytes(len, function(err, salt) {
-			if (err) return fn(err);
-			salt = salt.toString('base64');
-			computeHash(password, salt, fn);
-		});
-	}
+	crypto.pbkdf2(password, salt, iterations, len, function(err, derivedKey) {
+		if (err) return fn(err);
+		else fn(null, salt, derivedKey.toString('base64'));
+	});
+}
+
+function computeHash(password, fn) {
+	// Bytesize
+	var len = 128;
+
+	crypto.randomBytes(len, function(err, salt) {
+		if (err) return fn(err);
+		salt = salt.toString('base64');
+		computeHash2(password, salt, fn);
+	});
 }
 
 function getUser(email, fn) {
@@ -80,37 +82,33 @@ function updateUser(email, password, salt, fn) {
 
 exports.handler = function(event, context) {
 	var email = event.email;
-	var lostToken = event.lost;
-	var newPassword = event.password;
+	var lostToken = event.token;
+	var newPassword = event.newPassword;
 
 	getUser(email, function(err, correctToken) {
 		if (err) {
-			context.fail('Error in getUser: ' + err);
+			context.succeed({success: false, message:'Error getting user', error: err});
 		} else if (!correctToken) {
 			console.log('No lostToken for user: ' + email);
-			context.succeed({
-				changed: false
-			});
+			context.succeed({success: false, message:'No token for user'});
 		} else if (lostToken != correctToken) {
 			// Wrong token, no password lost
 			console.log('Wrong lostToken for user: ' + email);
-			context.succeed({
-				changed: false
-			});
+			console.log('lostToken: ' + lostToken);
+			console.log('correctToken: ' + correctToken);
+			context.succeed({success: false, message: 'Wrong token for user'});
 		} else {
 			console.log('User logged in: ' + email);
 			computeHash(newPassword, function(err, newSalt, newHash) {
 				if (err) {
-					context.fail('Error in computeHash: ' + err);
+					context.succeed({success: false, message: 'Error in computeHash', error: err});
 				} else {
 					updateUser(email, newHash, newSalt, function(err, data) {
 						if (err) {
-							context.fail('Error in updateUser: ' + err);
+							context.succeed({success: false, message: 'Error in updateUser', error: err});
 						} else {
 							console.log('User password changed: ' + email);
-							context.succeed({
-								changed: true
-							});
+							context.succeed({success: true});
 						}
 					});
 				}

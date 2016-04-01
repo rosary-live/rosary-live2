@@ -9,6 +9,7 @@
 #import "LRForgotPasswordViewController.h"
 #import "BranchUniversalObject.h"
 #import "BranchLinkProperties.h"
+#import "UserManager.h"
 #import <MBProgressHUD/MBProgressHUD.h>
 
 @interface LRForgotPasswordViewController ()
@@ -56,7 +57,7 @@
         return;
     }
     
-    BranchUniversalObject *branchUniversalObject = [[BranchUniversalObject alloc] initWithCanonicalIdentifier:[NSString stringWithFormat:@"LostPassword/%@", self.email.text]];
+    BranchUniversalObject *branchUniversalObject = [[BranchUniversalObject alloc] initWithCanonicalIdentifier:[NSString stringWithFormat:@"LostPassword"]];
     branchUniversalObject.title = @"Reset Password";
     branchUniversalObject.contentDescription = [NSString stringWithFormat:@"LiveRosary reset password for %@", self.email.text];
     //branchUniversalObject.imageUrl = @"https://example.com/mycontent-12345.png";
@@ -70,30 +71,31 @@
     [branchUniversalObject getShortUrlWithLinkProperties:linkProperties andCallback:^(NSString *url, NSError *error) {
         if(error != nil)
         {
-            [self.hud hide:YES];
-            [UIAlertView bk_showAlertViewWithTitle:@"Error" message:@"Unable to report broadcast." cancelButtonTitle:@"Ok" otherButtonTitles:nil handler:nil];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.hud hide:YES];
+            
+                [UIAlertView bk_showAlertViewWithTitle:@"Error" message:@"Unable to request password reset." cancelButtonTitle:@"Ok" otherButtonTitles:nil handler:nil];
+            });
         }
         else
         {
             NSLog(@"success getting url! %@", url);
-        }
-        
-        NSString* name = [NSString stringWithFormat:@"%@ %@", [UserManager sharedManager].currentUser.firstName, [UserManager sharedManager].currentUser.lastName];
-        [[LiveRosaryService sharedService] reportBroadcast:self.broadcast reporterName:name reporterEmail:[UserManager sharedManager].email reason:self.reason.text link:url completion:^(NSError *error) {
             
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self.hud hide:YES];
-                
-                if(error != nil)
-                {
-                    [UIAlertView bk_showAlertViewWithTitle:@"Error" message:@"Unable to report broadcast." cancelButtonTitle:@"Ok" otherButtonTitles:nil handler:nil];
-                }
-                else
-                {
-                    [self.navigationController popViewControllerAnimated:YES];
-                }
-            });
-        }];
+            [[UserManager sharedManager] lostPasswordWithEmail:self.email.text link:url completion:^(NSError *error) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self.hud hide:YES];
+                    
+                    if(error != nil)
+                    {
+                        [UIAlertView bk_showAlertViewWithTitle:@"Error" message:@"Unable to request password reset." cancelButtonTitle:@"Ok" otherButtonTitles:nil handler:nil];
+                    }
+                    else
+                    {
+                        self.instructions.hidden = NO;
+                    }
+                });
+            }];
+        }
     }];}
 
 @end

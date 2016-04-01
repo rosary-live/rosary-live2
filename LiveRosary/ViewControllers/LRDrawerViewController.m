@@ -10,6 +10,7 @@
 #import "DrawerCell.h"
 #import "UIViewController+MMDrawerController.h"
 #import "UserManager.h"
+#import "LRResetPasswordViewController.h"
 
 typedef NS_ENUM(NSUInteger, MenuOption) {
     MenuOptionListen,
@@ -26,7 +27,9 @@ typedef NS_ENUM(NSUInteger, MenuOption) {
 @property (nonatomic, weak) IBOutlet UILabel* language;
 @property (nonatomic, weak) IBOutlet UITableView* tableView;
 
-@property (nonnull, strong) NSMutableArray* menuOptions;
+@property (nonatomic, strong) NSMutableArray* menuOptions;
+
+@property (nonatomic, strong) UINavigationController* authNav;
 
 @end
 
@@ -38,7 +41,7 @@ typedef NS_ENUM(NSUInteger, MenuOption) {
     // Start authentication if user isn't logged in
     if(![UserManager sharedManager].isLoggedIn)
     {
-        [self showAuthentication];
+        [self showAuthenticationWithCompletion:nil];
     }
         
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userLoggedOut) name:NotificationUserLoggedOut object:nil];
@@ -97,17 +100,35 @@ typedef NS_ENUM(NSUInteger, MenuOption) {
 
 - (void)userLoggedOut
 {
-    [self showAuthentication];
+    [self showAuthenticationWithCompletion:nil];
 }
 
-- (void)showAuthentication
+- (void)showAuthenticationWithCompletion:(void (^)())completion
 {
     // Queue it at the end of the main run loop so it happens after the UI has been created.
     dispatch_async(dispatch_get_main_queue(), ^{
         UIStoryboard* storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-        UINavigationController* authNav = [storyboard instantiateViewControllerWithIdentifier:@"Authentication"];
-        [self presentViewController:authNav animated:YES completion:nil];
+        self.authNav = [storyboard instantiateViewControllerWithIdentifier:@"Authentication"];
+        [self presentViewController:self.authNav animated:NO completion:completion];
     });
+}
+
+- (void)showPasswordReset
+{
+    if(self.authNav == nil)
+    {
+        [self showAuthenticationWithCompletion:^{
+            UIStoryboard* storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+            LRResetPasswordViewController* resetPassword = [storyboard instantiateViewControllerWithIdentifier:@"ResetPassword"];
+            [self.authNav pushViewController:resetPassword animated:NO];
+        }];
+    }
+    else
+    {
+        UIStoryboard* storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+        LRResetPasswordViewController* resetPassword = [storyboard instantiateViewControllerWithIdentifier:@"ResetPassword"];
+        [self.authNav pushViewController:resetPassword animated:NO];
+    }
 }
 
 #pragma mark - UITableViewDataSource

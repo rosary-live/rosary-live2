@@ -15,4 +15,6 @@
 @property (nonatomic, strong) UINavigationController* adminMainViewController;
 @property (nonatomic, strong) UINavigationController* userProfileMainMainViewController;
 
+- (void)showPasswordReset;
+
 @end

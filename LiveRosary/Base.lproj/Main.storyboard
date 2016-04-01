@@ -94,7 +94,7 @@
                         <viewControllerLayoutGuide type="top" id="at7-cC-Gam"/>
                         <viewControllerLayoutGuide type="bottom" id="732-zZ-3Hq"/>
                     </layoutGuides>
-                    <view key="view" hidden="YES" contentMode="scaleToFill" id="RGW-IY-BJM">
+                    <view key="view" contentMode="scaleToFill" id="RGW-IY-BJM">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
@@ -121,10 +121,10 @@
                                     <action selector="onReset:" destination="nCL-hD-OAk" eventType="touchUpInside" id="3fp-zj-bFQ"/>
                                 </connections>
                             </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vfU-Td-obM">
-                                <rect key="frame" x="20" y="207" width="560" height="75"/>
+                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vfU-Td-obM">
+                                <rect key="frame" x="20" y="207" width="560" height="211"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="75" id="76j-5u-Tm3"/>
+                                    <constraint firstAttribute="height" constant="211" id="76j-5u-Tm3"/>
                                 </constraints>
                                 <string key="text">An email will as been sent to the email you entered. Open the email on this device and click the link. This will open the LiveRosary App and allow you to change your password.</string>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -156,7 +156,7 @@
         <!--Reset Password-->
         <scene sceneID="53H-99-Y4C">
             <objects>
-                <viewController id="IIG-MJ-ZBk" customClass="LRResetPasswordViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ResetPassword" id="IIG-MJ-ZBk" customClass="LRResetPasswordViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="4hs-iL-Hnq"/>
                         <viewControllerLayoutGuide type="bottom" id="yDW-ti-1mu"/>
