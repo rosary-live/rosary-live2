@@ -11,11 +11,14 @@
 #import "BranchUniversalObject.h"
 #import "BranchLinkProperties.h"
 #import "LiveRosaryService.h"
+#import <MBProgressHUD/MBProgressHUD.h>
 
 @interface LRReportBroadcastViewController ()
 
 @property (nonatomic, weak) IBOutlet UIButton* report;
 @property (nonatomic, weak) IBOutlet UITextView* reason;
+
+@property (nonatomic, strong) MBProgressHUD *hud;
 
 @end
 
@@ -59,10 +62,14 @@
     
     BranchLinkProperties *linkProperties = [[BranchLinkProperties alloc] init];
     
+    self.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    self.hud.labelText = @"Requesting Password Reset";
+
     [branchUniversalObject getShortUrlWithLinkProperties:linkProperties andCallback:^(NSString *url, NSError *error) {
         if(error != nil)
         {
-            DDLogError(@"Error getting branch.io report link: %@", error);
+            [self.hud hide:YES];
+            [UIAlertView bk_showAlertViewWithTitle:@"Error" message:@"Unable to report broadcast." cancelButtonTitle:@"Ok" otherButtonTitles:nil handler:nil];
         }
         else
         {
@@ -73,6 +80,8 @@
         [[LiveRosaryService sharedService] reportBroadcast:self.broadcast reporterName:name reporterEmail:[UserManager sharedManager].email reason:self.reason.text link:url completion:^(NSError *error) {
             
             dispatch_async(dispatch_get_main_queue(), ^{
+                [self.hud hide:YES];
+                
                 if(error != nil)
                 {
                     [UIAlertView bk_showAlertViewWithTitle:@"Error" message:@"Unable to report broadcast." cancelButtonTitle:@"Ok" otherButtonTitles:nil handler:nil];

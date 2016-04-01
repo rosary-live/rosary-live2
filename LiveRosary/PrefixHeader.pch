@@ -37,4 +37,7 @@
 
 #define safeBlock(block, ...) if (block) block(__VA_ARGS__)
 
+#define NSERRORFULL(d, c, desc) [NSError errorWithDomain:d code:c userInfo:@{ NSLocalizedDescriptionKey: desc }]
+#define NSERROR(desc) [NSError errorWithDomain:@"" code:0 userInfo:@{ NSLocalizedDescriptionKey: desc }]
+
 #endif /* PrefixHeader_pch */

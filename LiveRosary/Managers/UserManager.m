@@ -18,8 +18,11 @@
 
 NSString * const ErrorDomainUserManager = @"ErrorDomainUserManager";
 NSInteger const ErrorCodeUserManager_Exception = 1;
+
 NSString * const UserDefaultEmail = @"UserDefaultEmail";
 NSString * const UserDefaultPassword = @"UserDefaultPassword";
+NSString * const UserDefaultLostPasswordEmail = @"UserDefaultLostPasswordEmail";
+NSString * const UserDefaultLostPasswordToken = @"UserDefaultLostPasswordToken";
 
 NSString * const NotificationUserLoggedIn = @"NotificationUserLoggedIn";
 NSString * const NotificationUserLoggedOut = @"NotificationUserLoggedOut";
@@ -398,6 +401,54 @@ NSString * const NotificationUserLoggedOut = @"NotificationUserLoggedOut";
             safeBlock(completion, nil);
         }
     }];
+}
+
+- (void)lostPasswordWithEmail:(NSString*)email link:(NSString*)link completion:(void (^)(NSError* error))completion
+{
+    [[NSUserDefaults standardUserDefaults] setObject:email forKey:UserDefaultLostPasswordEmail];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    [[LiveRosaryService sharedService] lostPasswordWithEmail:email link:link completion:^(NSString *token, NSError *error) {
+        if(error != nil)
+        {
+            safeBlock(completion, error);
+        }
+        else
+        {
+            [[NSUserDefaults standardUserDefaults] setObject:token forKey:UserDefaultLostPasswordToken];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+            
+            safeBlock(completion, nil);
+        }
+    }];
+}
+
+- (void)resetPassword:(NSString*)newPassword completion:(void (^)(NSError* error))completion
+{
+    NSString* email = [[NSUserDefaults standardUserDefaults] objectForKey:UserDefaultLostPasswordEmail];
+    NSString* token = [[NSUserDefaults standardUserDefaults] objectForKey:UserDefaultLostPasswordToken];
+    
+    if(email != nil && email.length > 0 && token != nil && token.length > 0)
+    {
+        [[LiveRosaryService sharedService] resetPasswordWithToken:token newPassword:newPassword forEmail:email completion:^(NSError *error) {
+            if(error != nil)
+            {
+                safeBlock(completion, error);
+            }
+            else
+            {
+                [[NSUserDefaults standardUserDefaults] removeObjectForKey:UserDefaultLostPasswordEmail];
+                [[NSUserDefaults standardUserDefaults] removeObjectForKey:UserDefaultLostPasswordToken];
+                
+                [self.authClient updatePassword:newPassword];
+                safeBlock(completion, nil);
+            }
+        }];
+    }
+    else
+    {
+        safeBlock(completion, NSERROR(@"Unabled to reset password."));
+    }
 }
 
 #pragma mark - AFURLResponseSerialization

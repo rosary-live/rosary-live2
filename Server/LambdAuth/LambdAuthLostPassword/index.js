@@ -90,28 +90,25 @@ function sendLostPasswordEmail(email, token, fn) {
 
 exports.handler = function(event, context) {
 	var email = event.email;
+	var link = event.link;
 
 	getUser(email, function(err, emailFound) {
 		if (err) {
-			context.fail('Error in getUserFromEmail: ' + err);
+			context.succeed({success: false, message: 'Error getting email', error: err});
 		} else if (!emailFound) {
 			console.log('User not found: ' + email);
-			context.succeed({
-				sent: false
-			});
+			context.succeed({success: false, message:'Email not found.'});
 		} else {
 			storeLostToken(email, function(err, token) {
 				if (err) {
-					context.fail('Error in storeLostToken: ' + err);
+					context.succeed({success: false, message: 'Error in storing token', error: err});
 				} else {
 					sendLostPasswordEmail(email, token, function(err, data) {
 						if (err) {
-							context.fail('Error in sendLostPasswordEmail: ' + err);
+							context.succeed({success: false, message: 'Error sending email', error: err});
 						} else {
 							console.log('User found: ' + email);
-							context.succeed({
-								sent: true
-							});
+							context.succeed({success: true});
 						}
 					});
 				}

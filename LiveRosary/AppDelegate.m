@@ -14,8 +14,7 @@
 #import "UserManager.h"
 #import "TestFairy.h"
 #import "Branch.h"
-
-//#import "TransferManager.h"
+#import "AnalyticsManager.h"
 
 @interface AppDelegate ()
 
@@ -53,22 +52,14 @@
     
     [[ScheduleManager sharedManager] configureNotifications];
     
-//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-//        [[TransferManager sharedManager] checkBroadcastBandwidthWithCompletion:^(double averageBytesPerSecond) {
-//            NSLog(@"averageBytesPerSecond: %g", averageBytesPerSecond);
-//        }];
-    
-//        [[TransferManager sharedManager] checkListenBandwidthWithCompletion:^(double averageBytesPerSecond) {
-//            NSLog(@"averageBytesPerSecond: %g", averageBytesPerSecond);
-//        }];
-//    });
-    
-    
-    
     return YES;
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    
+    [AWSLogger defaultLogger].logLevel = AWSLogLevelVerbose;
+    [AnalyticsManager sharedManager];
+    
     Branch *branch = [Branch getInstance];
     [branch initSessionWithLaunchOptions:launchOptions andRegisterDeepLinkHandler:^(NSDictionary *params, NSError *error) {
         // params are the deep linked params associated with the link that the user clicked before showing up.

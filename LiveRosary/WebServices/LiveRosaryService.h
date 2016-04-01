@@ -17,6 +17,8 @@
 - (void)createUserWithDictionary:(NSDictionary*)dictionary completion:(void (^)(NSError* error))completion;
 - (void)updateUserWithDictionary:(NSDictionary*)dictionary completion:(void (^)(NSError* error))completion;
 - (void)changePassword:(NSString*)currentPassword newPassword:(NSString*)newPassword forEmail:(NSString*)email completion:(void (^)(NSError* error))completion;
+- (void)lostPasswordWithEmail:(NSString*)email link:(NSString*)link completion:(void (^)(NSString* token, NSError* error))completion;
+- (void)resetPasswordWithToken:(NSString*)token newPassword:(NSString*)newPassword forEmail:(NSString*)email completion:(void (^)(NSError* error))completion;
 
 - (void)addScheduledBroadcastWithDictionary:(NSDictionary*)dictionary completion:(void (^)(NSError* error))completion;
 - (void)updateScheduledBroadcastWithDictionary:(NSDictionary*)dictionary completion:(void (^)(NSError* error))completion;

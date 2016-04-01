@@ -21,6 +21,8 @@ PODS:
     - AWSCore (= 2.3.3)
   - AWSLambda (2.3.3):
     - AWSCore (= 2.3.3)
+  - AWSMobileAnalytics (2.3.3):
+    - AWSCore (= 2.3.3)
   - AWSS3 (2.3.3):
     - AWSCore (= 2.3.3)
   - AWSSQS (2.3.3):
@@ -119,6 +121,7 @@ DEPENDENCIES:
   - AWSCore
   - AWSDynamoDB
   - AWSLambda
+  - AWSMobileAnalytics
   - AWSS3
   - AWSSQS
   - BlocksKit
@@ -143,6 +146,7 @@ SPEC CHECKSUMS:
   AWSCore: b12704516e21ed34cfe7547e07ab945b079d1f56
   AWSDynamoDB: daa28bee19a48bf8f3cf2d9155f142975593f18f
   AWSLambda: 01a57576f3e0f444782915c9c9a3b38eb6df9e9f
+  AWSMobileAnalytics: 4deace80ad43ac9a20127bc83dd6bccd19d05835
   AWSS3: 675f59e0c338e61441117f03018187b9deb359c4
   AWSSQS: 6b150bbdc971582104ddc1f8660581ff9e21a762
   BlocksKit: 7f422b971407001178d181a43b99014ea2591fe6

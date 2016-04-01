@@ -106,6 +106,25 @@ NSString* const kBaseURL = @"https://9wwr7dvesk.execute-api.us-east-1.amazonaws.
     }];
 }
 
+- (void)lostPasswordWithEmail:(NSString*)email link:(NSString*)link completion:(void (^)(NSString* token, NSError* error))completion
+{
+    NSDictionary* dictionary = @{ @"email": email, @"link": link };
+    
+    [self postMethod:@"LostPassword" withDictionary:dictionary completion:^(id response, NSError *error) {
+        NSDictionary* dict = response;
+        safeBlock(completion, dict[@"token"], error);
+    }];
+}
+
+- (void)resetPasswordWithToken:(NSString*)token newPassword:(NSString*)newPassword forEmail:(NSString*)email completion:(void (^)(NSError* error))completion
+{
+    NSDictionary* dictionary = @{ @"email": email, @"token": token, @"newPassword": newPassword };
+    
+    [self postMethod:@"ResetPassword" withDictionary:dictionary completion:^(id response, NSError *error) {
+        safeBlock(completion, error);
+    }];
+}
+
 - (void)addScheduledBroadcastWithDictionary:(NSDictionary*)dictionary completion:(void (^)(NSError* error))completion
 {
     NSMutableDictionary* dictWithAction = [dictionary mutableCopy];
