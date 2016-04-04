@@ -124,7 +124,7 @@
     LRListenViewController* listenViewController = [storyboard instantiateViewControllerWithIdentifier:@"LRListenViewController"];
     listenViewController.broadcast = broadcast;
     listenViewController.playFromStart = NO;
-    [self.navigationController pushViewController:listenViewController animated:YES];
+    [self.navigationController pushViewController:listenViewController animated:YES];    
 }
 
 - (void)selectedSchedule:(ScheduleModel *)model

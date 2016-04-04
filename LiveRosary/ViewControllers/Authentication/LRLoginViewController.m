@@ -77,10 +77,14 @@
             
             if(error != nil)
             {
+                [[AnalyticsManager sharedManager] error:error name:@"UserLogin"];
+
                 [UIAlertView bk_showAlertViewWithTitle:@"Error" message:error.localizedDescription cancelButtonTitle:@"Ok" otherButtonTitles:nil handler:nil];
             }
             else
             {
+                [[AnalyticsManager sharedManager] event:@"UserLogin" info:nil];
+                
                 [self dismissViewControllerAnimated:YES completion:nil];
             }
         });

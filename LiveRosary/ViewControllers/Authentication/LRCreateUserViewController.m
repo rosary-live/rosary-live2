@@ -112,13 +112,25 @@
                     
                     self.latitude = self.geocoder.location.coordinate.latitude;
                     self.longitude = self.geocoder.location.coordinate.longitude;
+                    
+                    [[AnalyticsManager sharedManager] event:@"CreateGeocodeSuccess" info:@{@"City": self.geocoder.locationCity,
+                                                                                         @"State": self.geocoder.locationPlacemark.administrativeArea,
+                                                                                         @"Country": self.geocoder.locationCountry,
+                                                                                         @"Latitude": @(self.geocoder.location.coordinate.latitude),
+                                                                                         @"Longitude": @(self.geocoder.location.coordinate.longitude)}];
                 }
                 else
                 {
+                    [[AnalyticsManager sharedManager] event:@"CreateGeocodeError" info:nil];
+
                     [UIAlertView bk_showAlertViewWithTitle:nil message:@"We were unable to determine your location." cancelButtonTitle:@"Ok" otherButtonTitles:nil handler:nil];
                 }
             });
         }];
+    }
+    else
+    {
+        [[AnalyticsManager sharedManager] event:@"CreateNoGeocode" info:nil];
     }
 }
 
@@ -209,10 +221,14 @@
             if(error != nil)
             {
                 DDLogError(@"Error creating new user %@: %@", settings, error);
+                [[AnalyticsManager sharedManager] error:error name:@"CreateUser"];
+
                 [UIAlertView bk_showAlertViewWithTitle:@"Error" message:@"Error creating user." cancelButtonTitle:@"Ok" otherButtonTitles:nil handler:nil];
             }
             else
             {
+                [[AnalyticsManager sharedManager] event:@"CreateUser" info:nil];
+
                 if(self.havePhoto)
                 {
                     self.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
@@ -225,10 +241,14 @@
                             if(error != nil)
                             {
                                 DDLogError(@"Error uploading avatar image: %@", error);
+                                [[AnalyticsManager sharedManager] error:error name:@"CreateUploadAvatar"];
+
                                 [UIAlertView bk_showAlertViewWithTitle:@"Error" message:@"Error uploading photo." cancelButtonTitle:@"Ok" otherButtonTitles:nil handler:nil];
                             }
                             else
                             {
+                                [[AnalyticsManager sharedManager] event:@"CreateUploadAvatarImage" info:nil];
+
                                 [self dismissViewControllerAnimated:YES completion:nil];
                             }
                         });
@@ -297,6 +317,8 @@
 -(void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
 {
     [self.language setText:[[UserManager sharedManager].languages objectAtIndex:row]];
+    [[AnalyticsManager sharedManager] event:@"CreateLanguage" info:@{@"name": self.language.text}];
+
 }
 
 - (NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component

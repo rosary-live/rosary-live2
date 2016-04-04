@@ -468,6 +468,8 @@ typedef NS_ENUM(NSUInteger, CellType) {
             
             if(error != nil)
             {
+                [[AnalyticsManager sharedManager] error:error name:@"UpdateSchedule"];
+
                 DDLogError(@"Error updating schedule %@: %@", dict, error);
                 [UIAlertView bk_showAlertViewWithTitle:@"Error" message:@"Error updating schedule." cancelButtonTitle:@"Ok" otherButtonTitles:nil handler:nil];
             }
@@ -475,6 +477,7 @@ typedef NS_ENUM(NSUInteger, CellType) {
             {
                 [[ScheduleManager sharedManager] removeReminderForScheduledBroadcast:schedule];
                 [[ScheduleManager sharedManager] addReminderForScheduledBroadcast:schedule broadcaster:YES];
+                [[AnalyticsManager sharedManager] event:@"UpdateSchedule" info:@{@"sid": schedule.sid}];
                 [self.navigationController popViewControllerAnimated:YES];
             }
         }];
@@ -489,6 +492,7 @@ typedef NS_ENUM(NSUInteger, CellType) {
             if(error != nil)
             {
                 DDLogError(@"Error creating new schedule %@: %@", dict, error);
+                [[AnalyticsManager sharedManager] error:error name:@"CreateSchedule"];
                 [UIAlertView bk_showAlertViewWithTitle:@"Error" message:@"Error creating schedule." cancelButtonTitle:@"Ok" otherButtonTitles:nil handler:nil];
             }
             else
@@ -496,6 +500,7 @@ typedef NS_ENUM(NSUInteger, CellType) {
                 schedule.sid = sid;
 
                 [[ScheduleManager sharedManager] addReminderForScheduledBroadcast:schedule broadcaster:YES];
+                [[AnalyticsManager sharedManager] event:@"CreateSchedule" info:@{@"sid": schedule.sid}];
                 [self.navigationController popViewControllerAnimated:YES];
             }
         }];
@@ -517,10 +522,13 @@ typedef NS_ENUM(NSUInteger, CellType) {
             if(error != nil)
             {
                 DDLogError(@"Error deleting schedule %@: %@", self.scheduledBroadcast.sid, error);
+                [[AnalyticsManager sharedManager] error:error name:@"DeleteSchedule"];
                 [UIAlertView bk_showAlertViewWithTitle:@"Error" message:@"Error deleting schedule." cancelButtonTitle:@"Ok" otherButtonTitles:nil handler:nil];
             }
             else
             {
+                [[AnalyticsManager sharedManager] event:@"DeleteSchedule" info:@{@"sid": self.scheduledBroadcast.sid}];
+
                 [self.navigationController popViewControllerAnimated:YES];
             }
         }];

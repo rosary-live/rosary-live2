@@ -26,4 +26,12 @@ NSInteger const ErrorException = -900;
     return self;
 }
 
+- (void)logWithName:(NSString*)name duration:(CFTimeInterval)duration count:(NSInteger)count error:(NSString*)error
+{
+    [[AnalyticsManager sharedManager] event:@"DynamoDB" info:@{ @"Name": name,
+                                                                @"Duration": @(duration),
+                                                                @"Count": @(count),
+                                                                @"Error": error != nil ? error : @"" }];
+}
+
 @end

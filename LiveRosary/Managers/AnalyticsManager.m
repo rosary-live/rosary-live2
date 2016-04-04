@@ -69,10 +69,11 @@
     [eventClient recordEvent:event];
 }
 
-- (void)error:(NSError*)error
+- (void)error:(NSError*)error name:(NSString*)name
 {
     id<AWSMobileAnalyticsEventClient> eventClient = self.analytics.eventClient;
     id<AWSMobileAnalyticsEvent> event = [eventClient createEventWithEventType:@"Error"];
+    [event addAttribute:name forKey:@"Name"];
     [event addAttribute:error.domain forKey:@"Domain"];
     [event addAttribute:[NSString stringWithFormat:@"%d", (int)error.code] forKey:@"Code"];
     [event addAttribute:error.description forKey:@"Description"];

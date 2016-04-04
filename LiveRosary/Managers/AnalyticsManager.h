@@ -14,7 +14,7 @@
 
 - (void)screen:(NSString*)screenName;
 - (void)event:(NSString*)eventName info:(NSDictionary*)info;
-- (void)error:(NSError*)error;
+- (void)error:(NSError*)error name:(NSString*)name;
 - (void)logRequest:(NSURLRequest*)request response:(NSHTTPURLResponse*)response duration:(CFTimeInterval)duration successful:(BOOL)successful message:(NSString*)message error:(NSString*)error;
 
 - (void)flushEvents;

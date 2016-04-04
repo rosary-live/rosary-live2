@@ -41,6 +41,7 @@ NSString * const kLastIntentionKey = @"LastIntention";
 
 @property (nonatomic) BOOL reporting;
 
+@property (nonatomic) CFTimeInterval startTime;
 
 @end
 
@@ -83,39 +84,58 @@ NSString * const kLastIntentionKey = @"LastIntention";
     [[DBBroadcast sharedInstance] getBroadcastById:self.broadcast.bid completion:^(BroadcastModel *broadcast, NSError *error) {
         DDLogDebug(@"updated broadcast %@", broadcast);
         
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.hud hide:YES];
-            
-            if(broadcast.isLive || self.playFromStart)
-            {
-                self.status.text = @"Playing";
-                [[BroadcastManager sharedManager] startPlayingBroadcastWithId:self.broadcast.bid atSequence:self.playFromStart ? 1 : broadcast.sequence.integerValue completion:^(BOOL insufficientBandwidth) {
-                    if(insufficientBandwidth)
-                    {
-                        [UIAlertView bk_showAlertViewWithTitle:nil message:@"Insufficient bandwidth to listen." cancelButtonTitle:@"Ok" otherButtonTitles:nil handler:^(UIAlertView *alertView, NSInteger buttonIndex) {
-                            
-                            [self.navigationController popViewControllerAnimated:YES];
-                        }];
-                    }
-                    else
-                    {
-                        [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
-
-                        if(!self.playFromStart)
+        if(error != nil)
+        {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.hud hide:YES];
+                
+                if(broadcast.isLive || self.playFromStart)
+                {
+                    self.status.text = @"Playing";
+                    [[BroadcastManager sharedManager] startPlayingBroadcastWithId:self.broadcast.bid atSequence:self.playFromStart ? 1 : broadcast.sequence.integerValue completion:^(BOOL insufficientBandwidth) {
+                        if(insufficientBandwidth)
                         {
-                            NSMutableDictionary* userDict = [[UserManager sharedManager].userDictionary mutableCopy];
-                            userDict[@"intention"] = self.intention.text != nil ? self.intention.text : @"";
-                            [[BroadcastQueueModel sharedInstance] sendEnterForBroadcastId:self.broadcast.bid withDictionary:userDict];
+                            [UIAlertView bk_showAlertViewWithTitle:nil message:@"Insufficient bandwidth to listen." cancelButtonTitle:@"Ok" otherButtonTitles:nil handler:^(UIAlertView *alertView, NSInteger buttonIndex) {
+                                
+                                [self.navigationController popViewControllerAnimated:YES];
+                            }];
                         }
-                    }
-                    
-                }];
-            }
-            else
-            {
-                self.status.text = @"Broadcast Has Ended";
-            }
-        });
+                        else
+                        {
+                            self.startTime = CACurrentMediaTime();
+                            
+                            [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
+
+                            if(self.playFromStart)
+                            {
+                                [[AnalyticsManager sharedManager] event:@"PlayFromStart" info:@{@"bid": self.broadcast.bid}];
+                            }
+                            else
+                            {
+                                [[AnalyticsManager sharedManager] event:@"Play" info:@{@"bid": self.broadcast.bid}];
+                                NSMutableDictionary* userDict = [[UserManager sharedManager].userDictionary mutableCopy];
+                                userDict[@"intention"] = self.intention.text != nil ? self.intention.text : @"";
+                                [[BroadcastQueueModel sharedInstance] sendEnterForBroadcastId:self.broadcast.bid withDictionary:userDict];
+                            }
+                        }
+                        
+                    }];
+                }
+                else
+                {
+                    self.status.text = @"Broadcast Has Ended";
+                }
+            });
+        }
+        else
+        {
+            [[AnalyticsManager sharedManager] event:@"PlayGetBroadcastError" info:@{@"bid": self.broadcast.bid}];
+
+            [UIAlertView bk_showAlertViewWithTitle:nil message:@"Failed to start broadcast." cancelButtonTitle:@"Ok" otherButtonTitles:nil handler:^(UIAlertView *alertView, NSInteger buttonIndex) {
+                
+                [self.navigationController popViewControllerAnimated:YES];
+            }];
+        }
     }];
     
     self.slideShow.changeInterval = [ConfigModel sharedInstance].slideShowChangeInterval;
@@ -135,6 +155,9 @@ NSString * const kLastIntentionKey = @"LastIntention";
     [super viewWillDisappear:animated];
     
     [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
+    
+    [[AnalyticsManager sharedManager] event:@"LeftPlayerScreen" info:@{@"bid": self.broadcast.bid}];
+    [[AnalyticsManager sharedManager] event:@"PlayDuration" info:@{@"bid": self.broadcast.bid, @"duration": @(CACurrentMediaTime() - self.startTime), @"over": @(0)}];
 
     [[BroadcastManager sharedManager] stopPlaying];
     
@@ -171,6 +194,8 @@ NSString * const kLastIntentionKey = @"LastIntention";
 
 - (IBAction)onResumeSlideShow:(id)sender
 {
+    [[AnalyticsManager sharedManager] event:@"ResumedSlideShow" info:@{@"bid": self.broadcast.bid}];
+
     [self startSlideShow];
 }
 
@@ -187,6 +212,9 @@ NSString * const kLastIntentionKey = @"LastIntention";
 
 - (void)broadcastHasEnded
 {
+    [[AnalyticsManager sharedManager] event:@"BroadcastEnded" info:@{@"bid": self.broadcast.bid}];
+    [[AnalyticsManager sharedManager] event:@"BroadcastDuration" info:@{@"bid": self.broadcast.bid, @"duration": @(CACurrentMediaTime() - self.startTime), @"over": @(1)}];
+
     dispatch_async(dispatch_get_main_queue(), ^{
         self.status.text = @"Broadcast Has Ended";
         [self stopSlideShow];
@@ -198,6 +226,8 @@ NSString * const kLastIntentionKey = @"LastIntention";
 {
     if(!self.slideShow.hidden)
     {
+        [[AnalyticsManager sharedManager] event:@"StoppedSlideShow" info:@{@"bid": self.broadcast.bid}];
+
         [self stopSlideShow];
     }
 }
@@ -246,6 +276,8 @@ NSString * const kLastIntentionKey = @"LastIntention";
             [[NSUserDefaults standardUserDefaults] synchronize];
             
             userDict[@"intention"] = self.intention.text != nil ? self.intention.text : @"";
+            [[AnalyticsManager sharedManager] event:@"CangedIntention" info:@{@"bid": self.broadcast.bid, @"Intention": userDict[@"intention"]}];
+
             [[BroadcastQueueModel sharedInstance] sendUpdateForBroadcastId:self.broadcast.bid withDictionary:userDict];
         }
         

@@ -141,11 +141,14 @@
         
         putRequest.body = data;
         
+        CFTimeInterval startTime = CACurrentMediaTime();
+        
         AWSTask* task = [s3 putObject:putRequest];
         [task waitUntilFinished];
         
         if(task.error)
         {
+            [[AnalyticsManager sharedManager] error:task.error name:@"UploadAudioFile"];
             DDLogError(@"Send sequence %d error: %@", (int)self.sequence, task.error);
         }
         else if(task.exception)
@@ -154,6 +157,8 @@
         }
         else
         {
+            [[AnalyticsManager sharedManager] event:@"UploadAudioFile" info:@{@"bid": self.broadcastId, @"duration": @(CACurrentMediaTime() - startTime)}];
+
             DDLogInfo(@"Send sequence %d  %d bytes", (int)self.sequence, (int)data.length);
             if(self.delegate && [self.delegate respondsToSelector:@selector(sentFile:forSequence:lastFile:)])
             {
@@ -201,10 +206,12 @@
         NSURLRequest *request = [NSURLRequest requestWithURL:URL];
         
         DDLogDebug(@"Downloading sequence %d from from %@", (int)self.sequence, URLString);
+        CFTimeInterval startTime = CACurrentMediaTime();
         NSURLSessionDataTask *dataTask = [manager dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
             if (error)
             {
                 DDLogError(@"TransferManager receive error: %@", error);
+                [[AnalyticsManager sharedManager] error:error name:@"DownloadAudioFile"];
                 lastError = error;
             }
             else
@@ -231,6 +238,8 @@
                 {
                     _receiving = NO;
                 }
+                
+                [[AnalyticsManager sharedManager] event:@"DownloadAudioFile" info:@{@"bid": self.broadcastId, @"duration": @(CACurrentMediaTime() - startTime), @"lastfile": @(lastFile)}];
             }
             
             [condition lock];
@@ -289,6 +298,8 @@
     
     if(task.error)
     {
+        [[AnalyticsManager sharedManager] error:task.error name:@"UploadTestFile"];
+
         return 0.0;
     }
     else if(task.exception)
@@ -297,7 +308,10 @@
     }
     else
     {
-        return (CFTimeInterval)data.length / (CACurrentMediaTime() - startInterval);
+        CFTimeInterval bps = (CFTimeInterval)data.length / (CACurrentMediaTime() - startInterval);
+        [[AnalyticsManager sharedManager] event:@"UploadAudioFile" info:@{@"bps": @(bps)}];
+
+        return bps;
     }
 
 }
@@ -328,7 +342,10 @@
     NSData* data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
     if(data != nil && error == nil)
     {
-        return (CFTimeInterval)data.length / (CACurrentMediaTime() - startInterval);
+        CFTimeInterval bps = (CFTimeInterval)data.length / (CACurrentMediaTime() - startInterval);
+        [[AnalyticsManager sharedManager] event:@"UploadAudioFile" info:@{@"bps": @(bps)}];
+
+        return bps;
     }
     else
     {

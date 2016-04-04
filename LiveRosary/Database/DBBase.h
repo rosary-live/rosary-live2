@@ -16,4 +16,6 @@ FOUNDATION_EXTERN NSInteger const ErrorException;
 
 @property (nonatomic, strong) AWSDynamoDBObjectMapper* dynamoDBObjectMapper;
 
+- (void)logWithName:(NSString*)name duration:(CFTimeInterval)duration count:(NSInteger)count error:(NSString*)error;
+
 @end

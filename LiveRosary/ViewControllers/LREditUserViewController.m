@@ -132,9 +132,16 @@
                     
                     self.latitude = self.geocoder.location.coordinate.latitude;
                     self.longitude = self.geocoder.location.coordinate.longitude;
+                    
+                    [[AnalyticsManager sharedManager] event:@"EditGeocodeSuccess" info:@{@"City": self.geocoder.locationCity,
+                                                                                     @"State": self.geocoder.locationPlacemark.administrativeArea,
+                                                                                     @"Country": self.geocoder.locationCountry,
+                                                                                     @"Latitude": @(self.geocoder.location.coordinate.latitude),
+                                                                                     @"Longitude": @(self.geocoder.location.coordinate.longitude)}];
                 }
                 else
                 {
+                    [[AnalyticsManager sharedManager] event:@"EditGeocodeError" info:nil];
                     [self showLocationError];
                 }
             });
@@ -142,6 +149,7 @@
     }
     else
     {
+        [[AnalyticsManager sharedManager] event:@"EditNoGeocode" info:nil];
         [self showLocationError];
     }
 }
@@ -180,6 +188,9 @@
     self.photoPicker.allowsEditing = YES;
     self.photoPicker.cropOverlaySize = CGSizeMake(500, 500); // optional
     [self.photoPicker showFromRect:self.updateAvatarButton.frame];
+    
+    [[AnalyticsManager sharedManager] event:@"UpdateAvatar" info:nil];
+
 }
 
 - (IBAction)onSave:(id)sender
@@ -222,10 +233,14 @@
             if(error != nil)
             {
                 DDLogError(@"Error creating new user %@: %@", settings, error);
+                [[AnalyticsManager sharedManager] error:error name:@"UpdateUser"];
+
                 [UIAlertView bk_showAlertViewWithTitle:@"Error" message:@"Error updating user." cancelButtonTitle:@"Ok" otherButtonTitles:nil handler:nil];
             }
             else
             {
+                [[AnalyticsManager sharedManager] event:@"UpdateUser" info:nil];
+
                 if(self.havePhoto)
                 {
                     self.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
@@ -238,10 +253,14 @@
                             if(error != nil)
                             {
                                 DDLogError(@"Error uploading avatar image: %@", error);
+                                [[AnalyticsManager sharedManager] error:error name:@"UpdateUploadAvatarImage"];
+
                                 [UIAlertView bk_showAlertViewWithTitle:@"Error" message:@"Error updating photo." cancelButtonTitle:@"Ok" otherButtonTitles:nil handler:nil];
                             }
                             else
                             {
+                                [[AnalyticsManager sharedManager] event:@"UpdateUploadAvatarImage" info:nil];
+
                                 [self.navigationController popViewControllerAnimated:YES];
                             }
                         });
@@ -279,6 +298,7 @@
 -(void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
 {
     [self.language setText:[[UserManager sharedManager].languages objectAtIndex:row]];
+    [[AnalyticsManager sharedManager] event:@"EditLanguage" info:@{@"name": self.language.text}];
 }
 
 - (NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component

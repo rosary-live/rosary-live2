@@ -61,6 +61,8 @@
             }
             else
             {
+                [[AnalyticsManager sharedManager] event:@"InsufficientBandwidth Broadcast" info:@{@"Min": @(minimumBytesPerSecond), @"Average": @(averageBytesPerSecond)}];
+
                 safeBlock(completion, nil, YES);
             }
         }];
@@ -100,6 +102,8 @@
             }
             else
             {
+                [[AnalyticsManager sharedManager] event:@"InsufficientBandwidth Play" info:@{@"Min": @(minimumBytesPerSecond), @"Average": @(averageBytesPerSecond)}];
+
                 safeBlock(completion, YES);
             }
         }];

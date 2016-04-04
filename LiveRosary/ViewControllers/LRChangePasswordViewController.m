@@ -80,10 +80,14 @@
             if(error != nil)
             {
                 DDLogError(@"Error updating password: %@", error);
+                [[AnalyticsManager sharedManager] error:error name:@"ChangePassword"];
+                
                 [UIAlertView bk_showAlertViewWithTitle:@"Error" message:@"Unabled to change password." cancelButtonTitle:@"Ok" otherButtonTitles:nil handler:nil];
             }
             else
             {
+                [[AnalyticsManager sharedManager] event:@"ChangePassword" info:nil];
+
                 [self.navigationController popViewControllerAnimated:YES];
             }
         });

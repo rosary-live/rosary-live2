@@ -75,10 +75,14 @@
             if(error != nil)
             {
                 DDLogError(@"Error resetting password: %@", error);
+                [[AnalyticsManager sharedManager] error:error name:@"ResetPassword"];
+
                 [UIAlertView bk_showAlertViewWithTitle:@"Error" message:@"Unabled to reset password." cancelButtonTitle:@"Ok" otherButtonTitles:nil handler:nil];
             }
             else
             {
+                [[AnalyticsManager sharedManager] event:@"ResetPassword" info:nil];
+
                 [self.navigationController popToRootViewControllerAnimated:YES];
             }
         });

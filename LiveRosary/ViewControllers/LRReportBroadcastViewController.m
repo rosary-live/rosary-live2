@@ -74,29 +74,35 @@
         if(error != nil)
         {
             [self.hud hide:YES];
+            [[AnalyticsManager sharedManager] error:error name:@"ReportBranchIO"];
+
             [UIAlertView bk_showAlertViewWithTitle:@"Error" message:@"Unable to report broadcast." cancelButtonTitle:@"Ok" otherButtonTitles:nil handler:nil];
         }
         else
         {
             NSLog(@"success getting url! %@", url);
-        }
         
-        NSString* name = [NSString stringWithFormat:@"%@ %@", [UserManager sharedManager].currentUser.firstName, [UserManager sharedManager].currentUser.lastName];
-        [[LiveRosaryService sharedService] reportBroadcast:self.broadcast reporterName:name reporterEmail:[UserManager sharedManager].email reason:self.reason.text link:url completion:^(NSError *error) {
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self.hud hide:YES];
+            NSString* name = [NSString stringWithFormat:@"%@ %@", [UserManager sharedManager].currentUser.firstName, [UserManager sharedManager].currentUser.lastName];
+            [[LiveRosaryService sharedService] reportBroadcast:self.broadcast reporterName:name reporterEmail:[UserManager sharedManager].email reason:self.reason.text link:url completion:^(NSError *error) {
                 
-                if(error != nil)
-                {
-                    [UIAlertView bk_showAlertViewWithTitle:@"Error" message:@"Unable to report broadcast." cancelButtonTitle:@"Ok" otherButtonTitles:nil handler:nil];
-                }
-                else
-                {
-                    [self.navigationController popViewControllerAnimated:YES];
-                }
-            });
-        }];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self.hud hide:YES];
+                    
+                    if(error != nil)
+                    {
+                        [[AnalyticsManager sharedManager] error:error name:@"ReportBroadcast"];
+                        
+                        [UIAlertView bk_showAlertViewWithTitle:@"Error" message:@"Unable to report broadcast." cancelButtonTitle:@"Ok" otherButtonTitles:nil handler:nil];
+                    }
+                    else
+                    {
+                        [[AnalyticsManager sharedManager] event:@"ReportBroadcast" info:@{@"bid": self.broadcast.bid}];
+
+                        [self.navigationController popViewControllerAnimated:YES];
+                    }
+                });
+            }];
+        }
     }];
 }
 

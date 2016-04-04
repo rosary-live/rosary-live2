@@ -62,7 +62,7 @@ NSString* const kBaseURL = @"https://9wwr7dvesk.execute-api.us-east-1.amazonaws.
     NSURLSessionDataTask *dataTask = [self.manager dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
         if(error != nil)
         {
-            [[AnalyticsManager sharedManager] logRequest:request response:(NSHTTPURLResponse*)response duration:CACurrentMediaTime() - startTime successful:NO message:nil error:nil];
+            [[AnalyticsManager sharedManager] logRequest:request response:(NSHTTPURLResponse*)response duration:CACurrentMediaTime() - startTime successful:NO message:nil error:error.description];
             safeBlock(completion, nil, error);
         }
         else

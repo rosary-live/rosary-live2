@@ -76,6 +76,8 @@
     [branchUniversalObject getShortUrlWithLinkProperties:linkProperties andCallback:^(NSString *url, NSError *error) {
         if(error != nil)
         {
+            [[AnalyticsManager sharedManager] error:error name:@"ForgotPasswordBranchIO"];
+
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.hud hide:YES];
             
@@ -92,11 +94,16 @@
                     
                     if(error != nil)
                     {
+                        [[AnalyticsManager sharedManager] error:error name:@"ForgotPassword"];
+
                         [UIAlertView bk_showAlertViewWithTitle:@"Error" message:@"Unable to request password reset." cancelButtonTitle:@"Ok" otherButtonTitles:nil handler:nil];
                     }
                     else
                     {
                         self.instructions.hidden = NO;
+                        
+                        [[AnalyticsManager sharedManager] event:@"ForgotPassword" info:nil];
+
                     }
                 });
             }];

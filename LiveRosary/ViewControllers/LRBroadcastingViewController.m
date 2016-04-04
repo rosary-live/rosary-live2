@@ -18,8 +18,11 @@
 @property (nonatomic, weak) IBOutlet F3BarGauge* meter;
 @property (nonatomic, weak) IBOutlet UITableView* tableView;
 
+@property (nonatomic, strong) NSString* broadcastId;
 @property (nonatomic, strong) NSTimer* meterTimer;
 @property (nonatomic, strong) NSMutableArray* listeners;
+
+@property (nonatomic) CFTimeInterval startTime;
 
 @end
 
@@ -41,6 +44,8 @@
     [super viewDidAppear:animated];
     
     [[BroadcastManager sharedManager] startBroadcastingWithCompletion:^(NSString *brodcastId, BOOL insufficientBandwidth) {
+        self.broadcastId = brodcastId;
+        
         if(insufficientBandwidth)
         {
             [UIAlertView bk_showAlertViewWithTitle:nil message:@"Insufficient bandwidth to broadcast." cancelButtonTitle:@"Ok" otherButtonTitles:nil handler:^(UIAlertView *alertView, NSInteger buttonIndex) {
@@ -50,6 +55,8 @@
         }
         else
         {
+            self.startTime = CACurrentMediaTime();
+            
             self.meterTimer = [NSTimer bk_scheduledTimerWithTimeInterval:0.05 block:^(NSTimer *timer) {
                 Float32 level;
                 Float32 peak;
@@ -72,6 +79,12 @@
                             if([self listenerForEmail:listener[@"email"]] == nil)
                             {
                                 [self.listeners addObject:listener];
+                                [[AnalyticsManager sharedManager] event:@"EnterBroadcast" info:@{@"bid": brodcastId}];
+
+                            }
+                            else
+                            {
+                                [[AnalyticsManager sharedManager] event:@"EnterBroadcastDuplicate" info:@{@"bid": brodcastId}];
                             }
                         }
                         else if([type isEqualToString:@"exit"])
@@ -80,7 +93,12 @@
                             NSDictionary* existingListener = [self listenerForEmail:listener[@"email"]];
                             if(existingListener != nil)
                             {
+                                [[AnalyticsManager sharedManager] event:@"ExitBroadcast" info:@{@"bid": brodcastId}];
                                 [self.listeners removeObject:existingListener];
+                            }
+                            else
+                            {
+                                [[AnalyticsManager sharedManager] event:@"ExitBroadcastDuplicate" info:@{@"bid": brodcastId}];
                             }
                         }
                         else if([type isEqualToString:@"update"])
@@ -92,7 +110,13 @@
                                 NSUInteger index = [self.listeners indexOfObject:existingListener];
                                 if(index != NSNotFound)
                                 {
+                                    [[AnalyticsManager sharedManager] event:@"UpdateBroadcast" info:@{@"bid": brodcastId}];
+
                                     [self.listeners replaceObjectAtIndex:index withObject:listener];
+                                }
+                                else
+                                {
+                                    [[AnalyticsManager sharedManager] event:@"UpdateBroadcastDuplicate" info:@{@"bid": brodcastId}];
                                 }
                             }
                         }
@@ -154,6 +178,8 @@
 
 - (void)stopBroadcasting
 {
+    [[AnalyticsManager sharedManager] event:@"BroadcastDuration" info:@{@"bid": self.broadcastId, @"duration": @(CACurrentMediaTime() - self.startTime)}];
+    
     [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
     
     [[BroadcastQueueModel sharedInstance] stopReceiving];
