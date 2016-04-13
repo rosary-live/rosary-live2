@@ -9,6 +9,7 @@
 #import "LRAdminBroadcastsViewController.h"
 #import "LRListenViewController.h"
 #import "BroadcastsViewController.h"
+#import "UserManager.h"
 #import <PureLayout/PureLayout.h>
 
 @interface LRAdminBroadcastsViewController () <BroadcastsViewDelegate>
@@ -25,6 +26,11 @@
     [self addBroadcasts];
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self.broadcastViewController action:@selector(update)];
+
+    if([UserManager sharedManager].isAuthenticated)
+    {
+        [self.broadcastViewController update];
+    }
 }
 
 - (void)didReceiveMemoryWarning {

@@ -7,7 +7,6 @@
 //
 
 #import "AppDelegate.h"
-//#import "LRBaseViewController.h"
 #import "MMDrawerController.h"
 #import "LRDrawerViewController.h"
 #import "LRListenMainViewController.h"
@@ -59,7 +58,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
-    [AWSLogger defaultLogger].logLevel = AWSLogLevelVerbose;
+    //[AWSLogger defaultLogger].logLevel = AWSLogLevelVerbose;
     [AnalyticsManager sharedManager];
     
     self.window.backgroundColor = [UIColor whiteColor];

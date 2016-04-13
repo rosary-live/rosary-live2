@@ -17,6 +17,8 @@
 
 @property (nonatomic, weak) IBOutlet F3BarGauge* meter;
 @property (nonatomic, weak) IBOutlet UITableView* tableView;
+@property (nonatomic, weak) IBOutlet UILabel* broadcastTime;
+@property (nonatomic, weak) IBOutlet UIButton* stopButton;
 
 @property (nonatomic, strong) NSString* broadcastId;
 @property (nonatomic, strong) NSTimer* meterTimer;
@@ -57,11 +59,41 @@
         {
             self.startTime = CACurrentMediaTime();
             
+            __block NSInteger timerCounter = 0;
             self.meterTimer = [NSTimer bk_scheduledTimerWithTimeInterval:0.05 block:^(NSTimer *timer) {
                 Float32 level;
                 Float32 peak;
                 [[AudioManager sharedManager] inputAveragePowerLevel:&level peakHoldLevel:&peak];
                 self.meter.value = pow(10, level/40);
+                
+                // Only update broadcast time label once per second
+                if(timerCounter % 20 == 0)
+                {
+                    int totalSeconds = (int)(CACurrentMediaTime() - self.startTime);
+                    int minutes = totalSeconds / 60;
+                    int seconds = totalSeconds % 60;
+                    
+                    int totalRemainingSeconds = (int)[ConfigModel sharedInstance].maxBroadcastSeconds - totalSeconds;
+                    int remainingMinutes = totalRemainingSeconds / 60;
+                    int remainingSeconds = totalRemainingSeconds % 60;
+                    
+                    self.broadcastTime.text = [NSString stringWithFormat:@"%d:%02d / %d:%02d", minutes, seconds, remainingMinutes, remainingSeconds];
+                    
+                    if(totalRemainingSeconds < 300)
+                    {
+                        self.broadcastTime.textColor = [UIColor orangeColor];
+                    }
+                    else if(totalRemainingSeconds < 120)
+                    {
+                        self.broadcastTime.textColor = [UIColor redColor];
+                    }
+                    else if(totalRemainingSeconds <= 0)
+                    {
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [self stopBroadcasting];
+                        });
+                    }
+                }
             } repeats:YES];
             
             [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
@@ -178,13 +210,20 @@
 
 - (void)stopBroadcasting
 {
-    [[AnalyticsManager sharedManager] event:@"BroadcastDuration" info:@{@"bid": self.broadcastId, @"duration": @(CACurrentMediaTime() - self.startTime)}];
-    
-    [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
-    
-    [[BroadcastQueueModel sharedInstance] stopReceiving];
-    [[BroadcastManager sharedManager] stopBroadcasting];
-    self.meter.value = 0.0;
+    if([BroadcastManager sharedManager].state == BroadcastStateBroadcasting)
+    {
+        self.stopButton.hidden = YES;
+        
+        [self.meterTimer invalidate];
+
+        [[AnalyticsManager sharedManager] event:@"BroadcastDuration" info:@{@"bid": self.broadcastId, @"duration": @(CACurrentMediaTime() - self.startTime)}];
+        
+        [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
+        
+        [[BroadcastQueueModel sharedInstance] stopReceiving];
+        [[BroadcastManager sharedManager] stopBroadcasting];
+        self.meter.value = 0.0;
+    }
 }
 
 #pragma mark - UITableViewDataSource
