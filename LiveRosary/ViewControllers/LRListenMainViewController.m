@@ -108,7 +108,9 @@
 {
     self.broadcastViewController = [BroadcastsViewController instantiate];
     self.broadcastViewController.delegate = self;
+    self.broadcastViewController.scheduledBroadcastsEnabled = YES;
     self.broadcastViewController.liveOnly = YES;
+    self.broadcastViewController.allScheduledBroadcasts = NO;
     
     [self addChildViewController:self.broadcastViewController];
     [self.view addSubview:self.broadcastViewController.view];
