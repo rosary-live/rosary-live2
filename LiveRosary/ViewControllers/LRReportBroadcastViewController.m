@@ -68,7 +68,7 @@
     BranchLinkProperties *linkProperties = [[BranchLinkProperties alloc] init];
     
     self.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    self.hud.labelText = @"Requesting Password Reset";
+    self.hud.labelText = @"Reporting Broadcast";
 
     [branchUniversalObject getShortUrlWithLinkProperties:linkProperties andCallback:^(NSString *url, NSError *error) {
         if(error != nil)
@@ -82,8 +82,7 @@
         {
             NSLog(@"success getting url! %@", url);
         
-            NSString* name = [NSString stringWithFormat:@"%@ %@", [UserManager sharedManager].currentUser.firstName, [UserManager sharedManager].currentUser.lastName];
-            [[LiveRosaryService sharedService] reportBroadcast:self.broadcast reporterName:name reporterEmail:[UserManager sharedManager].email reason:self.reason.text link:url completion:^(NSError *error) {
+            [[LiveRosaryService sharedService] reportBroadcast:self.broadcast reporterEmail:[UserManager sharedManager].email reason:self.reason.text link:url completion:^(NSError *error) {
                 
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [self.hud hide:YES];

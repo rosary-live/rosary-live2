@@ -96,7 +96,7 @@
     
     if(error != nil)
     {
-        [event addAttribute:error forKey:@"Error"];
+        [event addAttribute:error.description forKey:@"Error"];
     }
     
     [eventClient recordEvent:event];

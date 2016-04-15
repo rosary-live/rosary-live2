@@ -11,6 +11,7 @@
 #import "UserManager.h"
 #import "BroadcastManager.h"
 #import "DBBroadcast.h"
+#import "DBReportedBroadcast.h"
 #import "NSNumber+Utilities.h"
 #import <MapKit/MapKit.h>
 #import "INTULocationManager.h"
@@ -39,6 +40,9 @@ typedef NS_ENUM(NSUInteger, Mode) {
 
 @property (nonatomic, strong) NSArray<BroadcastModel *>* fullBroadcasts;
 @property (nonatomic, strong) NSArray<BroadcastModel *>* broadcasts;
+
+@property (nonatomic, strong) NSArray<ReportedBroadcastModel *>* fullReportedBroadcasts;
+@property (nonatomic, strong) NSArray<ReportedBroadcastModel *>* reportedBroadcasts;
 
 @property (nonatomic, strong) NSArray<ScheduleModel *>* fullScheduledBroadcasts;
 @property (nonatomic, strong) NSArray<ScheduleModel *>* scheduledBroadcasts;
@@ -111,8 +115,15 @@ typedef NS_ENUM(NSUInteger, Mode) {
 
 - (void)update
 {
-    [self updateBroadcasts];
-    [self updateScheduledBroadcasts];
+    if(self.showReportedBroadcasts)
+    {
+        [self updateReportedBroadcasts];
+    }
+    else
+    {
+        [self updateBroadcasts];
+        [self updateScheduledBroadcasts];
+    }
 }
 
 - (void)updateBroadcasts
@@ -134,6 +145,19 @@ typedef NS_ENUM(NSUInteger, Mode) {
         self.fullScheduledBroadcasts = scheduledBroadcasts;
         [self filterScheduledBroadcasts];
         [self sortScheduledBroadcasts];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.tableView reloadData];
+            [self addMapPins];
+        });
+    }];
+}
+
+- (void)updateReportedBroadcasts
+{
+    [[DBReportedBroadcast sharedInstance] updateReportedBroadcastsWithCompletion:^(NSArray<ReportedBroadcastModel *> *broadcasts, NSError *error) {
+        self.fullReportedBroadcasts = broadcasts;
+        [self filterReportedBroadcasts];
+        [self sortReportedBroadcasts];
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.tableView reloadData];
             [self addMapPins];
@@ -201,18 +225,36 @@ typedef NS_ENUM(NSUInteger, Mode) {
     }
 }
 
+- (void)sortReportedBroadcasts
+{
+}
+
+- (void)filterReportedBroadcasts
+{
+}
+
 - (void)addMapPins
 {
     [self.mapView removeAnnotations:self.mapView.annotations];
     
-    for(BroadcastModel* broadcast in self.broadcasts)
+    if(self.showReportedBroadcasts)
     {
-        [self.mapView addAnnotation:broadcast];
+        for(ReportedBroadcastModel* broadcast in self.reportedBroadcasts)
+        {
+            [self.mapView addAnnotation:broadcast];
+        }
     }
-    
-    for(ScheduleModel* schedule in self.scheduledBroadcasts)
+    else
     {
-        [self.mapView addAnnotation:schedule];
+        for(BroadcastModel* broadcast in self.broadcasts)
+        {
+            [self.mapView addAnnotation:broadcast];
+        }
+        
+        for(ScheduleModel* schedule in self.scheduledBroadcasts)
+        {
+            [self.mapView addAnnotation:schedule];
+        }
     }
 }
 
@@ -285,13 +327,13 @@ typedef NS_ENUM(NSUInteger, Mode) {
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    if(self.scheduledBroadcastsEnabled)
+    if(self.showReportedBroadcasts)
     {
-        return 2;
+        return 1;
     }
     else
     {
-        return 1;
+        return 2;
     }
 }
 
@@ -300,7 +342,7 @@ typedef NS_ENUM(NSUInteger, Mode) {
     switch(section)
     {
         case SectionBroadcasts:
-            return self.broadcasts.count;
+            return self.showReportedBroadcasts ? self.reportedBroadcasts.count : self.broadcasts.count;
             
         case SectionScheduledBroadcasts:
             return self.scheduledBroadcasts.count;
@@ -315,7 +357,7 @@ typedef NS_ENUM(NSUInteger, Mode) {
     switch(section)
     {
         case SectionBroadcasts:
-            return @"Live Broadcasts";
+            return self.showReportedBroadcasts ? @"Reported Broadcasts" : @"Live Broadcasts";
             
         case SectionScheduledBroadcasts:
             return @"Scheduled Broadcasts";
@@ -331,19 +373,26 @@ typedef NS_ENUM(NSUInteger, Mode) {
     {
         case SectionBroadcasts:
         {
-            BroadcastCell* cell = [tableView dequeueReusableCellWithIdentifier:@"BroadcastCell"];
-            
-            BroadcastModel* broadcast = self.broadcasts[indexPath.row];
-            cell.name.text = broadcast.name;
-            cell.language.text = broadcast.language;
-            cell.location.text = [NSString stringWithFormat:@"%@, %@ %@", broadcast.city, broadcast.state, broadcast.country];
-            cell.date.text = [NSString stringWithFormat:@" %@ %@", [NSDateFormatter localizedStringFromDate:[broadcast.updated dateForNumber] dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterNoStyle], [NSDateFormatter localizedStringFromDate:[broadcast.updated dateForNumber] dateStyle:NSDateFormatterNoStyle timeStyle:NSDateFormatterShortStyle]];
-            cell.live.text = broadcast.isLive ? @"LIVE" : @"ENDED";
-            
-            NSString* urlString = [NSString stringWithFormat:@"https://s3.amazonaws.com/liverosaryavatars/%@", [broadcast.user stringByReplacingOccurrencesOfString:@"@" withString:@"-"]];
-            [cell.avatar sd_setImageWithURL:[NSURL URLWithString:urlString] placeholderImage:[UIImage imageNamed:@"AvatarImage"] options:0];
-            
-            return cell;
+            if(self.showReportedBroadcasts)
+            {
+                return nil;
+            }
+            else
+            {
+                BroadcastCell* cell = [tableView dequeueReusableCellWithIdentifier:@"BroadcastCell"];
+                
+                BroadcastModel* broadcast = self.broadcasts[indexPath.row];
+                cell.name.text = broadcast.name;
+                cell.language.text = broadcast.language;
+                cell.location.text = [NSString stringWithFormat:@"%@, %@ %@", broadcast.city, broadcast.state, broadcast.country];
+                cell.date.text = [NSString stringWithFormat:@" %@ %@", [NSDateFormatter localizedStringFromDate:[broadcast.updated dateForNumber] dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterNoStyle], [NSDateFormatter localizedStringFromDate:[broadcast.updated dateForNumber] dateStyle:NSDateFormatterNoStyle timeStyle:NSDateFormatterShortStyle]];
+                cell.live.text = broadcast.isLive ? @"LIVE" : @"ENDED";
+                
+                NSString* urlString = [NSString stringWithFormat:@"https://s3.amazonaws.com/liverosaryavatars/%@", [broadcast.user stringByReplacingOccurrencesOfString:@"@" withString:@"-"]];
+                [cell.avatar sd_setImageWithURL:[NSURL URLWithString:urlString] placeholderImage:[UIImage imageNamed:@"AvatarImage"] options:0];
+                
+                return cell;
+            }
         }
             
         case SectionScheduledBroadcasts:

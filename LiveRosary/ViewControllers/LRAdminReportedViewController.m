@@ -8,9 +8,12 @@
 
 #import "LRAdminReportedViewController.h"
 #import "UserManager.h"
+#import "BroadcastsViewController.h"
 #import <PureLayout/PureLayout.h>
 
 @interface LRAdminReportedViewController () <BroadcastsViewDelegate>
+
+@property (nonatomic, strong) BroadcastsViewController* broadcastViewController;
 
 @end
 
@@ -19,11 +22,13 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(updateBroadcasts)];
+    [self addBroadcasts];
+    
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self.broadcastViewController action:@selector(update)];
     
     if([UserManager sharedManager].isAuthenticated)
     {
-        [self updateBroadcasts];
+        [self.broadcastViewController update];
     }
 }
 
@@ -47,8 +52,31 @@
 }
 */
 
-- (void)updateBroadcasts
+#pragma mark - BroadcastsTableViewActionDelegate
+
+- (void)selectedBroadcast:(BroadcastModel*)broadcast
 {
+//    UIStoryboard* storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+//    LRListenViewController* listenViewController = [storyboard instantiateViewControllerWithIdentifier:@"LRListenViewController"];
+//    listenViewController.broadcast = broadcast;
+//    listenViewController.playFromStart = YES;
+//    [self.navigationController pushViewController:listenViewController animated:YES];
+}
+
+- (void)selectedSchedule:(ScheduleModel *)model
+{
+}
+
+- (void)addBroadcasts
+{
+    self.broadcastViewController = [BroadcastsViewController instantiate];
+    self.broadcastViewController.delegate = self;
+    self.broadcastViewController.showReportedBroadcasts = YES;
+    
+    [self addChildViewController:self.broadcastViewController];
+    [self.view addSubview:self.broadcastViewController.view];
+    [self.broadcastViewController.view autoPinEdgesToSuperviewEdges];
+    [self.broadcastViewController didMoveToParentViewController:self];
 }
 
 @end

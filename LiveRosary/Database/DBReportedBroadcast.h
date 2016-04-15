@@ -7,14 +7,14 @@
 //
 
 #import "DBBase.h"
-#import "BroadcastModel.h"
+#import "ReportedBroadcastModel.h"
 
 @interface DBReportedBroadcast : DBBase
 
-@property (nonatomic, strong, readonly) NSArray<BroadcastModel*>* broadcasts;
+@property (nonatomic, strong, readonly) NSArray<ReportedBroadcastModel*>* broadcasts;
 
 + (instancetype)sharedInstance;
 
-- (void)updateBroadcastsWithCompletion:(void (^)(NSArray<BroadcastModel*>* broadcasts, NSError* error))completion;
+- (void)updateReportedBroadcastsWithCompletion:(void (^)(NSArray<ReportedBroadcastModel*>* broadcasts, NSError* error))completion;
 
 @end

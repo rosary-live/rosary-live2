@@ -160,22 +160,14 @@ NSString* const kBaseURL = @"https://9wwr7dvesk.execute-api.us-east-1.amazonaws.
     }];
 }
 
-- (void)reportBroadcast:(BroadcastModel*)broadcast reporterName:(NSString*)reporterName reporterEmail:(NSString*)reporterEmail reason:(NSString*)reason  link:(NSString*)link completion:(void (^)(NSError* error))completion
+- (void)reportBroadcast:(BroadcastModel*)broadcast reporterEmail:(NSString*)reporterEmail reason:(NSString*)reason link:(NSString*)link completion:(void (^)(NSError* error))completion
 {
     NSDictionary* settings = @{
                                @"version": @(1),
                                @"bid": broadcast.bid,
                                @"reporter_email": reporterEmail,
-                               @"reporter_name": reporterName,
+                               @"reportee_email": broadcast.user,
                                @"reason": reason,
-                               @"user": broadcast.user,
-                               @"name": broadcast.name,
-                               @"language": broadcast.language,
-                               @"city": broadcast.city,
-                               @"state": broadcast.state,
-                               @"country": broadcast.country,
-                               @"lat": broadcast.lat,
-                               @"lon": broadcast.lon,
                                @"link": link
                                };
     

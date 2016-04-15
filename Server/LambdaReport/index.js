@@ -10,30 +10,101 @@ var config = require('./config.json');
 var dynamodb = new AWS.DynamoDB();
 var ses = new AWS.SES();
 
-function addReport(event, callback) {
+function getUser(email, fn) {
+	dynamodb.getItem({
+		TableName: config.DDB_TABLE,
+		Key: {
+			email: {
+				S: email
+			}
+		}
+	}, function(err, data) {
+		if (err) return fn(err);
+		else {
+			console.log(util.inspect(data, { showHidden: true, depth: 10 }));
+			if ('Item' in data) {
+				var user = { "email": data.Item.email.S,
+							 "name": data.Item.firstName.S + ' ' + data.Item.lastName.S,
+							 "city": data.Item.city.S,
+							 "state": data.Item.state.S,
+							 "country": data.Item.country.S,
+							 "language": data.Item.language.S,
+							 "lat": data.Item.lat.N,
+							 "lon": data.Item.lon.N };
+				fn(null, user);
+			} else {
+				fn(null, null); // User not found
+			}
+		}
+	});
+}
+
+function getBroadcast(bid, fn) {
+	dynamodb.getItem({
+		TableName: config.DDB_BROADCAST_TABLE,
+		Key: {
+			bid: {
+				S: bid
+			}
+		}
+	}, function(err, data) {
+		if (err) return fn(err);
+		else {
+			console.log(util.inspect(data, { showHidden: true, depth: 10 }));
+			if ('Item' in data) {
+				var broadcast = { "bid": data.Item.bid.S,
+								  "created": data.Item.created.N,
+								  "updated": data.Item.updated.N,
+								  "sequence": data.Item.sequence.N,
+								  "email": data.Item.user.S,
+								  "name": data.Item.name.S,
+								  "language": data.Item.language.S,
+								  "city": data.Item.city.S,
+								  "state": data.Item.state.S,
+								  "country": data.Item.country.S,
+								  "lat": data.Item.lat.S,
+								  "lon": data.Item.lon.S,
+								};
+				fn(null, broadcast);
+			} else {
+				fn(null, null); // User not found
+			}
+		}
+	});
+}
+
+function addReport(reporter, broadcast, reason, link, callback) {
 	var now = moment().utc().format('X');
 
 	// Add DDB record
 	dynamodb.putItem({
 		TableName: config.DDB_REPORT_TABLE,		
 		Item: {
-			bid: { S: event.bid },
-			version: { N: event.version.toString() },
+			version: { N: "1" },
+			bid: { S: broadcast.bid },
+			sequence: { N: broadcast.sequence },
+			reason: { S: reason },
+			link: { S: link },
+
 			created: { N: now },
-			reporter_email: { S: event.reporter },
-			reporter_name: { S: event.reporter_name },
-			reason: { S: event.report },
 
-			language: { S: event.language },
-			user: { S: event.user },
-			name: { S: event.name },
-			city: { S: event.city },
-			state: { S: event.state },
-			country: { S: event.country },
-			lat: { S: event.lat },
-			lon: { S: event.lon },
+			b_email: { S: broadcast.email },
+			b_name: { S: broadcast.name },
+			b_language: { S: broadcast.language },
+			b_city: { S: broadcast.city },
+			b_state: { S: broadcast.state },
+			b_country: { S: broadcast.country },
+			b_lat: { S: broadcast.lat },
+			b_lon: { S: broadcast.lon },
 
-			link: { S: event.link }
+			r_email: { S: reporter.email },
+			r_name: { S: reporter.name },
+			r_language: { S: reporter.language },
+			r_city: { S: reporter.city },
+			r_state: { S: reporter.state },
+			r_country: { S: reporter.country },
+			r_lat: { S: reporter.lat },
+			r_lon: { S: reporter.lon }
 		},
 		ReturnValues: 'NONE'
 	}, function(err, data) {
@@ -43,7 +114,7 @@ function addReport(event, callback) {
 	});	
 }
 
-function sendReportEmail(email, event, fn) {
+function sendReportEmail(email, reporter, broadcast, reason, link, fn) {
 	var subject = 'Broadcast Report for ' + event.user + ' by ' + event.reporter_name + '(' + event.reporter_email + ')';
 	ses.sendEmail({
 		Source: config.EMAIL_SOURCE,
@@ -74,10 +145,27 @@ function sendReportEmail(email, event, fn) {
 exports.handler = function(event, context) {
 	console.log("event: " + util.inspect(event));
 
-	addReport(event, function(err, result) {
-		sendReportEmail('northorn@gmail.com', event, function(err, data) {
-			if(err) context.fail({success:false, message: 'Failed to add report.', error:err});
-			else context.succeed({success:true});
-		});
+	getUser(event.reporter_email, function(err, reporter) {
+		if(err) {
+			context.succeed({success:false, message: 'Failed to get reporter.', error:err});
+		} else {
+			getBroadcast(event.bid, function(err, broadcast) {
+				if(err) {
+					context.succeed({success:false, message: 'Failed to get broadcast.', error:err});
+				} else {
+					addReport(reporter, broadcast, event.reason, event.link, function(err, result) {
+						if(err) {
+							context.succeed({success:false, message: 'Failed to add report.', error:err});
+						} else {
+							sendReportEmail('northorn@gmail.com', reporter, broadcast, event.reason, event.link, function(err, data) {
+								if(err) context.succeed({success:false, message: 'Failed to send email.', error:err});
+								else context.succeed({success:true});
+							});
+						}
+					});
+				}
+			});			
+		}
 	});
+
 }

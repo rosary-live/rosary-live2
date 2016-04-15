@@ -10,27 +10,6 @@ var config = require('./config.json');
 var dynamodb = new AWS.DynamoDB();
 var s3 = new AWS.S3();
 
-// Sequence 0 file format
-// {
-// "version": 1,
-// "bid": "12345-67890",
-// "start": 1,
-// "language": "en",
-// "user": "test@test.com",
-// "name": "john doe",
-// "avatar": "URL",
-// "lat": "1.2",
-// "lon": "3.4",
-// "city": "Olathe",
-// "state": "KS",
-// "country": "US",
-// "rate": 22100,
-// "bits": 8,
-// "channels": 1,
-// "compression": "ACC",
-// "segment_duration": 10000
-// }
-
 function process(bucket, key, bid, seq, callback) {
 	seq = parseInt(seq);
 

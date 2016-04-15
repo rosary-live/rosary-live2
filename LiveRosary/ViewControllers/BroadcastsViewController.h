@@ -23,7 +23,7 @@
 
 @property (nonatomic, weak) id<BroadcastsViewDelegate> delegate;
 @property (nonatomic) BOOL liveOnly;
-@property (nonatomic) BOOL scheduledBroadcastsEnabled;
+@property (nonatomic) BOOL showReportedBroadcasts;
 @property (nonatomic) BOOL allScheduledBroadcasts;
 
 - (void)update;

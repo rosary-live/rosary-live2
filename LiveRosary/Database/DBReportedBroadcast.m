@@ -20,36 +20,36 @@
     return instance;
 }
 
-- (void)updateBroadcastsWithCompletion:(void (^)(NSArray<BroadcastModel*>* broadcasts, NSError* error))completion
+- (void)updateReportedBroadcastsWithCompletion:(void (^)(NSArray<ReportedBroadcastModel*>* broadcasts, NSError* error))completion
 {
     AWSDynamoDBScanExpression* scanExpression = [AWSDynamoDBScanExpression new];
     scanExpression.limit = @(100);
     
     CFTimeInterval startTime = CACurrentMediaTime();
-    [[self.dynamoDBObjectMapper scan:[BroadcastModel class] expression:scanExpression] continueWithBlock:^id _Nullable(AWSTask * _Nonnull task) {
+    [[self.dynamoDBObjectMapper scan:[ReportedBroadcastModel class] expression:scanExpression] continueWithBlock:^id _Nullable(AWSTask * _Nonnull task) {
         CFTimeInterval duration = CACurrentMediaTime() - startTime;
         
         if(task.error)
         {
             DDLogError(@"Scan failed. Error: [%@]", task.error);
-            [self logWithName:@"Broadcasts SCAN Error" duration:duration count:0 error:task.error.description];
+            [self logWithName:@"Reported Broadcasts SCAN Error" duration:duration count:0 error:task.error.description];
             safeBlock(completion, nil, task.error);
         }
         else if(task.exception)
         {
             DDLogError(@"Scan failed. Exception: [%@]", task.exception);
-            [self logWithName:@"Broadcasts SCAN Error" duration:duration count:0 error:task.exception.description];
+            [self logWithName:@"Reported Broadcasts SCAN Error" duration:duration count:0 error:task.exception.description];
             safeBlock(completion, nil, [NSError errorWithDomain:ErrorDomainDatabase code:ErrorException userInfo:@{ NSLocalizedDescriptionKey: task.exception.description }]);
         }
         else if(task.result)
         {
             AWSDynamoDBPaginatedOutput *paginatedOutput = task.result;
-            for(BroadcastModel* broadcast in paginatedOutput.items)
+            for(ReportedBroadcastModel* broadcast in paginatedOutput.items)
             {
-                DDLogDebug(@"Broadcast: %@", broadcast);
+                DDLogDebug(@"Reported Broadcast: %@", broadcast);
             }
             
-            [self logWithName:@"Broadcasts SCAN" duration:duration count:paginatedOutput.items.count error:nil];
+            [self logWithName:@"Reported Broadcasts SCAN" duration:duration count:paginatedOutput.items.count error:nil];
             safeBlock(completion, paginatedOutput.items, nil);
         }
         

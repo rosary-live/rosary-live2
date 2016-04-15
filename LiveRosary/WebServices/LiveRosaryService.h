@@ -24,6 +24,6 @@
 - (void)updateScheduledBroadcastWithDictionary:(NSDictionary*)dictionary completion:(void (^)(NSError* error))completion;
 - (void)removeScheduledBroadcastWithSID:(NSString*)sid completion:(void (^)(NSError* error))completion;
 
-- (void)reportBroadcast:(BroadcastModel*)broadcast reporterName:(NSString*)reporterName reporterEmail:(NSString*)reporterEmail reason:(NSString*)reason link:(NSString*)link completion:(void (^)(NSError* error))completion;
+- (void)reportBroadcast:(BroadcastModel*)broadcast reporterEmail:(NSString*)reporterEmail reason:(NSString*)reason link:(NSString*)link completion:(void (^)(NSError* error))completion;
 
 @end
