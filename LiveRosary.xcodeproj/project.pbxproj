@@ -14,6 +14,9 @@
 		977632DE1CAE02A4005F4DAE /* LRResetPasswordViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 977632DD1CAE02A4005F4DAE /* LRResetPasswordViewController.m */; };
 		977D750B1CBEE2D100C4D7A0 /* DBReportedBroadcast.m in Sources */ = {isa = PBXBuildFile; fileRef = 977D750A1CBEE2D100C4D7A0 /* DBReportedBroadcast.m */; };
 		977D750E1CBFC7F100C4D7A0 /* ReportedBroadcastModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 977D750D1CBFC7F100C4D7A0 /* ReportedBroadcastModel.m */; };
+		977D751A1CC167EB00C4D7A0 /* ReportCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 977D75191CC167EB00C4D7A0 /* ReportCell.m */; };
+		977D752D1CC1776A00C4D7A0 /* LRAdminTakeActionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 977D752C1CC1776A00C4D7A0 /* LRAdminTakeActionViewController.m */; };
+		977D75301CC177D000C4D7A0 /* LRAdminManageUsersViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 977D752F1CC177D000C4D7A0 /* LRAdminManageUsersViewController.m */; };
 		978337791CBED6B500C3C3F7 /* LRAdminReportedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 978337781CBED6B500C3C3F7 /* LRAdminReportedViewController.m */; };
 		D81AAF7C1C45E29C00B46544 /* LRBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D81AAF7B1C45E29C00B46544 /* LRBaseViewController.m */; };
 		D820FB061C4452A9000899DB /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D820FB051C4452A9000899DB /* main.m */; };
@@ -93,6 +96,12 @@
 		977D750A1CBEE2D100C4D7A0 /* DBReportedBroadcast.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DBReportedBroadcast.m; path = Database/DBReportedBroadcast.m; sourceTree = "<group>"; };
 		977D750C1CBFC7F100C4D7A0 /* ReportedBroadcastModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ReportedBroadcastModel.h; path = Models/ReportedBroadcastModel.h; sourceTree = "<group>"; };
 		977D750D1CBFC7F100C4D7A0 /* ReportedBroadcastModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ReportedBroadcastModel.m; path = Models/ReportedBroadcastModel.m; sourceTree = "<group>"; };
+		977D75181CC167EB00C4D7A0 /* ReportCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ReportCell.h; path = Cells/ReportCell.h; sourceTree = "<group>"; };
+		977D75191CC167EB00C4D7A0 /* ReportCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ReportCell.m; path = Cells/ReportCell.m; sourceTree = "<group>"; };
+		977D752B1CC1776A00C4D7A0 /* LRAdminTakeActionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LRAdminTakeActionViewController.h; path = ViewControllers/LRAdminTakeActionViewController.h; sourceTree = "<group>"; };
+		977D752C1CC1776A00C4D7A0 /* LRAdminTakeActionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LRAdminTakeActionViewController.m; path = ViewControllers/LRAdminTakeActionViewController.m; sourceTree = "<group>"; };
+		977D752E1CC177D000C4D7A0 /* LRAdminManageUsersViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LRAdminManageUsersViewController.h; path = ViewControllers/LRAdminManageUsersViewController.h; sourceTree = "<group>"; };
+		977D752F1CC177D000C4D7A0 /* LRAdminManageUsersViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LRAdminManageUsersViewController.m; path = ViewControllers/LRAdminManageUsersViewController.m; sourceTree = "<group>"; };
 		978337771CBED6B500C3C3F7 /* LRAdminReportedViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LRAdminReportedViewController.h; path = ViewControllers/LRAdminReportedViewController.h; sourceTree = "<group>"; };
 		978337781CBED6B500C3C3F7 /* LRAdminReportedViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LRAdminReportedViewController.m; path = ViewControllers/LRAdminReportedViewController.m; sourceTree = "<group>"; };
 		BD4753DF687E71C09BECA0B1 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
@@ -380,6 +389,10 @@
 				D8A0EFDA1C4C220A0006B910 /* LRAdminBroadcastsViewController.m */,
 				978337771CBED6B500C3C3F7 /* LRAdminReportedViewController.h */,
 				978337781CBED6B500C3C3F7 /* LRAdminReportedViewController.m */,
+				977D752B1CC1776A00C4D7A0 /* LRAdminTakeActionViewController.h */,
+				977D752C1CC1776A00C4D7A0 /* LRAdminTakeActionViewController.m */,
+				977D752E1CC177D000C4D7A0 /* LRAdminManageUsersViewController.h */,
+				977D752F1CC177D000C4D7A0 /* LRAdminManageUsersViewController.m */,
 				D8A0EFD61C4C21E80006B910 /* LRUserProfileMainViewController.h */,
 				D8A0EFD71C4C21E80006B910 /* LRUserProfileMainViewController.m */,
 				D84A21121C8E6CB8006C4D63 /* LREditUserViewController.h */,
@@ -413,6 +426,8 @@
 				D8B72E821C9DECD70081723F /* ViewScheduleRecurringCell.m */,
 				D87484881CAA067000C99A2D /* ListenerCell.h */,
 				D87484891CAA067000C99A2D /* ListenerCell.m */,
+				977D75181CC167EB00C4D7A0 /* ReportCell.h */,
+				977D75191CC167EB00C4D7A0 /* ReportCell.m */,
 			);
 			name = Cells;
 			sourceTree = "<group>";
@@ -640,6 +655,7 @@
 				D8B72E6F1C9A3D140081723F /* ScheduleManager.m in Sources */,
 				D8A0EFE31C4C30E40006B910 /* UserModel.m in Sources */,
 				D885FA671C446F49002904AC /* LRDrawerViewController.m in Sources */,
+				977D75301CC177D000C4D7A0 /* LRAdminManageUsersViewController.m in Sources */,
 				D8A0EFDB1C4C220A0006B910 /* LRAdminBroadcastsViewController.m in Sources */,
 				D8B72E881C9E144A0081723F /* LRBroadcastingViewController.m in Sources */,
 				D8A1B90B1C75779F00CEE8D0 /* LRAdminMainViewController.m in Sources */,
@@ -648,6 +664,7 @@
 				D874848A1CAA067000C99A2D /* ListenerCell.m in Sources */,
 				D8A0EFEE1C4C70ED0006B910 /* LiveRosaryAuthenticationClient.m in Sources */,
 				974C30DC1CAB43B40053CA55 /* LRReportBroadcastViewController.m in Sources */,
+				977D752D1CC1776A00C4D7A0 /* LRAdminTakeActionViewController.m in Sources */,
 				D8A0EFE61C4C32290006B910 /* BaseModel.m in Sources */,
 				D8427CF41C601BDA00A8CE5F /* ConfigModel.m in Sources */,
 				D820FB091C4452A9000899DB /* AppDelegate.m in Sources */,
@@ -672,6 +689,7 @@
 				D862FF4D1C9F53FB007DF128 /* SettingCell.m in Sources */,
 				D8B72E7F1C9DEAD60081723F /* ScheduleRecurringCell.m in Sources */,
 				978337791CBED6B500C3C3F7 /* LRAdminReportedViewController.m in Sources */,
+				977D751A1CC167EB00C4D7A0 /* ReportCell.m in Sources */,
 				D8B72E841C9DECD70081723F /* ViewScheduleRecurringCell.m in Sources */,
 				D8A0EFD51C4C130C0006B910 /* DrawerCell.m in Sources */,
 				D8A0274B1C8B527600715277 /* BroadcastsViewController.m in Sources */,

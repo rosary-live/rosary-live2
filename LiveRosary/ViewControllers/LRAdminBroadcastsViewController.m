@@ -64,7 +64,7 @@
     [self.navigationController pushViewController:listenViewController animated:YES];
 }
 
-- (void)selectedSchedule:(ScheduleModel *)model
+- (void)selectedReportedBroadcast:(ReportedBroadcastModel *)model
 {
 }
 

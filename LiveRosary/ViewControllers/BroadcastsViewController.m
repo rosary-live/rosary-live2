@@ -18,6 +18,8 @@
 #import <SDWebImage/UIImageView+WebCache.h>
 #import "ViewScheduleSingleCell.h"
 #import "ScheduleManager.h"
+#import "ReportCell.h"
+#import "ReportedBroadcastModel.h"
 
 typedef NS_ENUM(NSUInteger, Section) {
     SectionBroadcasts,
@@ -227,10 +229,14 @@ typedef NS_ENUM(NSUInteger, Mode) {
 
 - (void)sortReportedBroadcasts
 {
+    NSSortDescriptor* byBroadcastId = [NSSortDescriptor sortDescriptorWithKey:@"bid" ascending:YES];
+    NSSortDescriptor* byDate = [NSSortDescriptor sortDescriptorWithKey:@"created" ascending:YES];
+    self.reportedBroadcasts = [self.reportedBroadcasts sortedArrayUsingDescriptors:@[byBroadcastId, byDate]];
 }
 
 - (void)filterReportedBroadcasts
 {
+    self.reportedBroadcasts = [self.fullReportedBroadcasts copy];
 }
 
 - (void)addMapPins
@@ -375,7 +381,19 @@ typedef NS_ENUM(NSUInteger, Mode) {
         {
             if(self.showReportedBroadcasts)
             {
-                return nil;
+                ReportCell* cell = [tableView dequeueReusableCellWithIdentifier:@"ReportCell"];
+                
+                ReportedBroadcastModel* report = self.reportedBroadcasts[indexPath.row];
+                cell.name.text = report.b_name;
+                cell.language.text = report.b_language;
+                cell.date.text = [NSString stringWithFormat:@" %@ %@", [NSDateFormatter localizedStringFromDate:[report.created dateForNumber] dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterNoStyle], [NSDateFormatter localizedStringFromDate:[report.created dateForNumber] dateStyle:NSDateFormatterNoStyle timeStyle:NSDateFormatterShortStyle]];
+                cell.reporter.text = [NSString stringWithFormat:@"By: %@ (%@)", report.r_name, report.r_email];
+                cell.reason.text = report.reason;
+                
+                NSString* urlString = [NSString stringWithFormat:@"https://s3.amazonaws.com/liverosaryavatars/%@", [report.b_email stringByReplacingOccurrencesOfString:@"@" withString:@"-"]];
+                [cell.avatar sd_setImageWithURL:[NSURL URLWithString:urlString] placeholderImage:[UIImage imageNamed:@"AvatarImage"] options:0];
+                
+                return cell;
             }
             else
             {
@@ -441,14 +459,27 @@ typedef NS_ENUM(NSUInteger, Mode) {
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 70.0f;
+    if(self.showReportedBroadcasts)
+    {
+        return 100.0f;
+    }
+    else
+    {
+        return 70.0f;
+    }
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if(indexPath.section == SectionBroadcasts)
     {
-        [self broadcastSelected:self.broadcasts[indexPath.row]];
+        if(self.showReportedBroadcasts)
+        {
+        }
+        else
+        {
+            [self broadcastSelected:self.broadcasts[indexPath.row]];
+        }
     }
 }
 

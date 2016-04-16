@@ -129,8 +129,4 @@
     [self.navigationController pushViewController:listenViewController animated:YES];    
 }
 
-- (void)selectedSchedule:(ScheduleModel *)model
-{
-}
-
 @end
