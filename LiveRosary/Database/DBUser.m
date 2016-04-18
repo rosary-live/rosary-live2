@@ -12,8 +12,9 @@ NSString* const kAllLevels = @"_ALL_";
 
 @interface DBUser ()
 
-@property (nonatomic, strong) NSMutableDictionary<NSString*,NSMutableArray*>* levels;
-@property (nonatomic, strong) NSMutableDictionary<NSString*,NSDictionary*>* lastKey;
+@property (nonatomic, strong) NSMutableDictionary<NSString*, NSMutableArray*>* levels;
+@property (nonatomic, strong) NSMutableDictionary<NSString*, NSDictionary*>* lastKey;
+@property (nonatomic, strong) NSMutableDictionary<NSString*, NSNumber*>* complete;
 
 @end
 
@@ -36,6 +37,7 @@ NSString* const kAllLevels = @"_ALL_";
     {
         self.levels = [NSMutableDictionary new];
         self.lastKey = [NSMutableDictionary new];
+        self.complete = [NSMutableDictionary new];
     }
     return self;
 }
@@ -43,6 +45,17 @@ NSString* const kAllLevels = @"_ALL_";
 - (NSArray*)usersForLevel:(NSString*)level
 {
     return self.levels[level];
+}
+
+- (BOOL)completeForLevel:(NSString*)level
+{
+    NSNumber* complete = self.complete[level];
+    if(complete != nil)
+    {
+        return complete.boolValue;
+    }
+    
+    return NO;
 }
 
 - (void)getUserByEmail:(NSString*)email completion:(void (^)(UserModel* user, NSError* error))completion
@@ -76,26 +89,32 @@ NSString* const kAllLevels = @"_ALL_";
     }];
 }
 
-- (void)getUsersByLevel:(NSString*)level reset:(BOOL)reset completion:(void (^)(NSArray<UserModel*>* users, NSError* error))completion
+- (void)getUsersByLevel:(NSString*)level reset:(BOOL)reset completion:(void (^)(NSArray<UserModel*>* allUsers, NSArray<UserModel*>* users, BOOL complete, NSError* error))completion
 {
-    NSDictionary* exclusiveStartKey = self.lastKey[level ? level : kAllLevels];
-    
     if(reset)
     {
         [self.levels removeObjectForKey:level ? level : kAllLevels];
         [self.lastKey removeObjectForKey:level ? level : kAllLevels];
+        [self.complete removeObjectForKey:level ? level : kAllLevels];
     }
     
     AWSDynamoDBScanExpression* scanExpression = [AWSDynamoDBScanExpression new];
     //scanExpression.limit = @100;
     if(level != nil)
     {
+        scanExpression.exclusiveStartKey = self.lastKey[level ? level : kAllLevels];
         scanExpression.filterExpression = @"#atname = :val";
         scanExpression.expressionAttributeNames = @{ @"#atname": @"level" };
         scanExpression.expressionAttributeValues = @{ @":val": level };
     }
     
     if(level == nil) level = kAllLevels;
+    
+    if([self completeForLevel:level])
+    {
+        safeBlock(completion, self.levels[level], nil, YES, nil);
+        return;
+    }
     
     CFTimeInterval startTime = CACurrentMediaTime();
     [[self.dynamoDBObjectMapper scan:[UserModel class] expression:scanExpression] continueWithBlock:^id _Nullable(AWSTask * _Nonnull task) {
@@ -105,13 +124,13 @@ NSString* const kAllLevels = @"_ALL_";
         {
             DDLogError(@"Load failed. Error: [%@]", task.error);
             [self logWithName:@"Users byLevel Error" duration:duration count:0 error:task.error.description];
-            safeBlock(completion, nil, task.error);
+            safeBlock(completion, nil, nil, NO, task.error);
         }
         else if(task.exception)
         {
             DDLogError(@"Load failed. Exception: [%@]", task.exception);
             [self logWithName:@"Users byLevel Error" duration:duration count:0 error:task.exception.description];
-            safeBlock(completion, nil, [NSError errorWithDomain:ErrorDomainDatabase code:ErrorException userInfo:@{ NSLocalizedDescriptionKey: task.exception.description }]);
+            safeBlock(completion, nil, nil, NO, [NSError errorWithDomain:ErrorDomainDatabase code:ErrorException userInfo:@{ NSLocalizedDescriptionKey: task.exception.description }]);
         }
         else if(task.result)
         {
@@ -132,11 +151,62 @@ NSString* const kAllLevels = @"_ALL_";
             
             [users addObjectsFromArray:paginatedOutput.items];
             
-            safeBlock(completion, paginatedOutput.items, nil);
+            NSDictionary* lastKey = paginatedOutput.lastEvaluatedKey;
+            BOOL complete = lastKey == nil;
+            if(complete)
+            {
+                [self.lastKey removeObjectForKey:level ? level : kAllLevels];
+                self.complete[level] = @YES;
+            }
+            else
+            {
+                self.lastKey[level] = lastKey;
+            }
+            
+            safeBlock(completion, users, paginatedOutput.items, complete, nil);
         }
         
         return nil;
     }];
+}
+
+- (void)updateLevelForEmail:(NSString*)email from:(NSString*)fromLevel to:(NSString*)toLevel
+{
+    NSArray* allUsers = self.levels[kAllLevels];
+    UserModel* user = [allUsers bk_match:^BOOL(id obj) {
+        return [((UserModel*)obj).email isEqualToString:email];
+    }];
+    
+    user.level = toLevel;
+    
+    NSMutableArray* fromUsers = self.levels[fromLevel];
+    UserModel* fromUser = [fromUsers bk_match:^BOOL(id obj) {
+        return [((UserModel*)obj).email isEqualToString:email];
+    }];
+    
+    if(fromUser != nil)
+    {
+        [fromUsers removeObject:fromUser];
+    }
+    
+    fromUser.level = toLevel;
+    
+    NSMutableArray* toUsers = self.levels[toLevel];
+    UserModel* toUser = [toUsers bk_match:^BOOL(id obj) {
+        return [((UserModel*)obj).email isEqualToString:email];
+    }];
+    
+    if(toUser != nil)
+    {
+        toUser.level = toLevel;
+    }
+    else
+    {
+        if(user != nil || fromUser != nil)
+        {
+            [toUsers addObject:fromUser != nil ? fromUser : user];
+        }
+    }
 }
 
 @end

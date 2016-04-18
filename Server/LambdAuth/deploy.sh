@@ -26,7 +26,7 @@ for f in $(ls -1); do
   if [[ $f != LambdAuth* ]]; then
     continue
   fi
-  echo "Updating function $f begin..."
+   echo "Updating function $f begin..."
 	cp config.json $f/
   cd $f
   zip -r $f.zip index.js config.json
@@ -37,26 +37,26 @@ for f in $(ls -1); do
   echo "Updating function $f end"
 done
 
-echo "Updating www content begin..."
+# echo "Updating www content begin..."
 
-cd www
-if [ -d "edit" ]; then
-  rm edit/*
-else
-  mkdir edit
-fi
+# cd www
+# if [ -d "edit" ]; then
+#   rm edit/*
+# else
+#   mkdir edit
+# fi
 
-for f in $(ls -1 *.*); do
-  echo "Updating $f begin..."
-  sed -e "s/<REGION>/$REGION/g" \
-      -e "s/<IDENTITY_POOL_ID>/$IDENTITY_POOL_ID/g" \
-      -e "s/<DEVELOPER_PROVIDER_NAME>/$DEVELOPER_PROVIDER_NAME/g" \
-      $f > edit/$f
-  echo "Updating $f end"
-done
-echo "Updating www content end"
-echo "Sync www content with S3 bucket $BUCKET begin..."
-cd edit
-aws s3 sync . s3://$BUCKET --cache-control max-age="$MAX_AGE" --acl public-read
-cd ../..
-echo "Sync www content with S3 bucket $BUCKET end"
+# for f in $(ls -1 *.*); do
+#   echo "Updating $f begin..."
+#   sed -e "s/<REGION>/$REGION/g" \
+#       -e "s/<IDENTITY_POOL_ID>/$IDENTITY_POOL_ID/g" \
+#       -e "s/<DEVELOPER_PROVIDER_NAME>/$DEVELOPER_PROVIDER_NAME/g" \
+#       $f > edit/$f
+#   echo "Updating $f end"
+# done
+# echo "Updating www content end"
+# echo "Sync www content with S3 bucket $BUCKET begin..."
+# cd edit
+# aws s3 sync . s3://$BUCKET --cache-control max-age="$MAX_AGE" --acl public-read
+# cd ../..
+# echo "Sync www content with S3 bucket $BUCKET end"

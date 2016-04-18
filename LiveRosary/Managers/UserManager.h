@@ -19,6 +19,7 @@ FOUNDATION_EXTERN NSString * const NotificationUserLoggedOut;
 @property (nonatomic, getter=isLoggedIn) BOOL loggedIn;
 @property (nonatomic) BOOL isAuthenticated;
 @property (nonatomic, strong) NSString* email;
+@property (nonatomic, strong) NSString* password;
 @property (nonatomic, strong) UserModel* currentUser;
 @property (nonatomic, strong) UIImage* avatarImage;
 @property (nonatomic, strong) AWSServiceConfiguration* configuration;
@@ -40,6 +41,7 @@ FOUNDATION_EXTERN NSString * const NotificationUserLoggedOut;
 - (void)lostPasswordWithEmail:(NSString*)email link:(NSString*)link completion:(void (^)(NSError* error))completion;
 - (void)resetPassword:(NSString*)newPassword completion:(void (^)(NSError* error))completion;
 - (UIImage*)imageForCountryCode:(NSString*)code;
+- (UIImage*)imageForCountryName:(NSString*)name;
 - (NSString*)nameForCountryCode:(NSString*)code;
 - (NSString*)codeForCountryName:(NSString*)name;
 

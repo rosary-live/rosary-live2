@@ -26,4 +26,6 @@
 
 - (void)reportBroadcast:(BroadcastModel*)broadcast reporterEmail:(NSString*)reporterEmail reason:(NSString*)reason link:(NSString*)link completion:(void (^)(NSError* error))completion;
 
+- (void)updateUserWithEmail:(NSString*)email toLevel:(NSString*)level adminEmail:(NSString*)adminEmail adminPassword:(NSString*)adminPassword completion:(void (^)(NSError* error))completion;
+
 @end

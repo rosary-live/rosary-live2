@@ -31,7 +31,6 @@ NSString * const NotificationUserLoggedOut = @"NotificationUserLoggedOut";
 
 @property (nonatomic, strong) AWSCognitoCredentialsProvider* credentialsProvider;
 @property (nonatomic, strong) LiveRosaryAuthenticationClient* authClient;
-@property (nonatomic, strong) NSString* password;
 
 @property (nonatomic, strong) NSDictionary<NSString*, NSString*>* nameToCode;
 
@@ -493,6 +492,11 @@ NSString * const NotificationUserLoggedOut = @"NotificationUserLoggedOut";
 - (UIImage*)imageForCountryCode:(NSString*)code
 {
     return [UIImage imageNamed:[NSString stringWithFormat:@"%@.png", [code lowercaseString]]];
+}
+
+- (UIImage*)imageForCountryName:(NSString*)name
+{
+    return [UIImage imageNamed:[NSString stringWithFormat:@"%@.png", [self codeForCountryName:name]]];
 }
 
 - (NSString*)nameForCountryCode:(NSString*)code

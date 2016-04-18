@@ -176,4 +176,13 @@ NSString* const kBaseURL = @"https://9wwr7dvesk.execute-api.us-east-1.amazonaws.
     }];
 }
 
+- (void)updateUserWithEmail:(NSString*)email toLevel:(NSString*)level adminEmail:(NSString*)adminEmail adminPassword:(NSString*)adminPassword completion:(void (^)(NSError* error))completion
+{
+    NSDictionary* dictionary = @{ @"email": adminEmail, @"password": adminPassword, @"updateEmail": email, @"updateLevel": level };
+    
+    [self postMethod:@"UpdateUserLevel" withDictionary:dictionary completion:^(id response, NSError *error) {
+        safeBlock(completion, error);
+    }];
+}
+
 @end
