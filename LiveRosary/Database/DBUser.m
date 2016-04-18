@@ -89,6 +89,47 @@ NSString* const kAllLevels = @"_ALL_";
     }];
 }
 
+- (void)getUsersByEmail:(NSString*)email moreKey:(NSDictionary*)moreKey completion:(void (^)(NSArray<UserModel*>* users, NSDictionary* moreKey, NSError* error))completion
+{
+    AWSDynamoDBScanExpression* scanExpression = [AWSDynamoDBScanExpression new];
+    //scanExpression.limit = @100;
+    scanExpression.exclusiveStartKey = moreKey;
+    scanExpression.filterExpression = @"contains(email, :val)";
+    scanExpression.expressionAttributeValues = @{ @":val": email };
+    
+    CFTimeInterval startTime = CACurrentMediaTime();
+    [[self.dynamoDBObjectMapper scan:[UserModel class] expression:scanExpression] continueWithBlock:^id _Nullable(AWSTask * _Nonnull task) {
+        CFTimeInterval duration = CACurrentMediaTime() - startTime;
+        
+        if(task.error)
+        {
+            DDLogError(@"Load failed. Error: [%@]", task.error);
+            [self logWithName:@"Users byEmail Error" duration:duration count:0 error:task.error.description];
+            safeBlock(completion, nil, nil, task.error);
+        }
+        else if(task.exception)
+        {
+            DDLogError(@"Load failed. Exception: [%@]", task.exception);
+            [self logWithName:@"Users byEmail Error" duration:duration count:0 error:task.exception.description];
+            safeBlock(completion, nil, nil, [NSError errorWithDomain:ErrorDomainDatabase code:ErrorException userInfo:@{ NSLocalizedDescriptionKey: task.exception.description }]);
+        }
+        else if(task.result)
+        {
+            AWSDynamoDBPaginatedOutput *paginatedOutput = task.result;
+            for(UserModel* user in paginatedOutput.items)
+            {
+                DDLogDebug(@"User: %@", user);
+            }
+            
+            [self logWithName:@"User byEmail" duration:duration count:paginatedOutput.items.count error:nil];
+                        
+            safeBlock(completion, paginatedOutput.items, paginatedOutput.lastEvaluatedKey, nil);
+        }
+        
+        return nil;
+    }];
+}
+
 - (void)getUsersByLevel:(NSString*)level reset:(BOOL)reset completion:(void (^)(NSArray<UserModel*>* allUsers, NSArray<UserModel*>* users, BOOL complete, NSError* error))completion
 {
     if(reset)

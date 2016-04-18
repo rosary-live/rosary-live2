@@ -23,7 +23,7 @@
 - (void)updateReportedBroadcastsWithCompletion:(void (^)(NSArray<ReportedBroadcastModel*>* broadcasts, NSError* error))completion
 {
     AWSDynamoDBScanExpression* scanExpression = [AWSDynamoDBScanExpression new];
-    scanExpression.limit = @(100);
+    //scanExpression.limit = @(100);
     
     CFTimeInterval startTime = CACurrentMediaTime();
     [[self.dynamoDBObjectMapper scan:[ReportedBroadcastModel class] expression:scanExpression] continueWithBlock:^id _Nullable(AWSTask * _Nonnull task) {

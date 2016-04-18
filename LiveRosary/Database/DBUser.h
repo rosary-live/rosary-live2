@@ -15,6 +15,7 @@
 
 - (NSArray*)usersForLevel:(NSString*)level;
 - (void)getUserByEmail:(NSString*)email completion:(void (^)(UserModel* user, NSError* error))completion;
+- (void)getUsersByEmail:(NSString*)email moreKey:(NSDictionary*)moreKey completion:(void (^)(NSArray<UserModel*>* users, NSDictionary* moreKey, NSError* error))completion;
 - (void)getUsersByLevel:(NSString*)level reset:(BOOL)reset completion:(void (^)(NSArray<UserModel*>* allUsers, NSArray<UserModel*>* users, BOOL complete, NSError* error))completion;
 - (BOOL)completeForLevel:(NSString*)level;
 

@@ -23,7 +23,7 @@
 - (void)updateScheduledBroadcastsWithCompletion:(void (^)(NSArray<ScheduleModel*>* scheduledBroadcasts, NSError* error))completion
 {
     AWSDynamoDBScanExpression* scanExpression = [AWSDynamoDBScanExpression new];
-    scanExpression.limit = @(100);
+    //scanExpression.limit = @(100);
     
     CFTimeInterval startTime = CACurrentMediaTime();
     [[self.dynamoDBObjectMapper scan:[ScheduleModel class] expression:scanExpression] continueWithBlock:^id _Nullable(AWSTask * _Nonnull task) {
@@ -93,7 +93,7 @@
 - (void)getScheduledBroadcastsByEmail:(NSString*)email completion:(void (^)(NSArray<ScheduleModel*>* scheduledBroadcasts, NSError* error))completion
 {
     AWSDynamoDBScanExpression* scanExpression = [AWSDynamoDBScanExpression new];
-    scanExpression.limit = @(100);
+    //scanExpression.limit = @(100);
     scanExpression.filterExpression = @"#atname = :val";
     scanExpression.expressionAttributeNames = @{ @"#atname": @"user" };
     scanExpression.expressionAttributeValues = @{ @":val": email };

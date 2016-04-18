@@ -911,7 +911,7 @@ Intention 2</string>
                         <rect key="frame" x="0.0" y="0.0" width="320" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <searchBar contentMode="redraw" searchBarStyle="minimal" placeholder="email address" translatesAutoresizingMaskIntoConstraints="NO" id="IjF-7v-6Zz">
+                            <searchBar contentMode="redraw" searchBarStyle="minimal" placeholder="email address" showsCancelButton="YES" translatesAutoresizingMaskIntoConstraints="NO" id="IjF-7v-6Zz">
                                 <rect key="frame" x="0.0" y="64" width="320" height="44"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="44" id="bP8-no-JSq"/>
@@ -1025,6 +1025,46 @@ Intention 2</string>
                                             <outlet property="location" destination="jcN-vd-axP" id="yMw-2j-vM8"/>
                                             <outlet property="name" destination="yyD-EO-fJU" id="spO-ci-M4W"/>
                                         </connections>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="SearchCompleteCell" id="xsm-fa-bHw">
+                                        <rect key="frame" x="0.0" y="98" width="320" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="xsm-fa-bHw" id="ns9-rl-P3i">
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Seach Complete" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Uzb-2G-Nlb">
+                                                    <rect key="frame" x="97.5" y="11" width="126" height="21"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="Uzb-2G-Nlb" firstAttribute="centerX" secondItem="ns9-rl-P3i" secondAttribute="centerX" id="jUW-Oy-zWG"/>
+                                                <constraint firstItem="Uzb-2G-Nlb" firstAttribute="centerY" secondItem="ns9-rl-P3i" secondAttribute="centerY" id="qo2-L7-fxa"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="LoadMoreCell" id="y5k-md-lHg">
+                                        <rect key="frame" x="0.0" y="142" width="320" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="y5k-md-lHg" id="4B5-AT-I67">
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Load More" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="O5R-R4-cwu">
+                                                    <rect key="frame" x="119.5" y="11" width="81.5" height="21"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="O5R-R4-cwu" firstAttribute="centerX" secondItem="4B5-AT-I67" secondAttribute="centerX" id="EvQ-U6-4RV"/>
+                                                <constraint firstItem="O5R-R4-cwu" firstAttribute="centerY" secondItem="4B5-AT-I67" secondAttribute="centerY" id="YkD-hM-y3l"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
                                     </tableViewCell>
                                 </prototypes>
                                 <connections>
