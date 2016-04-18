@@ -8,11 +8,13 @@
 
 #import "LREditUserViewController.h"
 #import "UserManager.h"
+#import "LanguagePicker.h"
+#import "CountryPicker.h"
 #import <MBProgressHUD/MBProgressHUD.h>
 #import <FCCurrentLocationGeocoder/FCCurrentLocationGeocoder.h>
 #import <CZPhotoPickerController/CZPhotoPickerController.h>
 
-@interface LREditUserViewController () <UIPickerViewDelegate, UIPickerViewDataSource>
+@interface LREditUserViewController ()
 
 @property (nonatomic, weak) IBOutlet UIImageView* avatarImage;
 @property (nonatomic, weak) IBOutlet UITextField* firstName;
@@ -24,15 +26,13 @@
 
 @property (nonatomic, weak) IBOutlet UIButton* updateAvatarButton;
 
-@property (nonatomic, strong) UIPickerView* languagePickerView;
+@property (nonatomic, strong) LanguagePicker* languagePicker;
+@property (nonatomic, strong) CountryPicker* countryPicker;
 
 @property (nonatomic, strong) MBProgressHUD *hud;
 @property (nonatomic, strong) FCCurrentLocationGeocoder* geocoder;
 @property (nonatomic) CLLocationDegrees latitude;
 @property (nonatomic) CLLocationDegrees longitude;
-
-@property (nonatomic, strong) NSString* languageCode;
-@property (nonatomic, strong) NSString* languageName;
 
 @property (nonatomic, strong) CZPhotoPickerController* photoPicker;
 @property (nonatomic) BOOL havePhoto;
@@ -52,7 +52,8 @@
     self.state.text = [UserManager sharedManager].currentUser.state;
     self.country.text = [UserManager sharedManager].currentUser.country;
     
-    [self addLanguagePickerView];
+    self.languagePicker = [[LanguagePicker alloc] initWithTextField:self.language inView:self.view];
+    self.countryPicker = [[CountryPicker alloc] initWithTextField:self.country inView:self.view];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -74,30 +75,6 @@
     // Pass the selected object to the new view controller.
 }
 */
-
--(void)addLanguagePickerView
-{
-    self.languagePickerView = [[UIPickerView alloc] init];
-    self.languagePickerView.dataSource = self;
-    self.languagePickerView.delegate = self;
-    self.languagePickerView.showsSelectionIndicator = YES;
-    
-    UIBarButtonItem* doneButton = [[UIBarButtonItem alloc]
-                                   initWithTitle:@"Done" style:UIBarButtonItemStyleDone
-                                   target:self action:@selector(onLanguagePickerDone:)];
-    
-    UIToolbar* toolBar = [[UIToolbar alloc] initWithFrame:
-                          CGRectMake(0, self.view.frame.size.height-
-                                     self.languagePickerView.frame.size.height-50, 320, 50)];
-    
-    [toolBar setBarStyle:UIBarStyleBlackOpaque];
-    NSArray *toolbarItems = [NSArray arrayWithObjects:doneButton, nil];
-    [toolBar setItems:toolbarItems];
-    self.language.inputView = self.languagePickerView;
-    self.language.inputAccessoryView = toolBar;
-    
-    [self.languagePickerView selectRow:[[UserManager sharedManager].languages indexOfObject:self.language.text] inComponent:0 animated:NO];
-}
 
 - (IBAction)onLanguagePickerDone:(id)sender
 {
@@ -128,7 +105,7 @@
                 {
                     self.city.text = self.geocoder.locationCity;
                     self.state.text = self.geocoder.locationPlacemark.administrativeArea;
-                    self.country.text = self.geocoder.locationCountry;
+                    self.country.text = [[UserManager sharedManager] nameForCountryCode:self.geocoder.locationCountryCode];
                     
                     self.latitude = self.geocoder.location.coordinate.latitude;
                     self.longitude = self.geocoder.location.coordinate.longitude;
@@ -136,8 +113,11 @@
                     [[AnalyticsManager sharedManager] event:@"EditGeocodeSuccess" info:@{@"City": self.geocoder.locationCity,
                                                                                      @"State": self.geocoder.locationPlacemark.administrativeArea,
                                                                                      @"Country": self.geocoder.locationCountry,
+                                                                                     @"CountryCode": self.geocoder.locationCountryCode,
                                                                                      @"Latitude": @(self.geocoder.location.coordinate.latitude),
                                                                                      @"Longitude": @(self.geocoder.location.coordinate.longitude)}];
+                    
+                    [self.countryPicker setCurrent];
                 }
                 else
                 {
@@ -279,31 +259,6 @@
 {
     [aTextField resignFirstResponder];
     return YES;
-}
-
-#pragma mark - UIPickerViewDataSource
-
--(NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView
-{
-    return 1;
-}
-
--(NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
-{
-    return [UserManager sharedManager].languages.count;
-}
-
-#pragma mark - UIPickerViewDelegate
-
--(void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
-{
-    [self.language setText:[[UserManager sharedManager].languages objectAtIndex:row]];
-    [[AnalyticsManager sharedManager] event:@"EditLanguage" info:@{@"name": self.language.text}];
-}
-
-- (NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component
-{
-    return [[UserManager sharedManager].languages objectAtIndex:row];
 }
 
 @end

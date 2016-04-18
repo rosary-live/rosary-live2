@@ -52,7 +52,7 @@
     [self.window setRootViewController:self.drawerController];
     
     [[ScheduleManager sharedManager] configureNotifications];
-    
+        
     return YES;
 }
 

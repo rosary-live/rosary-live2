@@ -10,6 +10,10 @@
 
 @interface LRAdminManageUsersViewController ()
 
+@property (nonatomic, weak) IBOutlet UISearchBar* searchBar;
+@property (nonatomic, weak) IBOutlet UISegmentedControl* filter;
+@property (nonatomic, weak) IBOutlet UITableView* tableView;
+
 @end
 
 @implementation LRAdminManageUsersViewController
@@ -33,5 +37,31 @@
     // Pass the selected object to the new view controller.
 }
 */
+
+#pragma mark - UITableViewDataSource
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+}
+
+#pragma mark - UITableViewDelegate
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 70.0f;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+}
 
 @end

@@ -8,11 +8,13 @@
 
 #import "LRCreateUserViewController.h"
 #import "UserManager.h"
+#import "LanguagePicker.h"
+#import "CountryPicker.h"
 #import <MBProgressHUD/MBProgressHUD.h>
 #import <FCCurrentLocationGeocoder/FCCurrentLocationGeocoder.h>
 #import <CZPhotoPickerController/CZPhotoPickerController.h>
 
-@interface LRCreateUserViewController () <UIPickerViewDelegate, UIPickerViewDataSource>
+@interface LRCreateUserViewController ()
 
 @property (nonatomic, weak) IBOutlet UITextField* firstName;
 @property (nonatomic, weak) IBOutlet UITextField* lastName;
@@ -27,15 +29,13 @@
 
 @property (nonatomic, weak) IBOutlet UIButton* updateAvatarButton;
 
-@property (nonatomic, strong) UIPickerView* languagePickerView;
+@property (nonatomic, strong) LanguagePicker* languagePicker;
+@property (nonatomic, strong) CountryPicker* countryPicker;
 
 @property (nonatomic, strong) MBProgressHUD *hud;
 @property (nonatomic, strong) FCCurrentLocationGeocoder* geocoder;
 @property (nonatomic) CLLocationDegrees latitude;
 @property (nonatomic) CLLocationDegrees longitude;
-
-@property (nonatomic, strong) NSString* languageCode;
-@property (nonatomic, strong) NSString* languageName;
 
 @property (nonatomic, strong) CZPhotoPickerController* photoPicker;
 @property (nonatomic) BOOL havePhoto;
@@ -49,7 +49,9 @@
     
     [self populateLanguage];
     [self populateLocation];
-    [self addLanguagePickerView];
+    
+    self.languagePicker = [[LanguagePicker alloc] initWithTextField:self.language inView:self.view];
+    self.countryPicker = [[CountryPicker alloc] initWithTextField:self.country inView:self.view];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -78,9 +80,9 @@
     if(languages != nil && languages.count > 0)
     {
         NSString* code = languages[0];
-        self.languageCode = [code componentsSeparatedByString:@"-"][0];
-        self.languageName = [[[NSLocale alloc] initWithLocaleIdentifier:self.languageCode] displayNameForKey:NSLocaleIdentifier value:self.languageCode];
-        self.language.text = self.languageName;
+        NSString* languageCode = [code componentsSeparatedByString:@"-"][0];
+        NSString* languageName = [[[NSLocale alloc] initWithLocaleIdentifier:languageCode] displayNameForKey:NSLocaleIdentifier value:languageCode];
+        self.language.text = languageName;
     }    
 }
 
@@ -108,7 +110,7 @@
                 {
                     self.city.text = self.geocoder.locationCity;
                     self.state.text = self.geocoder.locationPlacemark.administrativeArea;
-                    self.country.text = self.geocoder.locationCountry;
+                    self.country.text = [[UserManager sharedManager] nameForCountryCode:self.geocoder.locationCountryCode];
                     
                     self.latitude = self.geocoder.location.coordinate.latitude;
                     self.longitude = self.geocoder.location.coordinate.longitude;
@@ -116,8 +118,11 @@
                     [[AnalyticsManager sharedManager] event:@"CreateGeocodeSuccess" info:@{@"City": self.geocoder.locationCity,
                                                                                          @"State": self.geocoder.locationPlacemark.administrativeArea,
                                                                                          @"Country": self.geocoder.locationCountry,
+                                                                                         @"CountryCode": self.geocoder.locationCountryCode,
                                                                                          @"Latitude": @(self.geocoder.location.coordinate.latitude),
                                                                                          @"Longitude": @(self.geocoder.location.coordinate.longitude)}];
+                    
+                    [self.countryPicker setCurrent];
                 }
                 else
                 {
@@ -132,35 +137,6 @@
     {
         [[AnalyticsManager sharedManager] event:@"CreateNoGeocode" info:nil];
     }
-}
-
--(void)addLanguagePickerView
-{
-    self.languagePickerView = [[UIPickerView alloc] init];
-    self.languagePickerView.dataSource = self;
-    self.languagePickerView.delegate = self;
-    self.languagePickerView.showsSelectionIndicator = YES;
-    
-    UIBarButtonItem* doneButton = [[UIBarButtonItem alloc]
-                                   initWithTitle:@"Done" style:UIBarButtonItemStyleDone
-                                   target:self action:@selector(onLanguagePickerDone:)];
-    
-    UIToolbar* toolBar = [[UIToolbar alloc] initWithFrame:
-                          CGRectMake(0, self.view.frame.size.height-
-                                     self.languagePickerView.frame.size.height-50, 320, 50)];
-    
-    [toolBar setBarStyle:UIBarStyleBlackOpaque];
-    NSArray *toolbarItems = [NSArray arrayWithObjects:doneButton, nil];
-    [toolBar setItems:toolbarItems];
-    self.language.inputView = self.languagePickerView;
-    self.language.inputAccessoryView = toolBar;
-    
-    [self.languagePickerView selectRow:[[UserManager sharedManager].languages indexOfObject:self.language.text] inComponent:0 animated:NO];
-}
-
-- (IBAction)onLanguagePickerDone:(id)sender
-{
-    [self.language resignFirstResponder];
 }
 
 - (IBAction)onCreate:(id)sender
@@ -298,32 +274,6 @@
 {
     [aTextField resignFirstResponder];
     return YES;
-}
-
-#pragma mark - UIPickerViewDataSource
-
--(NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView
-{
-    return 1;
-}
-
--(NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
-{
-    return [UserManager sharedManager].languages.count;
-}
-
-#pragma mark - UIPickerViewDelegate
-
--(void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
-{
-    [self.language setText:[[UserManager sharedManager].languages objectAtIndex:row]];
-    [[AnalyticsManager sharedManager] event:@"CreateLanguage" info:@{@"name": self.language.text}];
-
-}
-
-- (NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component
-{
-    return [[UserManager sharedManager].languages objectAtIndex:row];
 }
 
 @end

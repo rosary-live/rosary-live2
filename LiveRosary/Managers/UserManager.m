@@ -28,9 +28,13 @@ NSString * const NotificationUserLoggedIn = @"NotificationUserLoggedIn";
 NSString * const NotificationUserLoggedOut = @"NotificationUserLoggedOut";
 
 @interface UserManager() <AFURLResponseSerialization>
+
 @property (nonatomic, strong) AWSCognitoCredentialsProvider* credentialsProvider;
 @property (nonatomic, strong) LiveRosaryAuthenticationClient* authClient;
 @property (nonatomic, strong) NSString* password;
+
+@property (nonatomic, strong) NSDictionary<NSString*, NSString*>* nameToCode;
+
 @end
 
 @implementation UserManager
@@ -50,7 +54,19 @@ NSString * const NotificationUserLoggedOut = @"NotificationUserLoggedOut";
     if(self = [super init])
     {
         [self populateLanguages];
+        [self populateCountryCodes];
         self.authClient = [LiveRosaryAuthenticationClient identityProviderWithAppname:@"LiveRosary"];
+        
+        NSMutableDictionary* nameToCode = [NSMutableDictionary new];
+        for(NSString* code in [NSLocale ISOCountryCodes])
+        {
+            NSString* name = [self nameForCountryCode:code];
+            nameToCode[name] = code;
+            //NSLog(@"%@: %@", code, name);
+        }
+        
+        self.nameToCode = [nameToCode copy];
+        NSLog(@"%@", self.nameToCode);
 
         //[AWSLogger defaultLogger].logLevel = AWSLogLevelVerbose;
         [self initializeCognitoWithCompletion:^(NSError *error) {
@@ -90,6 +106,11 @@ NSString * const NotificationUserLoggedOut = @"NotificationUserLoggedOut";
     }
     
     _languages = [NSArray arrayWithArray:languages];
+}
+
+- (void)populateCountryCodes
+{
+    _countryCodes = [[NSLocale ISOCountryCodes] copy];
 }
 
 - (void)setEmail:(NSString *)email
@@ -467,6 +488,21 @@ NSString * const NotificationUserLoggedOut = @"NotificationUserLoggedOut";
     }
     
     return data;
+}
+
+- (UIImage*)imageForCountryCode:(NSString*)code
+{
+    return [UIImage imageNamed:[NSString stringWithFormat:@"%@.png", [code lowercaseString]]];
+}
+
+- (NSString*)nameForCountryCode:(NSString*)code
+{
+    return [[NSLocale systemLocale] displayNameForKey:NSLocaleCountryCode value:code];
+}
+
+- (NSString*)codeForCountryName:(NSString*)name
+{
+    return self.nameToCode[name];
 }
 
 @end

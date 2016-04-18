@@ -23,6 +23,7 @@ FOUNDATION_EXTERN NSString * const NotificationUserLoggedOut;
 @property (nonatomic, strong) UIImage* avatarImage;
 @property (nonatomic, strong) AWSServiceConfiguration* configuration;
 @property (nonatomic, strong, readonly) NSArray<NSString*>* languages;
+@property (nonatomic, strong, readonly) NSArray<NSString*>* countryCodes;
 @property (nonatomic, readonly) NSDictionary* userDictionary;
 
 + (instancetype)sharedManager;
@@ -38,5 +39,8 @@ FOUNDATION_EXTERN NSString * const NotificationUserLoggedOut;
 - (void)changePassword:(NSString*)currentPassword newPassword:(NSString*)newPassword completion:(void (^)(NSError* error))completion;;
 - (void)lostPasswordWithEmail:(NSString*)email link:(NSString*)link completion:(void (^)(NSError* error))completion;
 - (void)resetPassword:(NSString*)newPassword completion:(void (^)(NSError* error))completion;
+- (UIImage*)imageForCountryCode:(NSString*)code;
+- (NSString*)nameForCountryCode:(NSString*)code;
+- (NSString*)codeForCountryName:(NSString*)name;
 
 @end
