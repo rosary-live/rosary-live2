@@ -64,10 +64,6 @@
     [self.navigationController pushViewController:listenViewController animated:YES];
 }
 
-- (void)selectedReportedBroadcast:(ReportedBroadcastModel *)model
-{
-}
-
 - (void)addBroadcasts
 {
     self.broadcastViewController = [BroadcastsViewController instantiate];

@@ -475,6 +475,7 @@ typedef NS_ENUM(NSUInteger, Mode) {
     {
         if(self.showReportedBroadcasts)
         {
+            [self reportedBroadcastSelected:self.reportedBroadcasts[indexPath.row]];
         }
         else
         {
@@ -579,6 +580,14 @@ typedef NS_ENUM(NSUInteger, Mode) {
     if(self.delegate != nil && [self.delegate respondsToSelector:@selector(selectedBroadcast:)])
     {
         [self.delegate selectedBroadcast:broadcast];
+    }
+}
+
+- (void)reportedBroadcastSelected:(ReportedBroadcastModel*)broadcast
+{
+    if(self.delegate != nil && [self.delegate respondsToSelector:@selector(selectedReportedBroadcast:)])
+    {
+        [self.delegate selectedReportedBroadcast:broadcast];
     }
 }
 

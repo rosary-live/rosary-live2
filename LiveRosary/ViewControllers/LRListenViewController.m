@@ -17,6 +17,8 @@
 #import "BroadcastQueueModel.h"
 #import "UserManager.h"
 #import "LRReportBroadcastViewController.h"
+#import "LiveRosaryService.h"
+#import "DBUser.h"
 
 NSString * const kLastIntentionKey = @"LastIntention";
 
@@ -29,10 +31,14 @@ NSString * const kLastIntentionKey = @"LastIntention";
 @property (nonatomic, weak) IBOutlet UILabel* location;
 @property (nonatomic, weak) IBOutlet UILabel* status;
 @property (nonatomic, weak) IBOutlet SlideShow* slideShow;
+
 @property (nonatomic, weak) IBOutlet UIButton* resumeSlideShow;
 @property (nonatomic, weak) IBOutlet UILabel* intentionLabel;
 @property (nonatomic, weak) IBOutlet UITextView* intention;
 @property (nonatomic, weak) IBOutlet UIButton* report;
+
+@property (nonatomic, weak) IBOutlet UIButton* revokeBroadcastPriv;
+@property (nonatomic, weak) IBOutlet UIButton* banUser;
 
 @property (nonatomic, strong) NSTimer* playTimer;
 
@@ -45,6 +51,8 @@ NSString * const kLastIntentionKey = @"LastIntention";
 
 @property (nonatomic) CFTimeInterval startTime;
 
+@property (nonatomic) BOOL isReport;
+
 @end
 
 @implementation LRListenViewController
@@ -53,6 +61,8 @@ NSString * const kLastIntentionKey = @"LastIntention";
     [super viewDidLoad];
     
     self.navigationController.navigationBar.topItem.title = @"Stop";
+    
+    self.isReport = self.reportedBroadcast != nil;
     
     if(self.playFromStart)
     {
@@ -68,12 +78,32 @@ NSString * const kLastIntentionKey = @"LastIntention";
         self.intention.text = self.lastIntention;
     }
     
+    if(self.isReport)
+    {
+        self.intentionLabel.hidden = YES;
+        self.intention.hidden = YES;
+        self.report.hidden = YES;
+        self.revokeBroadcastPriv.hidden = NO;
+        self.banUser.hidden = NO;
+    }
+    else
+    {
+        self.intentionLabel.hidden = NO;
+        self.intention.hidden = NO;
+        self.report.hidden = NO;
+        self.revokeBroadcastPriv.hidden = YES;
+        self.banUser.hidden = YES;
+    }
+    
     [BroadcastManager sharedManager].delegate = self;
     
-    self.name.text = self.broadcast.name;
-    self.language.text = self.broadcast.language;
-    self.location.text = [NSString stringWithFormat:@"%@, %@ %@", self.broadcast.city, self.broadcast.state, self.broadcast.country];
-    self.date.text = [NSDateFormatter localizedStringFromDate:[self.broadcast.updated dateForNumber] dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterShortStyle];
+    self.name.text = self.isReport ? self.reportedBroadcast.b_name : self.broadcast.name;
+    self.language.text = self.isReport ? self.reportedBroadcast.b_language : self.broadcast.language;
+    self.location.text = [NSString stringWithFormat:@"%@, %@ %@",
+                          self.isReport ? self.reportedBroadcast.b_city : self.broadcast.city,
+                          self.isReport ? self.reportedBroadcast.b_state : self.broadcast.state,
+                          self.isReport ? self.reportedBroadcast.b_country : self.broadcast.country];
+    self.date.text = [NSDateFormatter localizedStringFromDate:[self.isReport ? self.reportedBroadcast.b_updated : self.broadcast.updated dateForNumber] dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterShortStyle];
     self.status.text = @"Loading";
     
     NSString* urlString = [NSString stringWithFormat:@"https://s3.amazonaws.com/liverosaryavatars/%@", [self.broadcast.user stringByReplacingOccurrencesOfString:@"@" withString:@"-"]];
@@ -83,11 +113,16 @@ NSString * const kLastIntentionKey = @"LastIntention";
     self.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     self.hud.labelText = @"Loading";
 
-    [[DBBroadcast sharedInstance] getBroadcastById:self.broadcast.bid completion:^(BroadcastModel *broadcast, NSError *error) {
+    [[DBBroadcast sharedInstance] getBroadcastById:self.isReport ? self.reportedBroadcast.bid : self.broadcast.bid completion:^(BroadcastModel *broadcast, NSError *error) {
         DDLogDebug(@"updated broadcast %@", broadcast);
         
         if(error == nil)
         {
+            if(self.isReport)
+            {
+                self.broadcast = broadcast;
+            }
+            
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.hud hide:YES];
                 
@@ -142,19 +177,26 @@ NSString * const kLastIntentionKey = @"LastIntention";
         }
         else
         {
-            [[AnalyticsManager sharedManager] event:@"PlayGetBroadcastError" info:@{@"bid": self.broadcast.bid}];
+            [[AnalyticsManager sharedManager] event:@"PlayGetBroadcastError" info:@{@"bid": self.isReport ? self.reportedBroadcast.bid : self.broadcast.bid}];
 
-            [UIAlertView bk_showAlertViewWithTitle:nil message:@"Failed to start broadcast." cancelButtonTitle:@"Ok" otherButtonTitles:nil handler:^(UIAlertView *alertView, NSInteger buttonIndex) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.hud hide:YES];
                 
-                [self.navigationController popViewControllerAnimated:YES];
-            }];
+                [UIAlertView bk_showAlertViewWithTitle:nil message:@"Failed to start broadcast." cancelButtonTitle:@"Ok" otherButtonTitles:nil handler:^(UIAlertView *alertView, NSInteger buttonIndex) {
+                    
+                    [self.navigationController popViewControllerAnimated:YES];
+                }];
+            });
         }
     }];
     
     self.slideShow.changeInterval = [ConfigModel sharedInstance].slideShowChangeInterval;
     self.resumeSlideShow.hidden = YES;
     
-    [self startSlideShowTimer];
+    if(!self.isReport)
+    {
+        [self startSlideShowTimer];
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -215,6 +257,35 @@ NSString * const kLastIntentionKey = @"LastIntention";
     [self startSlideShow];
 }
 
+- (IBAction)onRevokeBroadcast:(id)sender
+{
+    [self updateUser:self.reportedBroadcast.b_email toLevel:@"listener"];
+}
+
+- (IBAction)onBanUser:(id)sender
+{
+    [self updateUser:self.reportedBroadcast.b_email toLevel:@"banned"];
+}
+
+- (void)updateUser:(NSString*)email toLevel:(NSString*)level
+{
+    DDLogDebug(@"User -> %@ %@", email, level);
+    
+    self.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    self.hud.labelText = @"Updating User";
+    [[LiveRosaryService sharedService] updateUserWithEmail:email toLevel:level adminEmail:[UserManager sharedManager].email adminPassword:[UserManager sharedManager].password completion:^(NSError *error) {
+        
+        if(error == nil)
+        {
+            [[DBUser sharedInstance] updateLevelForEmail:email from:@"broadcaster" to:level];
+        }
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.hud hide:YES];
+            [self.navigationController popViewControllerAnimated:YES];
+        });
+    }];
+}
 #pragma mark - Navigation
 
 // In a storyboard-based application, you will often want to do a little preparation before navigation

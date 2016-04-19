@@ -85,6 +85,7 @@ typedef NS_ENUM(NSUInteger, Level) {
     self.users = [[DBUser sharedInstance] usersForLevel:self.currentLevel];
     if(self.users.count == 0 && ![[DBUser sharedInstance] completeForLevel:self.currentLevel])
     {
+        [[AnalyticsManager sharedManager] event:@"Adming Manage Users Filter" info:@{ @"filter": self.currentLevel }];
         [[DBUser sharedInstance] getUsersByLevel:self.currentLevel reset:NO completion:^(NSArray<UserModel *> *allUsers, NSArray<UserModel *> *users, BOOL complete, NSError *error) {
             self.users = allUsers;
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -213,7 +214,6 @@ typedef NS_ENUM(NSUInteger, Level) {
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
 {
-    NSLog(@"searchBarSearchButtonClicked");
     [self.searchBar resignFirstResponder];
 
     if(self.searchBar.text.length > 3)
@@ -223,6 +223,8 @@ typedef NS_ENUM(NSUInteger, Level) {
         
         [[DBUser sharedInstance] getUsersByEmail:self.searchBar.text.lowercaseString moreKey:nil completion:^(NSArray<UserModel *> *users, NSDictionary *moreKey, NSError *error) {
             self.searchResults = users;
+            
+            [[AnalyticsManager sharedManager] event:@"Manage Users Search" info:@{ @"text": self.searchBar.text, @"count": @(users.count) }];
             
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.hud hide:YES];
@@ -247,6 +249,8 @@ typedef NS_ENUM(NSUInteger, Level) {
 
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar
 {
+    [[AnalyticsManager sharedManager] event:@"Manage Users Search Cancel" info:nil];
+    
     [self.searchBar resignFirstResponder];
     self.searchBar.text = @"";
     self.searchResults = nil;
@@ -256,6 +260,8 @@ typedef NS_ENUM(NSUInteger, Level) {
 - (void)updateUser:(UserModel*)user toLevel:(NSString*)level
 {
     DDLogDebug(@"User -> %@ %@", user.email, level);
+    
+    [[AnalyticsManager sharedManager] event:@"Manage Users Update" info:@{ @"tolevel": level }];
     
     self.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     self.hud.labelText = @"Updating User";

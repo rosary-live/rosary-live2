@@ -9,6 +9,7 @@
 #import "LRAdminReportedViewController.h"
 #import "UserManager.h"
 #import "BroadcastsViewController.h"
+#import "LRListenViewController.h"
 #import <PureLayout/PureLayout.h>
 
 @interface LRAdminReportedViewController () <BroadcastsViewDelegate>
@@ -54,17 +55,13 @@
 
 #pragma mark - BroadcastsTableViewActionDelegate
 
-- (void)selectedBroadcast:(BroadcastModel*)broadcast
+- (void)selectedReportedBroadcast:(ReportedBroadcastModel *)model
 {
-//    UIStoryboard* storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-//    LRListenViewController* listenViewController = [storyboard instantiateViewControllerWithIdentifier:@"LRListenViewController"];
-//    listenViewController.broadcast = broadcast;
-//    listenViewController.playFromStart = YES;
-//    [self.navigationController pushViewController:listenViewController animated:YES];
-}
-
-- (void)selectedSchedule:(ScheduleModel *)model
-{
+    UIStoryboard* storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    LRListenViewController* listenViewController = [storyboard instantiateViewControllerWithIdentifier:@"LRListenViewController"];
+    listenViewController.reportedBroadcast = model;
+    listenViewController.playFromStart = YES;
+    [self.navigationController pushViewController:listenViewController animated:YES];
 }
 
 - (void)addBroadcasts

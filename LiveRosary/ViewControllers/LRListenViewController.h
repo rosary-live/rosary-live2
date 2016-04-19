@@ -8,10 +8,12 @@
 
 #import "LRBaseViewController.h"
 #import "BroadcastModel.h"
+#import "ReportedBroadcastModel.h"
 
 @interface LRListenViewController : LRBaseViewController
 
 @property (nonatomic, strong) BroadcastModel* broadcast;
+@property (nonatomic, strong) ReportedBroadcastModel* reportedBroadcast;
 @property (nonatomic) BOOL playFromStart;
 
 @end
