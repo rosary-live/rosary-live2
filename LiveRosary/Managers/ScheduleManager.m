@@ -128,7 +128,6 @@ NSTimeInterval const kMinIntervalBetweenUpdates = 60.0;
         
         if (grantedSettings.types != UIUserNotificationTypeNone)
         {
-            NSLog(@"Notifications permiossion granted");
             return YES;
         }
     }
