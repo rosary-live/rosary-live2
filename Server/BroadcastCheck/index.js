@@ -9,8 +9,9 @@ var async = require('async');
 
 // Get reference to AWS clients
 var dynamodb = new AWS.DynamoDB();
+var s3 = new AWS.S3();
 
-function removeBroadcast(bid, callback) {
+function deleteBroadcast(bid, callback) {
 	console.log("removeBroadcast: ", bid);
 	dynamodb.deleteItem({
 		TableName: config.DDB_BROADCAST_TABLE,
@@ -21,6 +22,39 @@ function removeBroadcast(bid, callback) {
 		if(err) callback(err);
 		else callback();
 	});	
+}
+
+function deleteFiles(bid, callback) {
+	s3.listObjects({
+		Bucket: "liverosarybroadcast",
+		Prefix: bid + "/"
+	}, function(err, data) {
+		if(err) {
+			console.log("s3.listObjects error: " + err);
+			callback(err);
+		} else {
+			console.log("data: " + util.inspect(data, { showHidden: true, depth: 10 }));
+			var deleteKeys = new Array();
+			var count = data.Contents.length;
+			for(var i = 0; i < count; i++) {
+				deleteKeys.push({"Key": data.Contents[i].Key});
+			}
+
+			console.log("deleting: " + util.inspect(deleteKeys, { showHidden: true, depth: 10 }));
+
+			s3.deleteObjects({
+				Bucket: "liverosarybroadcast",
+				Delete: { Objects: deleteKeys }
+			}, function(err, data) {
+				if(err) {
+					console.log("s3.deleteObjects error: " + err);
+					callback(err);
+				} else {
+					callback();
+				}
+			});
+		}
+	});
 }
 
 function deleteExpiredBroadcasts(callback) {
@@ -43,10 +77,13 @@ function deleteExpiredBroadcasts(callback) {
 					console.log(moment.unix(cutoff).format("MM/DD/YYYY hh:mm:ss") + " " + item.bid.S + ": " + 
 						moment.unix(item.updated.N).format("MM/DD/YYYY hh:mm:ss"));
 					var bid = item.bid.S;
-					removeBroadcast(bid, function(err) {
-						if(err)	console.log("Error removing " + bid + ": " + err);						
-						else console.log("Removed: " + bid);						
-						fn();
+					deleteBroadcast(bid, function(err) {
+						if(err) console.log("Error removing " + bid + ": " + err);						
+						else console.log("Removed: " + bid);
+
+						deleteFiles(bid, function(err) {
+							fn();
+						});
 					});
 				}, function(err) {
 					callback();
