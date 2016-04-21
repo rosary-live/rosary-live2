@@ -44,12 +44,12 @@ NSString* const kAllLevels = @"_ALL_";
 
 - (NSArray*)usersForLevel:(NSString*)level
 {
-    return self.levels[level];
+    return self.levels[level ? level : kAllLevels];
 }
 
 - (BOOL)completeForLevel:(NSString*)level
 {
-    NSNumber* complete = self.complete[level];
+    NSNumber* complete = self.complete[level ? level : kAllLevels];
     if(complete != nil)
     {
         return complete.boolValue;

@@ -1,0 +1,16 @@
+{
+  "AWS_ACCOUNT_ID": "767603916237",
+  "REGION": "us-east-1",
+  "BUCKET": "liverosaryweb",
+  "MAX_AGE": "10",
+  "DDB_TABLE": "LiveRosaryUsers",
+  "DDB_BROADCAST_TABLE": "LiveRosaryBroadcast",
+  "DDB_SCHEDULE_TABLE": "LiveRosarySchedule",
+  "IDENTITY_POOL_NAME": "LiveRosaryAuth",
+  "DEVELOPER_PROVIDER_NAME": "login.liverosary",
+  "EXTERNAL_NAME": "LiveRosary Authentication",
+  "EMAIL_SOURCE": "richard@softwarelogix.com",
+  "VERIFICATION_PAGE": "http://liverosaryweb.s3-website-us-west-1.amazonaws.com/verify.html",
+  "RESET_PAGE": "http://liverosaryweb.s3-website-us-west-1.amazonaws.com/reset.html",
+  "IDENTITY_POOL_ID": "us-east-1:e071f60e-332c-4883-a4f0-f8bc27c46173"
+}

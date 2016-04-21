@@ -11,12 +11,13 @@ var async = require('async');
 var dynamodb = new AWS.DynamoDB();
 
 function removeSchedule(sid, callback) {
+	console.log("removeSchedule: ", sid);
 	dynamodb.deleteItem({
 		TableName: config.DDB_SCHEDULE_TABLE,
 		Key: { sid: { S: sid }},
 		ReturnValues: 'NONE'
 	}, function(err, data) {
-		console.log(util.inspect(err, { showHidden: true, depth: 10 }));
+		console.log("removeSchedule err: " + util.inspect(err, { showHidden: true, depth: 10 }));
 		if(err) callback(err);
 		else callback();
 	});	
@@ -28,7 +29,7 @@ function deleteExpiredSchedules(callback) {
 	dynamodb.scan({
 		TableName: config.DDB_SCHEDULE_TABLE,
 		ProjectionExpression: "sid, #type, #start, #to",
-		FilterExpression: "(#type = :tsingle AND #start > :datenow) OR (#type = :trecurring AND #to > :datenow)",
+		FilterExpression: "(#type = :tsingle AND #start < :datenow) OR (#type = :trecurring AND #to < :datenow)",
 		ExpressionAttributeNames: { "#type": "type",
 									"#start": "start",
 									"#to": "to" },
@@ -41,18 +42,20 @@ function deleteExpiredSchedules(callback) {
 		if(err) callback(err);
 		else {
 			if ('Items' in data) {
-
-				var items = data.Items;
-				for(var i = 0; i < items.length; i++) {
-					var item = items[i];
+				console.log("Now " + now);
+				async.eachSeries(data.Items, function(item, fn) {
+					console.log(moment.unix(now).format("MM/DD/YYYY hh:mm:ss") + " " + item.sid.S + ": " + 
+						item.type.S + " " + moment.unix(item.start.N).format("MM/DD/YYYY hh:mm:ss") + " " + moment.unix(item.to.N).format("MM/DD/YYYY hh:mm:ss"));
 					var sid = item.sid.S;
 					removeSchedule(sid, function(err) {
-						if(!err) console.log("Removed: " + sid);						
+						if(err)	console.log("Error removing " + sid + ": " + err);						
+						else console.log("Removed: " + sid);						
+						fn();
 					});
-				}
+				}, function(err) {
+					callback();
+				});
 			}
-
-			callback(null);
 		}
 	});
 }
