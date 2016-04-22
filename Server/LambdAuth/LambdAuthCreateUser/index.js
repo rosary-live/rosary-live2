@@ -9,6 +9,7 @@ var config = require('./config.json');
 // Get reference to AWS clients
 var dynamodb = new AWS.DynamoDB();
 var ses = new AWS.SES();
+var sqs = new AWS.SQS();
 
 function computeHash(password, salt, fn) {
 	// Bytesize

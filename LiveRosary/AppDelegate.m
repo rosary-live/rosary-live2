@@ -15,11 +15,13 @@
 #import "TestFairy.h"
 #import "Branch.h"
 #import "AnalyticsManager.h"
+#import <AFNetworking/AFNetworking.h>
 
 @interface AppDelegate () <DrawerButtonDelegate>
 
 @property (nonatomic, strong) MMDrawerController* drawerController;
 @property (nonatomic, strong) LRDrawerViewController* drawerViewController;
+@property (nonatomic, strong) UIView* noNetworkView;
 
 @end
 
@@ -52,7 +54,40 @@
     [self.window setRootViewController:self.drawerController];
     
     [[ScheduleManager sharedManager] configureNotifications];
+    
+    [[AFNetworkReachabilityManager sharedManager] setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
+        NSLog(@"Reachability: %@", AFStringFromNetworkReachabilityStatus(status));
         
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if(status == AFNetworkReachabilityStatusNotReachable)
+            {
+                self.noNetworkView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [[UIScreen mainScreen] bounds].size.height)];
+                self.noNetworkView.backgroundColor = [UIColor blackColor];
+                self.noNetworkView.alpha = 0.6;
+                UILabel* message = [[UILabel alloc] initWithFrame:CGRectMake([[UIScreen mainScreen] bounds].size.width/2 - 150, [[UIScreen mainScreen] bounds].size.height/2 - 150, 300, 300)];
+                message.font = [UIFont fontWithName:message.font.fontName size:20];
+                message.text = @"An internet connection is required. Please reconnect to the internet.";
+                message.numberOfLines = 0;
+                message.clipsToBounds = YES;
+                message.lineBreakMode = NSLineBreakByWordWrapping;
+                message.textColor = [UIColor whiteColor];
+                message.textAlignment = NSTextAlignmentCenter;
+                [self.noNetworkView addSubview:message];
+                [self.window.rootViewController.view addSubview:self.noNetworkView];
+            }
+            else if(status != AFNetworkReachabilityStatusUnknown)
+            {
+                if(self.noNetworkView != nil)
+                {
+                    [self.noNetworkView removeFromSuperview];
+                    self.noNetworkView = nil;
+                }
+            }
+        });
+    }];
+    
+    [[AFNetworkReachabilityManager sharedManager] startMonitoring];
+    
     return YES;
 }
 
