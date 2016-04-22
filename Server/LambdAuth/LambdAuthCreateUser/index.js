@@ -11,6 +11,84 @@ var dynamodb = new AWS.DynamoDB();
 var ses = new AWS.SES();
 var sqs = new AWS.SQS();
 
+
+function createUserQueue(email, fn) {
+	var fixemail = email.replace('@','-')
+				 .replace('.', '-')
+				 .replace('!', '_')
+				 .replace('#', '_')
+				 .replace('$', '_')
+				 .replace('%', '_')
+				 .replace('&', '_')
+				 .replace("'", '_')
+				 .replace('*', '_')
+				 .replace('+', '_')
+				 .replace('\/', '_')
+				 .replace('=', '_')
+				 .replace('?', '_')
+				 .replace('^', '_')
+				 .replace('`', '_')
+				 .replace('{', '_')
+				 .replace('|', '_')
+				 .replace('}', '_')
+				 .replace('~', '_');
+
+	console.log("fixemail:" + fixemail);
+
+	sqs.createQueue({ QueueName: fixemail }, function(err, data) {
+		console.log("createQueue data: " + util.inspect(data, { showHidden: true, depth: 10 }));
+		console.log("createQueue err: " + util.inspect(err, { showHidden: true, depth: 10 }));
+
+		if(!err)
+		{
+			var url = data.QueueUrl;
+
+			var policy = {
+			  "Version": "2012-10-17",
+			  "Id": "Queue_Policy",
+			  "Statement": 
+			    {
+			       "Sid":"Queue_AnonymousAccess",
+			       "Effect": "Allow",
+			       "Principal": "*",
+			       "Action": ["sqs:SendMessage","sqs:ReceiveMessage","sqs:DeleteMessage","sqs:GetQueueUrl","sqs:ChangeMessageVisibility","sqs:GetQueueAttributes"],
+			       "Resource": "arn:aws:sqs:" + config.REGION + ":" + config.AWS_ACCOUNT_ID + ":" + fixemail
+			    }
+			}
+
+			sqs.setQueueAttributes({
+			  QueueUrl: url,
+			  Attributes: {
+			    Policy: JSON.stringify(policy)
+			  }
+			}, function(err, data) {
+				console.log("setQueueAttributes data: " + util.inspect(data, { showHidden: true, depth: 10 }));
+				console.log("setQueueAttributes err: " + util.inspect(err, { showHidden: true, depth: 10 }));
+				fn(err);
+			});
+
+			// sqs.addPermission({ AWSAccountIds:config.AWS_ACCOUNT_ID,
+			// 					Actions: ["SendMessage",
+			// 							  "ReceiveMessage",
+			// 							  "DeleteMessage",
+			// 							  "GetQueueUrl",
+			// 							  "ChangeMessageVisibility",
+			// 							  "GetQueueAttributes"],
+			// 					Label: email + "queue",
+			// 					QueueUrl: url
+			// }, function(err, data) {
+			// 	console.log("addPermission data: " + util.inspect(data, { showHidden: true, depth: 10 }));
+			// 	console.log("addPermission err: " + util.inspect(err, { showHidden: true, depth: 10 }));
+			// 	fn(err);
+			// });
+		}
+		else
+		{
+			fn(err);			
+		}
+	});
+}
+
 function computeHash(password, salt, fn) {
 	// Bytesize
 	var len = 128;
@@ -53,7 +131,7 @@ function storeUser(email, password, salt, event, fn) {
 				avatar: { N: event.avatar.toString() },
 				lat: { N: event.lat.toString() },
 				lon: { N: event.lon.toString() },
-				level: { S: 'listener'}
+				level: { S: 'listener'},
 
 				verified: { BOOL: true }//,
 //				verifyToken: { S: token }
@@ -117,7 +195,9 @@ exports.handler = function(event, context) {
 					// 	if (err) {
 					// 		context.fail('Error in sendVerificationEmail: ' + err);
 					// 	} else {
+						createUserQueue(email, function(err) {
 							context.succeed({success: true});
+						});
 					// 	}
 					// });
 				}
