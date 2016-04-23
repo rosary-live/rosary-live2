@@ -66,21 +66,6 @@ function createUserQueue(email, fn) {
 				console.log("setQueueAttributes err: " + util.inspect(err, { showHidden: true, depth: 10 }));
 				fn(err);
 			});
-
-			// sqs.addPermission({ AWSAccountIds:config.AWS_ACCOUNT_ID,
-			// 					Actions: ["SendMessage",
-			// 							  "ReceiveMessage",
-			// 							  "DeleteMessage",
-			// 							  "GetQueueUrl",
-			// 							  "ChangeMessageVisibility",
-			// 							  "GetQueueAttributes"],
-			// 					Label: email + "queue",
-			// 					QueueUrl: url
-			// }, function(err, data) {
-			// 	console.log("addPermission data: " + util.inspect(data, { showHidden: true, depth: 10 }));
-			// 	console.log("addPermission err: " + util.inspect(err, { showHidden: true, depth: 10 }));
-			// 	fn(err);
-			// });
 		}
 		else
 		{

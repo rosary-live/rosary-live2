@@ -8,7 +8,7 @@ var config = require('./config.json');
 
 // Get reference to AWS clients
 //var dynamodb = new AWS.DynamoDB();
-//var sqs = new AWS.SQS();
+var sqs = new AWS.SQS();
 var sns = new AWS.SNS();
 
 // function computeHash(password, salt, fn) {
@@ -53,7 +53,7 @@ var sns = new AWS.SNS();
 // 	});
 // }
 
-function createTopicAndSubscribe(bid, email, fn) {
+function sendToUser(email, message, fn) {
 	var fixemail = email.replace('@','-')
 				 .replace('.', '-')
 				 .replace('!', '_')
@@ -75,27 +75,54 @@ function createTopicAndSubscribe(bid, email, fn) {
 				 .replace('~', '_');
 
 	console.log("fixemail:" + fixemail);
+	sqs.sendMessage({ MessageBody: JSON.stringify(message),
+					  QueueUrl: "https://sqs." + config.REGION + ".amazonaws.com/" + config.AWS_ACCOUNT_ID + "/" + fixemail,
+					  DelaySeconds: 0
+	}, function(err, data) {
+		console.log("sendMessage data: " + util.inspect(data, { showHidden: true, depth: 10 }));
+		console.log("sendMessage err: " + util.inspect(err, { showHidden: true, depth: 10 }));
+		fn(err);			
+	});
+}
 
-	sns.createTopic({ Name: bid }, function(err, data) {
-		console.log("createTopic data: " + util.inspect(data, { showHidden: true, depth: 10 }));
-		console.log("createTopic err: " + util.inspect(err, { showHidden: true, depth: 10 }));
+function sendToBroadcast(bid, message, fn) {
+	sns.publish({ Message: { default: JSON.stringify(message), sqs: JSON.stringify(message) },
+				  MessageStructure: 'json',
+				  TopicArn: "arn:aws:sns:" + config.REGION + ":" + config.AWS_ACCOUNT_ID + ":" + bid
 
-		sns.subscribe({
-		    'TopicArn': data.TopicArn,
-		    'Protocol': 'sqs',
-		    'Endpoint': "arn:aws:sqs:" + config.REGION + ":" + config.AWS_ACCOUNT_ID + ":" + fixemail
-		}, function(err, data) {
-			console.log("subscribe data: " + util.inspect(data, { showHidden: true, depth: 10 }));
-			console.log("subscribe err: " + util.inspect(err, { showHidden: true, depth: 10 }));
-			fn(err);			
-		});
+	}, function(err, data) {
+		console.log("publish data: " + util.inspect(data, { showHidden: true, depth: 10 }));
+		console.log("publish err: " + util.inspect(err, { showHidden: true, depth: 10 }));
+		fn(err);			
 	});
 }
 
 exports.handler = function(event, context) {
-	var email = event.email;
-	//var password = event.password;
-	var bid = event.bid;
+	if(event.email) {
+		sendToUser(event.email, event.message, function(err) {
+			if (err) {
+				context.fail({success: false, message: 'Failed to end to queue.', error: err});
+			} else {
+				context.succeed({success: true});
+			}
+		});
+	} else if(event.bid) {
+		sendToBroadcast(event.bid, event.message, function(err) {
+			if (err) {
+				context.fail({success: false, message: 'Failed to publish to topic.', error: err});
+			} else {
+				context.succeed({success: true});
+			}
+		});
+	}
+	else
+	{
+		context.fail({success: false, message: 'Invalid parameters.'});
+	}
+
+	//var email = event.email;
+//	var password = event.password;
+	//var bid = event.bid;
 
 	// getUser(email, function(err, correctHash, salt) {
 	// 	if (err) {
@@ -114,13 +141,13 @@ exports.handler = function(event, context) {
 	// 					if (hash == correctHash) {
 	// 						// Login ok
 	// 						console.log('User logged in: ' + email);
-							createTopicAndSubscribe(bid, email, function(err) {
-								if (err) {
-									context.fail({success: false, message: 'Failed to create topic.', error: err});
-								} else {
-									context.succeed({success: true});
-								}
-							});
+							// subscribeToTopic(bid, email, function(err) {
+								// if (err) {
+								// 	context.fail({success: false, message: 'Failed to subscribe to topic.', error: err});
+								// } else {
+								// 	context.succeed({success: true});
+							// 	}
+							// });
 	// 					} else {
 	// 						// Login failed
 	// 						console.log('User login failed: ' + email);

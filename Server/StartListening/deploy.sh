@@ -14,7 +14,7 @@ if [ -z "$found" ]; then
   exit 1
 fi
 
-FUNCTION=StartBroadcasting
+FUNCTION=StartListening
 
 # Read other configuration from config.json
 REGION=$(jq -r '.REGION' config.json)

@@ -53,7 +53,7 @@ var sns = new AWS.SNS();
 // 	});
 // }
 
-function createTopicAndSubscribe(bid, email, fn) {
+function subscribeToTopic(bid, email, fn) {
 	var fixemail = email.replace('@','-')
 				 .replace('.', '-')
 				 .replace('!', '_')
@@ -76,25 +76,20 @@ function createTopicAndSubscribe(bid, email, fn) {
 
 	console.log("fixemail:" + fixemail);
 
-	sns.createTopic({ Name: bid }, function(err, data) {
-		console.log("createTopic data: " + util.inspect(data, { showHidden: true, depth: 10 }));
-		console.log("createTopic err: " + util.inspect(err, { showHidden: true, depth: 10 }));
-
-		sns.subscribe({
-		    'TopicArn': data.TopicArn,
-		    'Protocol': 'sqs',
-		    'Endpoint': "arn:aws:sqs:" + config.REGION + ":" + config.AWS_ACCOUNT_ID + ":" + fixemail
-		}, function(err, data) {
-			console.log("subscribe data: " + util.inspect(data, { showHidden: true, depth: 10 }));
-			console.log("subscribe err: " + util.inspect(err, { showHidden: true, depth: 10 }));
-			fn(err);			
-		});
+	sns.subscribe({
+	    'TopicArn': "arn:aws:sns:" + config.REGION + ":" + config.AWS_ACCOUNT_ID + ":" + bid,
+	    'Protocol': 'sqs',
+	    'Endpoint': "arn:aws:sqs:" + config.REGION + ":" + config.AWS_ACCOUNT_ID + ":" + fixemail
+	}, function(err, data) {
+		console.log("subscribe data: " + util.inspect(data, { showHidden: true, depth: 10 }));
+		console.log("subscribe err: " + util.inspect(err, { showHidden: true, depth: 10 }));
+		fn(err);			
 	});
 }
 
 exports.handler = function(event, context) {
 	var email = event.email;
-	//var password = event.password;
+//	var password = event.password;
 	var bid = event.bid;
 
 	// getUser(email, function(err, correctHash, salt) {
@@ -114,9 +109,9 @@ exports.handler = function(event, context) {
 	// 					if (hash == correctHash) {
 	// 						// Login ok
 	// 						console.log('User logged in: ' + email);
-							createTopicAndSubscribe(bid, email, function(err) {
+							subscribeToTopic(bid, email, function(err) {
 								if (err) {
-									context.fail({success: false, message: 'Failed to create topic.', error: err});
+									context.fail({success: false, message: 'Failed to subscribe to topic.', error: err});
 								} else {
 									context.succeed({success: true});
 								}
