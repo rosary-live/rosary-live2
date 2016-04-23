@@ -10,13 +10,14 @@
 #import <AWSSQS/AWSSQS.h>
 #import "UserManager.h"
 
-NSString * const kBroadcastQueueURL = @"https://sqs.us-east-1.amazonaws.com/767603916237/broadcast";
+NSString * const kBroadcastQueueBaseURL = @"https://sqs.us-east-1.amazonaws.com/767603916237/";
 
 @interface BroadcastQueueModel ()
 
 @property (nonatomic, strong) AWSSQS* sqs;
 @property (nonatomic, strong) NSString* receiveBroadcastId;
 @property (nonatomic, strong) EventReceive eventRecieveBlock;
+@property (nonatomic) BOOL asBroadcaster;
 
 @end
 
@@ -46,10 +47,11 @@ NSString * const kBroadcastQueueURL = @"https://sqs.us-east-1.amazonaws.com/7676
     return self;
 }
 
-- (void)startReceivingForBroadcastId:(NSString*)bid event:(EventReceive)event
+- (void)startReceivingForBroadcastId:(NSString*)bid asBroadcaster:(BOOL)asBroadcaster event:(EventReceive)event
 {
     self.receiveBroadcastId = bid;
     self.eventRecieveBlock = event;
+    self.asBroadcaster = asBroadcaster;
     [self performSelectorInBackground:@selector(eventReceiveThread) withObject:nil];
 
 }
@@ -59,14 +61,42 @@ NSString * const kBroadcastQueueURL = @"https://sqs.us-east-1.amazonaws.com/7676
     self.eventRecieveBlock = nil;
 }
 
+- (NSString*)userQueueURL
+{
+    NSMutableString* email = [[UserManager sharedManager].email mutableCopy];
+    
+    [email replaceOccurrencesOfString:@"@" withString:@"-" options:NSCaseInsensitiveSearch range:NSMakeRange(0, email.length)];
+    [email replaceOccurrencesOfString:@"." withString:@"-" options:NSCaseInsensitiveSearch range:NSMakeRange(0, email.length)];
+    [email replaceOccurrencesOfString:@"!" withString:@"_" options:NSCaseInsensitiveSearch range:NSMakeRange(0, email.length)];
+    [email replaceOccurrencesOfString:@"#" withString:@"_" options:NSCaseInsensitiveSearch range:NSMakeRange(0, email.length)];
+    [email replaceOccurrencesOfString:@"$" withString:@"_" options:NSCaseInsensitiveSearch range:NSMakeRange(0, email.length)];
+    [email replaceOccurrencesOfString:@"%%" withString:@"_" options:NSCaseInsensitiveSearch range:NSMakeRange(0, email.length)];
+    [email replaceOccurrencesOfString:@"&" withString:@"_" options:NSCaseInsensitiveSearch range:NSMakeRange(0, email.length)];
+    [email replaceOccurrencesOfString:@"'" withString:@"_" options:NSCaseInsensitiveSearch range:NSMakeRange(0, email.length)];
+    [email replaceOccurrencesOfString:@"+" withString:@"_" options:NSCaseInsensitiveSearch range:NSMakeRange(0, email.length)];
+    [email replaceOccurrencesOfString:@"*" withString:@"_" options:NSCaseInsensitiveSearch range:NSMakeRange(0, email.length)];
+    [email replaceOccurrencesOfString:@"/" withString:@"_" options:NSCaseInsensitiveSearch range:NSMakeRange(0, email.length)];
+    [email replaceOccurrencesOfString:@"=" withString:@"_" options:NSCaseInsensitiveSearch range:NSMakeRange(0, email.length)];
+    [email replaceOccurrencesOfString:@"?" withString:@"_" options:NSCaseInsensitiveSearch range:NSMakeRange(0, email.length)];
+    [email replaceOccurrencesOfString:@"^" withString:@"_" options:NSCaseInsensitiveSearch range:NSMakeRange(0, email.length)];
+    [email replaceOccurrencesOfString:@"`" withString:@"_" options:NSCaseInsensitiveSearch range:NSMakeRange(0, email.length)];
+    [email replaceOccurrencesOfString:@"{" withString:@"_" options:NSCaseInsensitiveSearch range:NSMakeRange(0, email.length)];
+    [email replaceOccurrencesOfString:@"|" withString:@"_" options:NSCaseInsensitiveSearch range:NSMakeRange(0, email.length)];
+    [email replaceOccurrencesOfString:@"}" withString:@"_" options:NSCaseInsensitiveSearch range:NSMakeRange(0, email.length)];
+    [email replaceOccurrencesOfString:@"~" withString:@"_" options:NSCaseInsensitiveSearch range:NSMakeRange(0, email.length)];
+    
+    return [NSString stringWithFormat:@"%@%@", kBroadcastQueueBaseURL, email];
+}
+
 - (void)eventReceiveThread
 {
     DDLogInfo(@"eventReceiveThread starting");
+    NSString* queueURL = [self userQueueURL];
     
     while(self.eventRecieveBlock != nil)
     {
         AWSSQSReceiveMessageRequest* req = [AWSSQSReceiveMessageRequest new];
-        req.queueUrl = kBroadcastQueueURL;
+        req.queueUrl = queueURL;
         req.visibilityTimeout = @(1);
         req.waitTimeSeconds = @(20);
         req.maxNumberOfMessages = @(10);
@@ -93,27 +123,27 @@ NSString * const kBroadcastQueueURL = @"https://sqs.us-east-1.amazonaws.com/7676
                         if([self.receiveBroadcastId isEqualToString:dict[@"bid"]])
                         {
                             [messagesForReceiver addObject:dict];
-                            
-                            AWSSQSDeleteMessageRequest* deleteReq = [AWSSQSDeleteMessageRequest new];
-                            deleteReq.queueUrl = kBroadcastQueueURL;
-                            deleteReq.receiptHandle = message.receiptHandle;
-                            [[self.sqs deleteMessage:deleteReq] continueWithBlock:^id _Nullable(AWSTask * _Nonnull task) {
-                                if(task.error != nil)
-                                {
-                                    NSLog(@"error deleting message: %@", task.error);
-                                }
-                                else if(task.exception != nil)
-                                {
-                                    NSLog(@"exception deleting message: %@", task.exception);
-                                }
-                                else if(task.result)
-                                {
-                                    DDLogDebug(@"message deleted");
-                                }
-                                
-                                return [AWSTask taskWithResult:nil];
-                            }];
                         }
+                        
+                        AWSSQSDeleteMessageRequest* deleteReq = [AWSSQSDeleteMessageRequest new];
+                        deleteReq.queueUrl = queueURL;
+                        deleteReq.receiptHandle = message.receiptHandle;
+                        [[self.sqs deleteMessage:deleteReq] continueWithBlock:^id _Nullable(AWSTask * _Nonnull task) {
+                            if(task.error != nil)
+                            {
+                                NSLog(@"error deleting message: %@", task.error);
+                            }
+                            else if(task.exception != nil)
+                            {
+                                NSLog(@"exception deleting message: %@", task.exception);
+                            }
+                            else if(task.result)
+                            {
+                                DDLogDebug(@"message deleted");
+                            }
+                            
+                            return [AWSTask taskWithResult:nil];
+                        }];
                     }
                                         
                     if(messagesForReceiver.count > 0)
@@ -165,27 +195,27 @@ NSString * const kBroadcastQueueURL = @"https://sqs.us-east-1.amazonaws.com/7676
 
 - (void)sendMessage:(NSDictionary*)dictionary
 {
-    AWSSQSSendMessageRequest* req = [AWSSQSSendMessageRequest new];
-    req.queueUrl = kBroadcastQueueURL;
-    NSData* jsonData = [NSJSONSerialization dataWithJSONObject:dictionary options:0 error:nil];
-    req.messageBody = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-    req.delaySeconds = 0;
-    [[self.sqs sendMessage:req] continueWithBlock:^id _Nullable(AWSTask * _Nonnull task) {
-        if(task.error)
-        {
-            DDLogError(@"Message send error: %@", task.error);
-        }
-        else if(task.exception)
-        {
-            DDLogError(@"Message send exception: %@", task.exception);
-        }
-        else if(task.result)
-        {
-            DDLogInfo(@"Message sent");
-        }
-        
-        return [AWSTask taskWithResult:nil];
-    }];
+//    AWSSQSSendMessageRequest* req = [AWSSQSSendMessageRequest new];
+//    req.queueUrl = kBroadcastQueueURL;
+//    NSData* jsonData = [NSJSONSerialization dataWithJSONObject:dictionary options:0 error:nil];
+//    req.messageBody = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+//    req.delaySeconds = 0;
+//    [[self.sqs sendMessage:req] continueWithBlock:^id _Nullable(AWSTask * _Nonnull task) {
+//        if(task.error)
+//        {
+//            DDLogError(@"Message send error: %@", task.error);
+//        }
+//        else if(task.exception)
+//        {
+//            DDLogError(@"Message send exception: %@", task.exception);
+//        }
+//        else if(task.result)
+//        {
+//            DDLogInfo(@"Message sent");
+//        }
+//        
+//        return [AWSTask taskWithResult:nil];
+//    }];
 }
 
 @end

@@ -14,7 +14,7 @@ typedef void (^EventReceive)(NSArray* events);
 
 + (instancetype)sharedInstance;
 
-- (void)startReceivingForBroadcastId:(NSString*)bid event:(EventReceive)event;
+- (void)startReceivingForBroadcastId:(NSString*)bid asBroadcaster:(BOOL)asBroadcaster event:(EventReceive)event;
 - (void)stopReceiving;
 
 - (void)sendEnterForBroadcastId:(NSString*)bid withDictionary:(NSDictionary*)dictionary;

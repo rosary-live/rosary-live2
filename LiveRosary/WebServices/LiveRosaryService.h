@@ -28,4 +28,9 @@
 
 - (void)updateUserWithEmail:(NSString*)email toLevel:(NSString*)level adminEmail:(NSString*)adminEmail adminPassword:(NSString*)adminPassword completion:(void (^)(NSError* error))completion;
 
+- (void)startBroadcastingWithEmail:(NSString*)email andBroadcastId:(NSString*)bid completion:(void (^)(NSError* error))completion;
+- (void)startListeningWithEmail:(NSString*)email andBroadcastId:(NSString*)bid completion:(void (^)(NSError* error))completion;
+- (void)sendMessage:(NSDictionary*)message toEmail:(NSString*)email completion:(void (^)(NSError* error))completion;
+- (void)sendMessage:(NSDictionary*)message toBroadcast:(NSString*)bid completion:(void (^)(NSError* error))completion;
+
 @end

@@ -185,4 +185,52 @@ NSString* const kBaseURL = @"https://9wwr7dvesk.execute-api.us-east-1.amazonaws.
     }];
 }
 
+- (void)startBroadcastingWithEmail:(NSString*)email andBroadcastId:(NSString*)bid completion:(void (^)(NSError* error))completion
+{
+    NSDictionary* dictionary = @{
+                                 @"email": email,
+                                 @"bid": bid
+                                 };
+    
+    [self postMethod:@"StartBroadcasting" withDictionary:dictionary completion:^(id response, NSError *error) {
+        safeBlock(completion, error);
+    }];
+}
+
+- (void)startListeningWithEmail:(NSString*)email andBroadcastId:(NSString*)bid completion:(void (^)(NSError* error))completion
+{
+    NSDictionary* dictionary = @{
+                                 @"email": email,
+                                 @"bid": bid
+                                 };
+    
+    [self postMethod:@"StartListening" withDictionary:dictionary completion:^(id response, NSError *error) {
+        safeBlock(completion, error);
+    }];
+}
+
+- (void)sendMessage:(NSDictionary*)message toEmail:(NSString*)email completion:(void (^)(NSError* error))completion
+{
+    NSDictionary* dictionary = @{
+                                 @"email": email,
+                                 @"message": message
+                                 };
+    
+    [self postMethod:@"SendMessage" withDictionary:dictionary completion:^(id response, NSError *error) {
+        safeBlock(completion, error);
+    }];
+}
+
+- (void)sendMessage:(NSDictionary*)message toBroadcast:(NSString*)bid completion:(void (^)(NSError* error))completion
+{
+    NSDictionary* dictionary = @{
+                                 @"bid": bid,
+                                 @"message": message
+                                 };
+    
+    [self postMethod:@"SendMessage" withDictionary:dictionary completion:^(id response, NSError *error) {
+        safeBlock(completion, error);
+    }];
+}
+
 @end

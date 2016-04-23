@@ -98,7 +98,7 @@
             
             [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
             
-            [[BroadcastQueueModel sharedInstance] startReceivingForBroadcastId:brodcastId event:^(NSArray *events) {
+            [[BroadcastQueueModel sharedInstance] startReceivingForBroadcastId:brodcastId asBroadcaster:YES event:^(NSArray *events) {
                 NSLog(@"events %@", events);
                 
                 dispatch_async(dispatch_get_main_queue(), ^{
