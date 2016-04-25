@@ -9,6 +9,7 @@
 #import "BroadcastQueueModel.h"
 #import <AWSSQS/AWSSQS.h>
 #import "UserManager.h"
+#import "LiveRosaryService.h"
 
 NSString * const kBroadcastQueueBaseURL = @"https://sqs.us-east-1.amazonaws.com/767603916237/";
 
@@ -160,7 +161,7 @@ NSString * const kBroadcastQueueBaseURL = @"https://sqs.us-east-1.amazonaws.com/
     DDLogInfo(@"eventReceiveThread stopping");
 }
 
-- (void)sendEnterForBroadcastId:(NSString*)bid withDictionary:(NSDictionary*)dictionary
+- (void)sendEnterForBroadcastId:(NSString*)bid toUserWithEmail:(NSString*)email withDictionary:(NSDictionary*)dictionary
 {
     NSDictionary* messageDict = @{
                                   @"type": @"enter",
@@ -168,10 +169,17 @@ NSString * const kBroadcastQueueBaseURL = @"https://sqs.us-east-1.amazonaws.com/
                                   @"event": dictionary
                                   };
     
-    [self sendMessage:messageDict];
+    if(email != nil)
+    {
+        [self sendMessage:messageDict toUserWithEmail:email];
+    }
+    else
+    {
+        [self sendMessage:messageDict toBroadcastWithId:bid];
+    }
 }
 
-- (void)sendUpdateForBroadcastId:(NSString*)bid withDictionary:(NSDictionary*)dictionary
+- (void)sendUpdateForBroadcastId:(NSString*)bid toUserWithEmail:(NSString*)email withDictionary:(NSDictionary*)dictionary
 {
     NSDictionary* messageDict = @{
                                   @"type": @"update",
@@ -179,10 +187,17 @@ NSString * const kBroadcastQueueBaseURL = @"https://sqs.us-east-1.amazonaws.com/
                                   @"event": dictionary
                                   };
     
-    [self sendMessage:messageDict];
+    if(email != nil)
+    {
+        [self sendMessage:messageDict toUserWithEmail:email];
+    }
+    else
+    {
+        [self sendMessage:messageDict toBroadcastWithId:bid];
+    }
 }
 
-- (void)sendExitForBroadcastId:(NSString*)bid withDictionary:(NSDictionary*)dictionary
+- (void)sendExitForBroadcastId:(NSString*)bid toUserWithEmail:(NSString*)email withDictionary:(NSDictionary*)dictionary
 {
     NSDictionary* messageDict = @{
                                   @"type": @"exit",
@@ -190,32 +205,28 @@ NSString * const kBroadcastQueueBaseURL = @"https://sqs.us-east-1.amazonaws.com/
                                   @"event": dictionary
                                   };
     
-    [self sendMessage:messageDict];
+    if(email != nil)
+    {
+        [self sendMessage:messageDict toUserWithEmail:email];
+    }
+    else
+    {
+        [self sendMessage:messageDict toBroadcastWithId:bid];
+    }
 }
 
-- (void)sendMessage:(NSDictionary*)dictionary
+- (void)sendMessage:(NSDictionary*)dictionary toBroadcastWithId:(NSString*)bid
 {
-//    AWSSQSSendMessageRequest* req = [AWSSQSSendMessageRequest new];
-//    req.queueUrl = kBroadcastQueueURL;
-//    NSData* jsonData = [NSJSONSerialization dataWithJSONObject:dictionary options:0 error:nil];
-//    req.messageBody = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-//    req.delaySeconds = 0;
-//    [[self.sqs sendMessage:req] continueWithBlock:^id _Nullable(AWSTask * _Nonnull task) {
-//        if(task.error)
-//        {
-//            DDLogError(@"Message send error: %@", task.error);
-//        }
-//        else if(task.exception)
-//        {
-//            DDLogError(@"Message send exception: %@", task.exception);
-//        }
-//        else if(task.result)
-//        {
-//            DDLogInfo(@"Message sent");
-//        }
-//        
-//        return [AWSTask taskWithResult:nil];
-//    }];
+    [[LiveRosaryService sharedService] sendMessage:dictionary toBroadcast:bid completion:^(NSError *error) {
+        DDLogError(@"sendMessage toBroadcast %@ error: %@", bid, error);
+    }];
+}
+
+- (void)sendMessage:(NSDictionary*)dictionary toUserWithEmail:(NSString*)email
+{
+    [[LiveRosaryService sharedService] sendMessage:dictionary toEmail:email completion:^(NSError *error) {
+        DDLogError(@"sendMessage toEmail %@ error: %@", email, error);
+    }];
 }
 
 @end

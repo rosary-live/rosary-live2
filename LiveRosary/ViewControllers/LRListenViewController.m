@@ -177,10 +177,17 @@ NSString * const kLastIntentionKey = @"LastIntention";
                                                 if([type isEqualToString:@"enter"])
                                                 {
                                                     NSDictionary* listener = event[@"event"];
-                                                    if([self listenerForEmail:listener[@"email"]] == nil)
+                                                    NSString* listenerEmail = listener[@"email"];
+                                                    if([self listenerForEmail:listenerEmail] == nil)
                                                     {
-                                                        [self.listeners addObject:listener];
-                                                        
+                                                        [self.listeners addObject:listener];                                                        
+                                                    }
+                                                    
+                                                    if(![listenerEmail isEqualToString:[UserManager sharedManager].email])
+                                                    {
+                                                        NSMutableDictionary* userDict = [[UserManager sharedManager].userDictionary mutableCopy];
+                                                        userDict[@"intention"] = self.intention.text != nil ? self.intention.text : @"";
+                                                        [[BroadcastQueueModel sharedInstance] sendEnterForBroadcastId:self.broadcast.bid toUserWithEmail:listenerEmail withDictionary:userDict];
                                                     }
                                                 }
                                                 else if([type isEqualToString:@"exit"])
@@ -214,7 +221,7 @@ NSString * const kLastIntentionKey = @"LastIntention";
                                     [[AnalyticsManager sharedManager] event:@"Play" info:@{@"bid": self.broadcast.bid}];
                                     NSMutableDictionary* userDict = [[UserManager sharedManager].userDictionary mutableCopy];
                                     userDict[@"intention"] = self.intention.text != nil ? self.intention.text : @"";
-                                    [[BroadcastQueueModel sharedInstance] sendEnterForBroadcastId:self.broadcast.bid withDictionary:userDict];
+                                    [[BroadcastQueueModel sharedInstance] sendEnterForBroadcastId:self.broadcast.bid toUserWithEmail:nil withDictionary:userDict];
                                 }
                             }
                         });
@@ -273,7 +280,7 @@ NSString * const kLastIntentionKey = @"LastIntention";
     
     if(!self.playFromStart)
     {
-        [[BroadcastQueueModel sharedInstance] sendExitForBroadcastId:self.broadcast.bid withDictionary:[UserManager sharedManager].userDictionary];
+        [[BroadcastQueueModel sharedInstance] sendExitForBroadcastId:self.broadcast.bid toUserWithEmail:nil withDictionary:[UserManager sharedManager].userDictionary];
     }
 }
 
@@ -437,7 +444,7 @@ NSString * const kLastIntentionKey = @"LastIntention";
             userDict[@"intention"] = self.intention.text != nil ? self.intention.text : @"";
             [[AnalyticsManager sharedManager] event:@"CangedIntention" info:@{@"bid": self.broadcast.bid, @"Intention": userDict[@"intention"]}];
 
-            [[BroadcastQueueModel sharedInstance] sendUpdateForBroadcastId:self.broadcast.bid withDictionary:userDict];
+            [[BroadcastQueueModel sharedInstance] sendUpdateForBroadcastId:self.broadcast.bid toUserWithEmail:nil withDictionary:userDict];
         }
         
         [textView resignFirstResponder];

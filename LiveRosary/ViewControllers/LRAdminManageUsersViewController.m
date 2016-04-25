@@ -85,7 +85,7 @@ typedef NS_ENUM(NSUInteger, Level) {
     self.users = [[DBUser sharedInstance] usersForLevel:self.currentLevel];
     if(self.users.count == 0 && ![[DBUser sharedInstance] completeForLevel:self.currentLevel])
     {
-        [[AnalyticsManager sharedManager] event:@"Adming Manage Users Filter" info:@{ @"filter": self.currentLevel }];
+        [[AnalyticsManager sharedManager] event:@"Adming Manage Users Filter" info:@{ @"filter": self.currentLevel ? self.currentLevel : @"All" }];
         [[DBUser sharedInstance] getUsersByLevel:self.currentLevel reset:NO completion:^(NSArray<UserModel *> *allUsers, NSArray<UserModel *> *users, BOOL complete, NSError *error) {
             self.users = allUsers;
             dispatch_async(dispatch_get_main_queue(), ^{

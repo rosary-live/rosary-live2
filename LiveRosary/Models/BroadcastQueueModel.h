@@ -17,8 +17,8 @@ typedef void (^EventReceive)(NSArray* events);
 - (void)startReceivingForBroadcastId:(NSString*)bid asBroadcaster:(BOOL)asBroadcaster event:(EventReceive)event;
 - (void)stopReceiving;
 
-- (void)sendEnterForBroadcastId:(NSString*)bid withDictionary:(NSDictionary*)dictionary;
-- (void)sendUpdateForBroadcastId:(NSString*)bid withDictionary:(NSDictionary*)dictionary;
-- (void)sendExitForBroadcastId:(NSString*)bid withDictionary:(NSDictionary*)dictionary;
+- (void)sendEnterForBroadcastId:(NSString*)bid toUserWithEmail:(NSString*)email withDictionary:(NSDictionary*)dictionary;
+- (void)sendUpdateForBroadcastId:(NSString*)bid toUserWithEmail:(NSString*)email withDictionary:(NSDictionary*)dictionary;
+- (void)sendExitForBroadcastId:(NSString*)bid toUserWithEmail:(NSString*)email withDictionary:(NSDictionary*)dictionary;
 
 @end
