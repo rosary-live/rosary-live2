@@ -269,9 +269,9 @@
             //DDLogDebug(@"Playing sequence %d at %d length %d, remaining %d", (int)buffer.sequence, (int)buffer.position, (int)sizeInBytes, (int)(buffer.buferList->mBuffers[0].mDataByteSize - (buffer.position - sizeInBytes)));
             buffer.position += sizeInBytes;
             
-            if(self.delegate != nil && [self.delegate respondsToSelector:@selector(playPosition:)])
-            {
-            }
+//            if(self.delegate != nil && [self.delegate respondsToSelector:@selector(playPosition:)])
+//            {
+//            }
             
             if(buffer.position >= buffer.buferList->mBuffers[0].mDataByteSize)
             {
@@ -282,6 +282,13 @@
                 {
                     [self.delegate playedAudioFile:buffer.filename sequence:buffer.sequence lastFile:buffer.lastFile];
                 }
+            }
+        }
+        else
+        {
+            if(self.delegate != nil && [self.delegate respondsToSelector:@selector(playBufferUnderrun)])
+            {
+                [self.delegate playBufferUnderrun];
             }
         }
     }];

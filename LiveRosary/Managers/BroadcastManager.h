@@ -17,6 +17,8 @@ typedef NS_ENUM(NSUInteger, BroadcastState) {
 @protocol BroadcastManagerDelegate <NSObject>
 
 - (void)broadcastHasEnded;
+- (void)buffering;
+- (void)playing;
 
 @end
 

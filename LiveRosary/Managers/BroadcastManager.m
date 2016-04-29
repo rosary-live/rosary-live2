@@ -16,6 +16,8 @@
 @interface BroadcastManager () <AudioManagerDelegate, TransferManagerDelegate>
 
 @property (nonatomic) NSInteger startSequence;
+@property (nonatomic) NSInteger startingNumToBuffer;
+@property (nonatomic) NSInteger numToBuffer;
 
 @end
 
@@ -88,6 +90,8 @@
                 dispatch_async(dispatch_get_main_queue(), ^{
                     _state = BroadcastStatePlaying;
                     _startSequence = sequence;
+                    _startingNumToBuffer = 1;
+                    _numToBuffer = _startingNumToBuffer;
                     
                     [AudioManager sharedManager].delegate = self;
                     [AudioManager sharedManager].sampleRate = [ConfigModel sharedInstance].sampleRate;
@@ -168,6 +172,19 @@
     DDLogError(@"Audio Error: %@", error);
 }
 
+- (void)playBufferUnderrun
+{
+    if(self.delegate != nil && [self.delegate respondsToSelector:@selector(buffering)])
+    {
+        [self.delegate buffering];
+        
+        ++self.startingNumToBuffer;
+        self.numToBuffer = self.startingNumToBuffer;
+        [[AudioManager sharedManager] stopPlaying];
+        [[AudioManager sharedManager] prepareToPlay];
+    }
+}
+
 #pragma mark - TransferManagerDelegate
 
 - (void)receivedFile:(NSString*)filename forSequence:(NSInteger)sequence lastFile:(BOOL)lastFile
@@ -176,9 +193,15 @@
     
     [[AudioManager sharedManager] addAudioFileToPlay:filename sequence:sequence lastFile:lastFile];
     
-    if(![AudioManager sharedManager].isPlaying && sequence > self.startSequence)
+    --self.numToBuffer;
+    if(![AudioManager sharedManager].isPlaying && self.numToBuffer <= 0)
     {
         [[AudioManager sharedManager] startPlaying];
+        
+        if(self.delegate != nil && [self.delegate respondsToSelector:@selector(playing)])
+        {
+            [self.delegate playing];
+        }
     }
 }
 

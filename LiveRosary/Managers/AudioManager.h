@@ -15,6 +15,7 @@
 - (void)playedAudioFile:(NSString*)filename sequence:(NSInteger)sequence lastFile:(BOOL)lastFile;
 - (void)playPosition:(NSTimeInterval)seconds;
 - (void)audioError:(NSError*)error;
+- (void)playBufferUnderrun;
 
 @end
 
