@@ -58,15 +58,20 @@ NSString* const kBaseURL = @"https://9wwr7dvesk.execute-api.us-east-1.amazonaws.
     [request setValue:kApiKey forHTTPHeaderField:@"x-api-key"];
     [request setHTTPBody:postData];
     
+    DDLogDebug(@"POST %@: %@", method, dictionary);
+    
     CFTimeInterval startTime = CACurrentMediaTime();
     NSURLSessionDataTask *dataTask = [self.manager dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
         if(error != nil)
         {
+            DDLogError(@"POST %@ error: %@", method, error);
             [[AnalyticsManager sharedManager] logRequest:request response:(NSHTTPURLResponse*)response duration:CACurrentMediaTime() - startTime successful:NO message:nil error:error.description];
             safeBlock(completion, nil, error);
         }
         else
         {
+            DDLogDebug(@"POST %@ response: %@", method, response);
+            
             NSNumber* success = responseObject[@"success"];
             NSError* errorReturn = nil;
             if(success != nil && !success.boolValue)

@@ -12,6 +12,8 @@
 #import "F3BarGauge.h"
 #import "BroadcastQueueModel.h"
 #import "ListenerCell.h"
+#import "LiveRosaryService.h"
+#import "UserManager.h"
 
 @interface LRBroadcastingViewController ()
 
@@ -98,64 +100,66 @@
             
             [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
             
-            [[BroadcastQueueModel sharedInstance] startReceivingForBroadcastId:brodcastId asBroadcaster:YES event:^(NSArray *events) {
-                NSLog(@"events %@", events);
-                
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    for(NSDictionary* event in events)
-                    {
-                        NSString* type = event[@"type"];
-                        if([type isEqualToString:@"enter"])
+            [[LiveRosaryService sharedService] startBroadcastingWithEmail:[UserManager sharedManager].email andBroadcastId:brodcastId completion:^(NSError *error) {
+                [[BroadcastQueueModel sharedInstance] startReceivingForBroadcastId:brodcastId asBroadcaster:YES event:^(NSArray *events) {
+                    NSLog(@"events %@", events);
+                    
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        for(NSDictionary* event in events)
                         {
-                            NSDictionary* listener = event[@"event"];
-                            if([self listenerForEmail:listener[@"email"]] == nil)
+                            NSString* type = event[@"type"];
+                            if([type isEqualToString:@"enter"])
                             {
-                                [self.listeners addObject:listener];
-                                [[AnalyticsManager sharedManager] event:@"EnterBroadcast" info:@{@"bid": brodcastId}];
-
-                            }
-                            else
-                            {
-                                [[AnalyticsManager sharedManager] event:@"EnterBroadcastDuplicate" info:@{@"bid": brodcastId}];
-                            }
-                        }
-                        else if([type isEqualToString:@"exit"])
-                        {
-                            NSDictionary* listener = event[@"event"];
-                            NSDictionary* existingListener = [self listenerForEmail:listener[@"email"]];
-                            if(existingListener != nil)
-                            {
-                                [[AnalyticsManager sharedManager] event:@"ExitBroadcast" info:@{@"bid": brodcastId}];
-                                [self.listeners removeObject:existingListener];
-                            }
-                            else
-                            {
-                                [[AnalyticsManager sharedManager] event:@"ExitBroadcastDuplicate" info:@{@"bid": brodcastId}];
-                            }
-                        }
-                        else if([type isEqualToString:@"update"])
-                        {
-                            NSDictionary* listener = event[@"event"];
-                            NSDictionary* existingListener = [self listenerForEmail:listener[@"email"]];
-                            if(existingListener != nil)
-                            {
-                                NSUInteger index = [self.listeners indexOfObject:existingListener];
-                                if(index != NSNotFound)
+                                NSDictionary* listener = event[@"event"];
+                                if([self listenerForEmail:listener[@"email"]] == nil)
                                 {
-                                    [[AnalyticsManager sharedManager] event:@"UpdateBroadcast" info:@{@"bid": brodcastId}];
-
-                                    [self.listeners replaceObjectAtIndex:index withObject:listener];
+                                    [self.listeners addObject:listener];
+                                    [[AnalyticsManager sharedManager] event:@"EnterBroadcast" info:@{@"bid": brodcastId}];
+                                    
                                 }
                                 else
                                 {
-                                    [[AnalyticsManager sharedManager] event:@"UpdateBroadcastDuplicate" info:@{@"bid": brodcastId}];
+                                    [[AnalyticsManager sharedManager] event:@"EnterBroadcastDuplicate" info:@{@"bid": brodcastId}];
+                                }
+                            }
+                            else if([type isEqualToString:@"exit"])
+                            {
+                                NSDictionary* listener = event[@"event"];
+                                NSDictionary* existingListener = [self listenerForEmail:listener[@"email"]];
+                                if(existingListener != nil)
+                                {
+                                    [[AnalyticsManager sharedManager] event:@"ExitBroadcast" info:@{@"bid": brodcastId}];
+                                    [self.listeners removeObject:existingListener];
+                                }
+                                else
+                                {
+                                    [[AnalyticsManager sharedManager] event:@"ExitBroadcastDuplicate" info:@{@"bid": brodcastId}];
+                                }
+                            }
+                            else if([type isEqualToString:@"update"])
+                            {
+                                NSDictionary* listener = event[@"event"];
+                                NSDictionary* existingListener = [self listenerForEmail:listener[@"email"]];
+                                if(existingListener != nil)
+                                {
+                                    NSUInteger index = [self.listeners indexOfObject:existingListener];
+                                    if(index != NSNotFound)
+                                    {
+                                        [[AnalyticsManager sharedManager] event:@"UpdateBroadcast" info:@{@"bid": brodcastId}];
+                                        
+                                        [self.listeners replaceObjectAtIndex:index withObject:listener];
+                                    }
+                                    else
+                                    {
+                                        [[AnalyticsManager sharedManager] event:@"UpdateBroadcastDuplicate" info:@{@"bid": brodcastId}];
+                                    }
                                 }
                             }
                         }
-                    }
-                    
-                    [self.tableView reloadData];
-                });
+                        
+                        [self.tableView reloadData];
+                    });
+                }];
             }];
         }
     }];

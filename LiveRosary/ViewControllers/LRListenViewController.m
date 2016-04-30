@@ -68,20 +68,6 @@ NSString * const kLastIntentionKey = @"LastIntention";
     self.isReport = self.reportedBroadcast != nil;
     self.listeners = [NSMutableArray new];
     
-    if(self.playFromStart)
-    {
-        self.intentionLabel.hidden = YES;
-        self.intention.hidden = YES;
-        //self.report.hidden = YES;
-    }
-    else
-    {
-        self.lastIntention = [[NSUserDefaults standardUserDefaults] objectForKey:kLastIntentionKey];
-        if(self.lastIntention == nil) self.lastIntention = @"";
-        
-        self.intention.text = self.lastIntention;
-    }
-    
     if(self.isReport)
     {
         self.intentionLabel.hidden = YES;
@@ -92,9 +78,23 @@ NSString * const kLastIntentionKey = @"LastIntention";
     }
     else
     {
-        self.intentionLabel.hidden = NO;
-        self.intention.hidden = NO;
-        self.report.hidden = NO;
+        if(self.playFromStart)
+        {
+            self.intentionLabel.hidden = YES;
+            self.intention.hidden = YES;
+            self.report.hidden = YES;
+        }
+        else
+        {
+            self.lastIntention = [[NSUserDefaults standardUserDefaults] objectForKey:kLastIntentionKey];
+            if(self.lastIntention == nil) self.lastIntention = @"";
+            
+            self.intention.text = self.lastIntention;
+        }
+        
+//        self.intentionLabel.hidden = NO;
+//        self.intention.hidden = NO;
+//        self.report.hidden = NO;
         self.revokeBroadcastPriv.hidden = YES;
         self.banUser.hidden = YES;
     }
@@ -159,7 +159,7 @@ NSString * const kLastIntentionKey = @"LastIntention";
 
                                 if(self.playFromStart)
                                 {
-                                    [[AnalyticsManager sharedManager] event:@"PlayFromStart" info:@{@"bid": self.broadcast.bid}];
+                                    [[AnalyticsManager sharedManager] event:@"PlayFromStart" info:@{@"bid": self.isReport ? self.reportedBroadcast.bid : self.broadcast.bid}];
                                 }
                                 else if(self.isReport)
                                 {
@@ -167,61 +167,64 @@ NSString * const kLastIntentionKey = @"LastIntention";
                                 }
                                 else
                                 {
-                                    [[BroadcastQueueModel sharedInstance] startReceivingForBroadcastId:self.broadcast.bid asBroadcaster:NO event:^(NSArray *events) {
-                                        NSLog(@"events %@", events);
+                                    [[LiveRosaryService sharedService] startListeningWithEmail:[UserManager sharedManager].email andBroadcastId:self.broadcast.bid completion:^(NSError *error) {
                                         
-                                        dispatch_async(dispatch_get_main_queue(), ^{
-                                            for(NSDictionary* event in events)
-                                            {
-                                                NSString* type = event[@"type"];
-                                                if([type isEqualToString:@"enter"])
+                                        [[BroadcastQueueModel sharedInstance] startReceivingForBroadcastId:self.broadcast.bid asBroadcaster:NO event:^(NSArray *events) {
+                                            NSLog(@"events %@", events);
+                                            
+                                            dispatch_async(dispatch_get_main_queue(), ^{
+                                                for(NSDictionary* event in events)
                                                 {
-                                                    NSDictionary* listener = event[@"event"];
-                                                    NSString* listenerEmail = listener[@"email"];
-                                                    if([self listenerForEmail:listenerEmail] == nil)
+                                                    NSString* type = event[@"type"];
+                                                    if([type isEqualToString:@"enter"])
                                                     {
-                                                        [self.listeners addObject:listener];                                                        
-                                                    }
-                                                    
-                                                    if(![listenerEmail isEqualToString:[UserManager sharedManager].email])
-                                                    {
-                                                        NSMutableDictionary* userDict = [[UserManager sharedManager].userDictionary mutableCopy];
-                                                        userDict[@"intention"] = self.intention.text != nil ? self.intention.text : @"";
-                                                        [[BroadcastQueueModel sharedInstance] sendEnterForBroadcastId:self.broadcast.bid toUserWithEmail:listenerEmail withDictionary:userDict];
-                                                    }
-                                                }
-                                                else if([type isEqualToString:@"exit"])
-                                                {
-                                                    NSDictionary* listener = event[@"event"];
-                                                    NSDictionary* existingListener = [self listenerForEmail:listener[@"email"]];
-                                                    if(existingListener != nil)
-                                                    {
-                                                        [self.listeners removeObject:existingListener];
-                                                    }
-                                                }
-                                                else if([type isEqualToString:@"update"])
-                                                {
-                                                    NSDictionary* listener = event[@"event"];
-                                                    NSDictionary* existingListener = [self listenerForEmail:listener[@"email"]];
-                                                    if(existingListener != nil)
-                                                    {
-                                                        NSUInteger index = [self.listeners indexOfObject:existingListener];
-                                                        if(index != NSNotFound)
+                                                        NSDictionary* listener = event[@"event"];
+                                                        NSString* listenerEmail = listener[@"email"];
+                                                        if([self listenerForEmail:listenerEmail] == nil)
                                                         {
-                                                            [self.listeners replaceObjectAtIndex:index withObject:listener];
+                                                            [self.listeners addObject:listener];
+                                                        }
+                                                        
+                                                        if(![listenerEmail isEqualToString:[UserManager sharedManager].email])
+                                                        {
+                                                            NSMutableDictionary* userDict = [[UserManager sharedManager].userDictionary mutableCopy];
+                                                            userDict[@"intention"] = self.intention.text != nil ? self.intention.text : @"";
+                                                            [[BroadcastQueueModel sharedInstance] sendEnterForBroadcastId:self.broadcast.bid toUserWithEmail:listenerEmail withDictionary:userDict];
+                                                        }
+                                                    }
+                                                    else if([type isEqualToString:@"exit"])
+                                                    {
+                                                        NSDictionary* listener = event[@"event"];
+                                                        NSDictionary* existingListener = [self listenerForEmail:listener[@"email"]];
+                                                        if(existingListener != nil)
+                                                        {
+                                                            [self.listeners removeObject:existingListener];
+                                                        }
+                                                    }
+                                                    else if([type isEqualToString:@"update"])
+                                                    {
+                                                        NSDictionary* listener = event[@"event"];
+                                                        NSDictionary* existingListener = [self listenerForEmail:listener[@"email"]];
+                                                        if(existingListener != nil)
+                                                        {
+                                                            NSUInteger index = [self.listeners indexOfObject:existingListener];
+                                                            if(index != NSNotFound)
+                                                            {
+                                                                [self.listeners replaceObjectAtIndex:index withObject:listener];
+                                                            }
                                                         }
                                                     }
                                                 }
-                                            }
-                                            
-                                            [self.tableView reloadData];
-                                        });
+                                                
+                                                [self.tableView reloadData];
+                                            });
+                                        }];
+                                        
+                                        [[AnalyticsManager sharedManager] event:@"Play" info:@{@"bid": self.broadcast.bid}];
+                                        NSMutableDictionary* userDict = [[UserManager sharedManager].userDictionary mutableCopy];
+                                        userDict[@"intention"] = self.intention.text != nil ? self.intention.text : @"";
+                                        [[BroadcastQueueModel sharedInstance] sendEnterForBroadcastId:self.broadcast.bid toUserWithEmail:nil withDictionary:userDict];
                                     }];
-                                    
-                                    [[AnalyticsManager sharedManager] event:@"Play" info:@{@"bid": self.broadcast.bid}];
-                                    NSMutableDictionary* userDict = [[UserManager sharedManager].userDictionary mutableCopy];
-                                    userDict[@"intention"] = self.intention.text != nil ? self.intention.text : @"";
-                                    [[BroadcastQueueModel sharedInstance] sendEnterForBroadcastId:self.broadcast.bid toUserWithEmail:nil withDictionary:userDict];
                                 }
                             }
                         });
@@ -272,15 +275,18 @@ NSString * const kLastIntentionKey = @"LastIntention";
     
     if([BroadcastManager sharedManager].state == BroadcastStatePlaying)
     {
-        [[AnalyticsManager sharedManager] event:@"LeftPlayerScreen" info:@{@"bid": self.broadcast.bid}];
-        [[AnalyticsManager sharedManager] event:@"PlayDuration" info:@{@"bid": self.broadcast.bid, @"duration": @(CACurrentMediaTime() - self.startTime), @"over": @(0)}];
+        if(!self.isReport)
+        {
+            [[AnalyticsManager sharedManager] event:@"LeftPlayerScreen" info:@{@"bid": self.broadcast.bid}];
+            [[AnalyticsManager sharedManager] event:@"PlayDuration" info:@{@"bid": self.broadcast.bid, @"duration": @(CACurrentMediaTime() - self.startTime), @"over": @(0)}];
+        }
 
         [[BroadcastManager sharedManager] stopPlaying];
     }
     
     if(!self.playFromStart)
     {
-        [[BroadcastQueueModel sharedInstance] sendExitForBroadcastId:self.broadcast.bid toUserWithEmail:nil withDictionary:[UserManager sharedManager].userDictionary];
+        [[BroadcastQueueModel sharedInstance] sendExitForBroadcastId:self.reportedBroadcast.bid ? self.reportedBroadcast.bid : self.broadcast.bid toUserWithEmail:nil withDictionary:[UserManager sharedManager].userDictionary];
     }
 }
 
