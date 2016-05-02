@@ -197,6 +197,11 @@
     
     while(self.isReceiving)
     {
+//        if(self.sequence % 10 == 0)
+//        {
+//            [NSThread sleepForTimeInterval:60.0];
+//        }
+        
         NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
         AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];
         manager.responseSerializer = self;

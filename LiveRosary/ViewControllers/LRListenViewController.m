@@ -19,31 +19,39 @@
 #import "LRReportBroadcastViewController.h"
 #import "LiveRosaryService.h"
 #import "DBUser.h"
+#import "ListenerCell.h"
+#import <PureLayout/PureLayout.h>
 
 NSString * const kLastIntentionKey = @"LastIntention";
 
-@interface LRListenViewController () <BroadcastManagerDelegate, UITextViewDelegate>
+@interface LRListenViewController () <BroadcastManagerDelegate>
 
 @property (nonatomic, weak) IBOutlet UIImageView* avatar;
 @property (nonatomic, weak) IBOutlet UILabel* name;
 @property (nonatomic, weak) IBOutlet UILabel* language;
 @property (nonatomic, weak) IBOutlet UILabel* date;
 @property (nonatomic, weak) IBOutlet UILabel* location;
+@property (nonatomic, weak) IBOutlet UIImageView* flag;
+
 @property (nonatomic, weak) IBOutlet UILabel* status;
-@property (nonatomic, weak) IBOutlet SlideShow* slideShow;
+@property (nonatomic, weak) IBOutlet UILabel* listenerCount;
+
+@property (nonatomic, weak) IBOutlet UIView* intentionView;
+@property (nonatomic, weak) IBOutlet UITextField* intention;
+
 @property (nonatomic, weak) IBOutlet UITableView* tableView;
 
 @property (nonatomic, weak) IBOutlet UIButton* resumeSlideShow;
-@property (nonatomic, weak) IBOutlet UILabel* intentionLabel;
-@property (nonatomic, weak) IBOutlet UITextView* intention;
 @property (nonatomic, weak) IBOutlet UIButton* report;
-
 @property (nonatomic, weak) IBOutlet UIButton* revokeBroadcastPriv;
 @property (nonatomic, weak) IBOutlet UIButton* banUser;
 
+@property (nonatomic, strong) MBProgressHUD *hud;
+@property (nonatomic, strong) SlideShow* slideShow;
+
+
 @property (nonatomic, strong) NSTimer* playTimer;
 
-@property (nonatomic, strong) MBProgressHUD *hud;
 
 @property (nonatomic) BOOL editingIntention;
 @property (nonatomic, strong) NSString* lastIntention;
@@ -70,7 +78,6 @@ NSString * const kLastIntentionKey = @"LastIntention";
     
     if(self.isReport)
     {
-        self.intentionLabel.hidden = YES;
         self.intention.hidden = YES;
         self.report.hidden = YES;
         self.revokeBroadcastPriv.hidden = NO;
@@ -80,7 +87,6 @@ NSString * const kLastIntentionKey = @"LastIntention";
     {
         if(self.playFromStart)
         {
-            self.intentionLabel.hidden = YES;
             self.intention.hidden = YES;
             self.report.hidden = YES;
         }
@@ -90,6 +96,9 @@ NSString * const kLastIntentionKey = @"LastIntention";
             if(self.lastIntention == nil) self.lastIntention = @"";
             
             self.intention.text = self.lastIntention;
+            
+            [self.view addSubview:self.intentionView];
+            [self.intentionView autoCenterInSuperviewMargins];
         }
         
 //        self.intentionLabel.hidden = NO;
@@ -103,11 +112,12 @@ NSString * const kLastIntentionKey = @"LastIntention";
     
     self.name.text = self.isReport ? self.reportedBroadcast.b_name : self.broadcast.name;
     self.language.text = self.isReport ? self.reportedBroadcast.b_language : self.broadcast.language;
-    self.location.text = [NSString stringWithFormat:@"%@, %@ %@",
+    self.location.text = [NSString stringWithFormat:@"%@, %@",
                           self.isReport ? self.reportedBroadcast.b_city : self.broadcast.city,
-                          self.isReport ? self.reportedBroadcast.b_state : self.broadcast.state,
-                          self.isReport ? self.reportedBroadcast.b_country : self.broadcast.country];
+                          self.isReport ? self.reportedBroadcast.b_state : self.broadcast.state];
     self.date.text = [NSDateFormatter localizedStringFromDate:[self.isReport ? self.reportedBroadcast.b_updated : self.broadcast.updated dateForNumber] dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterShortStyle];
+    self.flag.image = [[UserManager sharedManager] imageForCountryName:self.isReport ? self.reportedBroadcast.b_country : self.broadcast.country];
+
     self.status.text = @"Loading";
     
     NSString* urlString = [NSString stringWithFormat:@"https://s3.amazonaws.com/liverosaryavatars/%@", [self.broadcast.user stringByReplacingOccurrencesOfString:@"@" withString:@"-"]];
@@ -182,10 +192,14 @@ NSString * const kLastIntentionKey = @"LastIntention";
                                                         NSString* listenerEmail = listener[@"email"];
                                                         if([self listenerForEmail:listenerEmail] == nil)
                                                         {
+                                                            DDLogDebug(@"adding listener %@", listener);
                                                             [self.listeners addObject:listener];
+                                                            DDLogDebug(@"listeners %@", self.listeners);
+
                                                         }
                                                         
-                                                        if(![listenerEmail isEqualToString:[UserManager sharedManager].email])
+                                                        BOOL noResponse = event[@"noResponse"] ? [event[@"noResponse"] boolValue] : NO;
+                                                        if(![listenerEmail isEqualToString:[UserManager sharedManager].email] && !noResponse)
                                                         {
                                                             NSMutableDictionary* userDict = [[UserManager sharedManager].userDictionary mutableCopy];
                                                             userDict[@"intention"] = self.intention.text != nil ? self.intention.text : @"";
@@ -198,7 +212,9 @@ NSString * const kLastIntentionKey = @"LastIntention";
                                                         NSDictionary* existingListener = [self listenerForEmail:listener[@"email"]];
                                                         if(existingListener != nil)
                                                         {
+                                                            DDLogDebug(@"removing listener %@", listener);
                                                             [self.listeners removeObject:existingListener];
+                                                            DDLogDebug(@"listeners %@", self.listeners);
                                                         }
                                                     }
                                                     else if([type isEqualToString:@"update"])
@@ -347,6 +363,18 @@ NSString * const kLastIntentionKey = @"LastIntention";
     [self updateUser:self.reportedBroadcast.b_email toLevel:@"banned"];
 }
 
+- (IBAction)onSetIntention:(id)sender
+{
+    self.lastIntention = self.intention.text;
+    [[NSUserDefaults standardUserDefaults] setObject:self.lastIntention forKey:kLastIntentionKey];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    NSMutableDictionary* userDict = [[UserManager sharedManager].userDictionary mutableCopy];    userDict[@"intention"] = self.intention.text != nil ? self.intention.text : @"";
+    [[AnalyticsManager sharedManager] event:@"CangedIntention" info:@{@"bid": self.broadcast.bid, @"Intention": userDict[@"intention"]}];
+    
+    [[BroadcastQueueModel sharedInstance] sendUpdateForBroadcastId:self.broadcast.bid toUserWithEmail:nil withDictionary:userDict];
+}
+
 - (void)updateUser:(NSString*)email toLevel:(NSString*)level
 {
     DDLogDebug(@"User -> %@ %@", email, level);
@@ -394,6 +422,21 @@ NSString * const kLastIntentionKey = @"LastIntention";
     }
 }
 
+- (void)buffering
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        self.hud.labelText = @"Buffering";
+    });
+}
+
+- (void)playing
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.hud hide:YES];
+    });
+}
+
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
 {
     if(!self.slideShow.hidden)
@@ -426,38 +469,71 @@ NSString * const kLastIntentionKey = @"LastIntention";
     }];
 }
 
-- (void)textViewDidBeginEditing:(UITextView *)textView
+//- (void)textViewDidBeginEditing:(UITextView *)textView
+//{
+//    self.editingIntention = YES;
+//}
+//
+//- (void)textViewDidEndEditing:(UITextView *)textView
+//{
+//    self.editingIntention = NO;
+//}
+//
+//- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
+//    
+//    if([text isEqualToString:@"\n"])
+//    {
+//        if(![self.lastIntention isEqualToString:self.intention.text])
+//        {
+//            NSMutableDictionary* userDict = [[UserManager sharedManager].userDictionary mutableCopy];
+//            self.lastIntention = self.intention.text;
+//            [[NSUserDefaults standardUserDefaults] setObject:self.lastIntention forKey:kLastIntentionKey];
+//            [[NSUserDefaults standardUserDefaults] synchronize];
+//            
+//            userDict[@"intention"] = self.intention.text != nil ? self.intention.text : @"";
+//            [[AnalyticsManager sharedManager] event:@"CangedIntention" info:@{@"bid": self.broadcast.bid, @"Intention": userDict[@"intention"]}];
+//
+//            [[BroadcastQueueModel sharedInstance] sendUpdateForBroadcastId:self.broadcast.bid toUserWithEmail:nil withDictionary:userDict];
+//        }
+//        
+//        [textView resignFirstResponder];
+//        return NO;
+//    }
+//    
+//    return YES;
+//}
+
+#pragma mark - UITableViewDataSource
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    self.editingIntention = YES;
+    return self.listeners.count;
 }
 
-- (void)textViewDidEndEditing:(UITextView *)textView
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
-    self.editingIntention = NO;
+    return @"Listeners";
 }
 
-- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    ListenerCell* cell = [tableView dequeueReusableCellWithIdentifier:@"ListenerCell" forIndexPath:indexPath];
+    NSDictionary* listener = self.listeners[indexPath.row];
+    cell.name.text = [NSString stringWithFormat:@"%@ %@", listener[@"firstName"], listener[@"lastName"]];
+    cell.location.text = [NSString stringWithFormat:@"%@ %@ %@", listener[@"city"], listener[@"state"], listener[@"country"]];
+    cell.intention.text = listener[@"intention"];
     
-    if([text isEqualToString:@"\n"])
-    {
-        if(![self.lastIntention isEqualToString:self.intention.text])
-        {
-            NSMutableDictionary* userDict = [[UserManager sharedManager].userDictionary mutableCopy];
-            self.lastIntention = self.intention.text;
-            [[NSUserDefaults standardUserDefaults] setObject:self.lastIntention forKey:kLastIntentionKey];
-            [[NSUserDefaults standardUserDefaults] synchronize];
-            
-            userDict[@"intention"] = self.intention.text != nil ? self.intention.text : @"";
-            [[AnalyticsManager sharedManager] event:@"CangedIntention" info:@{@"bid": self.broadcast.bid, @"Intention": userDict[@"intention"]}];
+    NSString* urlString = [NSString stringWithFormat:@"https://s3.amazonaws.com/liverosaryavatars/%@", [listener[@"email"] stringByReplacingOccurrencesOfString:@"@" withString:@"-"]];
+    [cell.avatar sd_setImageWithURL:[NSURL URLWithString:urlString] placeholderImage:[UIImage imageNamed:@"AvatarImage"] options:0];
+    
+    return cell;
+}
 
-            [[BroadcastQueueModel sharedInstance] sendUpdateForBroadcastId:self.broadcast.bid toUserWithEmail:nil withDictionary:userDict];
-        }
-        
-        [textView resignFirstResponder];
-        return NO;
-    }
-    
-    return YES;
+#pragma mark - UITableViewDelegate
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 70.0f;
 }
 
 @end

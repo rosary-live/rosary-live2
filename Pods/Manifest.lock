@@ -113,6 +113,7 @@ PODS:
   - SDWebImage/Core (3.7.5)
   - TheAmazingAudioEngine (1.5.5)
   - THSegmentedControl (0.1.8)
+  - UIButton+MiddleAligning (1.1.2)
   - UICKeyChainStore (2.1.0)
 
 DEPENDENCIES:
@@ -138,6 +139,7 @@ DEPENDENCIES:
   - SDWebImage
   - TheAmazingAudioEngine
   - THSegmentedControl
+  - UIButton+MiddleAligning
   - UICKeyChainStore
 
 SPEC CHECKSUMS:
@@ -164,6 +166,7 @@ SPEC CHECKSUMS:
   SDWebImage: 69c6303e3348fba97e03f65d65d4fbc26740f461
   TheAmazingAudioEngine: d867edf0da7c4d1283df5d721f5633d5523126b2
   THSegmentedControl: f3d327170dee4e1d6cab70d7992c676b918db520
+  UIButton+MiddleAligning: 3668dcbb18181281f2b021c89858115ed6635e2f
   UICKeyChainStore: f1cbd42216a113f0165de1e733e62905b8823432
 
 COCOAPODS: 0.39.0

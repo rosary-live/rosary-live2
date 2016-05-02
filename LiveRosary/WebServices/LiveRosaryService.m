@@ -70,7 +70,7 @@ NSString* const kBaseURL = @"https://9wwr7dvesk.execute-api.us-east-1.amazonaws.
         }
         else
         {
-            DDLogDebug(@"POST %@ response: %@", method, response);
+            DDLogDebug(@"POST %@ response: %@ %@", method, response, responseObject);
             
             NSNumber* success = responseObject[@"success"];
             NSError* errorReturn = nil;

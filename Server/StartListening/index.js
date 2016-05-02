@@ -83,7 +83,14 @@ function subscribeToTopic(bid, email, fn) {
 	}, function(err, data) {
 		console.log("subscribe data: " + util.inspect(data, { showHidden: true, depth: 10 }));
 		console.log("subscribe err: " + util.inspect(err, { showHidden: true, depth: 10 }));
-		fn(err);			
+
+		sns.setSubscriptionAttributes({ SubscriptionArn: data.SubscriptionArn,
+										AttributeName: "RawMessageDelivery",
+										AttributeValue: "true"}, function(err, data) {
+			console.log("setSubscriptionAttributes data: " + util.inspect(data, { showHidden: true, depth: 10 }));
+			console.log("setSubscriptionAttributes err: " + util.inspect(err, { showHidden: true, depth: 10 }));
+			fn(err);			
+		});
 	});
 }
 

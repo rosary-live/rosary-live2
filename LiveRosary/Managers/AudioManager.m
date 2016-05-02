@@ -258,7 +258,10 @@
         BufferWrapper* buffer = nil;
         @synchronized(self.playQueue)
         {
-            buffer = [self.playQueue objectAtIndex:0];
+            if(self.playQueue.count > 0)
+            {
+                buffer = [self.playQueue objectAtIndex:0];
+            }
         }
         
         if(buffer != nil)
@@ -493,8 +496,10 @@
         }
         
         [self.decompressCondition unlock];
+        
+        if(!self.isPlaying) break;
 
-        if(fileWrapper.filename != nil)
+        if(fileWrapper != nil && fileWrapper.filename != nil)
         {
             DDLogDebug(@"Decompressing file %@", fileWrapper.filename);
             self.fileReader = [[AEAudioFileLoaderOperation alloc] initWithFileURL:[NSURL fileURLWithPath:fileWrapper.filename] targetAudioDescription:rawFormat];

@@ -14,6 +14,7 @@
 #import "ListenerCell.h"
 #import "LiveRosaryService.h"
 #import "UserManager.h"
+#import <SDWebImage/UIImageView+WebCache.h>
 
 @interface LRBroadcastingViewController ()
 
@@ -249,6 +250,9 @@
     cell.name.text = [NSString stringWithFormat:@"%@ %@", listener[@"firstName"], listener[@"lastName"]];
     cell.location.text = [NSString stringWithFormat:@"%@ %@ %@", listener[@"city"], listener[@"state"], listener[@"country"]];
     cell.intention.text = listener[@"intention"];
+    
+    NSString* urlString = [NSString stringWithFormat:@"https://s3.amazonaws.com/liverosaryavatars/%@", [listener[@"email"] stringByReplacingOccurrencesOfString:@"@" withString:@"-"]];
+    [cell.avatar sd_setImageWithURL:[NSURL URLWithString:urlString] placeholderImage:[UIImage imageNamed:@"AvatarImage"] options:0];
     return cell;
 }
 

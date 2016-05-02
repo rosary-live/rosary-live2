@@ -86,8 +86,8 @@ function sendToUser(email, message, fn) {
 }
 
 function sendToBroadcast(bid, message, fn) {
-	sns.publish({ Message: { default: JSON.stringify(message), sqs: JSON.stringify(message) },
-				  MessageStructure: 'json',
+	sns.publish({ Message: JSON.stringify(message),//{ default: message, sqs: message }),
+				  //MessageStructure: 'json',
 				  TopicArn: "arn:aws:sns:" + config.REGION + ":" + config.AWS_ACCOUNT_ID + ":" + bid
 
 	}, function(err, data) {

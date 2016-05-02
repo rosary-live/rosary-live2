@@ -101,6 +101,7 @@ NSString * const kBroadcastQueueBaseURL = @"https://sqs.us-east-1.amazonaws.com/
         req.visibilityTimeout = @(1);
         req.waitTimeSeconds = @(20);
         req.maxNumberOfMessages = @(10);
+        
         [[[self.sqs receiveMessage:req] continueWithBlock:^id _Nullable(AWSTask * _Nonnull task) {
             if(task.error != nil)
             {
@@ -112,6 +113,8 @@ NSString * const kBroadcastQueueBaseURL = @"https://sqs.us-east-1.amazonaws.com/
             }
             else if(task.result != nil && [task.result isKindOfClass:[AWSSQSReceiveMessageResult class]])
             {
+                DDLogDebug(@"SQS received: %@", task.result);
+                
                 AWSSQSReceiveMessageResult* messages = (AWSSQSReceiveMessageResult*)[task result];
                 if(messages.messages != nil)
                 {
@@ -166,7 +169,8 @@ NSString * const kBroadcastQueueBaseURL = @"https://sqs.us-east-1.amazonaws.com/
     NSDictionary* messageDict = @{
                                   @"type": @"enter",
                                   @"bid": bid,
-                                  @"event": dictionary
+                                  @"event": dictionary,
+                                  @"noResponse": @(email != nil)
                                   };
     
     if(email != nil)

@@ -90,7 +90,7 @@
                 dispatch_async(dispatch_get_main_queue(), ^{
                     _state = BroadcastStatePlaying;
                     _startSequence = sequence;
-                    _startingNumToBuffer = 1;
+                    _startingNumToBuffer = 2;
                     _numToBuffer = _startingNumToBuffer;
                     
                     [AudioManager sharedManager].delegate = self;
@@ -98,6 +98,11 @@
                     [AudioManager sharedManager].channels = 1;
                     [TransferManager sharedManager].delegate = self;
                     [[TransferManager sharedManager] startReceiving:broadcastId atSequence:sequence];
+                    
+//                    if(self.delegate != nil && [self.delegate respondsToSelector:@selector(buffering)])
+//                    {
+//                        [self.delegate buffering];
+//                    }
                     
                     [[AudioManager sharedManager] prepareToPlay];
                     
@@ -174,15 +179,17 @@
 
 - (void)playBufferUnderrun
 {
+    DDLogDebug(@"!!!!!!!!!!!! playBufferUnderrun");
+    
     if(self.delegate != nil && [self.delegate respondsToSelector:@selector(buffering)])
     {
         [self.delegate buffering];
-        
-        ++self.startingNumToBuffer;
-        self.numToBuffer = self.startingNumToBuffer;
-        [[AudioManager sharedManager] stopPlaying];
-        [[AudioManager sharedManager] prepareToPlay];
     }
+    
+    ++self.startingNumToBuffer;
+    self.numToBuffer = self.startingNumToBuffer;
+    [[AudioManager sharedManager] stopPlaying];
+    [[AudioManager sharedManager] prepareToPlay];
 }
 
 #pragma mark - TransferManagerDelegate
