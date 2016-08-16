@@ -21,7 +21,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+    
+    self.view.backgroundColor = [UIColor colorFromHexString:@"#dcdcd8"];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -94,6 +95,7 @@
 - (void)addDrawerButton
 {
     MMDrawerBarButtonItem* button = [[MMDrawerBarButtonItem alloc] initWithTarget:[[UIApplication sharedApplication] delegate] action:@selector(onDrawerButton:)];
+    button.tintColor = [UIColor colorFromHexString:@"#3eabd5"];
     [self.navigationItem setLeftBarButtonItem:button];
 }
 

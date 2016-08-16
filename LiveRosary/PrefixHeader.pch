@@ -30,6 +30,7 @@
 #import "NSString+Utilities.h"
 #import "ConfigModel.h"
 #import "AnalyticsManager.h"
+#import "UIColor+Utilities.h"
 
 #endif
 

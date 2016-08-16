@@ -2,17 +2,16 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "alarmoff.png",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
-      "filename" : "alarmoff-1.png",
+      "filename" : "icon_schedulebroadcast.png",
       "scale" : "2x"
     },
     {
       "idiom" : "universal",
-      "filename" : "alarmoff-2.png",
+      "filename" : "icon_schedulebroadcast-1.png",
       "scale" : "3x"
     }
   ],

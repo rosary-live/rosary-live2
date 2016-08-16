@@ -18,6 +18,8 @@
 		977D752D1CC1776A00C4D7A0 /* LRAdminTakeActionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 977D752C1CC1776A00C4D7A0 /* LRAdminTakeActionViewController.m */; };
 		977D75301CC177D000C4D7A0 /* LRAdminManageUsersViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 977D752F1CC177D000C4D7A0 /* LRAdminManageUsersViewController.m */; };
 		978337791CBED6B500C3C3F7 /* LRAdminReportedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 978337781CBED6B500C3C3F7 /* LRAdminReportedViewController.m */; };
+		9786629E1D624BBD00209667 /* UIColor+Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 9786629D1D624BBD00209667 /* UIColor+Utilities.m */; };
+		978662A51D63435900209667 /* Rokkitt.otf in Resources */ = {isa = PBXBuildFile; fileRef = 978662A41D63435900209667 /* Rokkitt.otf */; };
 		D81AAF7C1C45E29C00B46544 /* LRBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D81AAF7B1C45E29C00B46544 /* LRBaseViewController.m */; };
 		D820FB061C4452A9000899DB /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D820FB051C4452A9000899DB /* main.m */; };
 		D820FB091C4452A9000899DB /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D820FB081C4452A9000899DB /* AppDelegate.m */; };
@@ -331,6 +333,9 @@
 		977D752F1CC177D000C4D7A0 /* LRAdminManageUsersViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LRAdminManageUsersViewController.m; path = ViewControllers/LRAdminManageUsersViewController.m; sourceTree = "<group>"; };
 		978337771CBED6B500C3C3F7 /* LRAdminReportedViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LRAdminReportedViewController.h; path = ViewControllers/LRAdminReportedViewController.h; sourceTree = "<group>"; };
 		978337781CBED6B500C3C3F7 /* LRAdminReportedViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LRAdminReportedViewController.m; path = ViewControllers/LRAdminReportedViewController.m; sourceTree = "<group>"; };
+		9786629C1D624BBD00209667 /* UIColor+Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIColor+Utilities.h"; path = "Categories/UIColor+Utilities.h"; sourceTree = "<group>"; };
+		9786629D1D624BBD00209667 /* UIColor+Utilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIColor+Utilities.m"; path = "Categories/UIColor+Utilities.m"; sourceTree = "<group>"; };
+		978662A41D63435900209667 /* Rokkitt.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Rokkitt.otf; path = Resources/Rokkitt.otf; sourceTree = "<group>"; };
 		BD4753DF687E71C09BECA0B1 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		D81AAF7A1C45E29C00B46544 /* LRBaseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LRBaseViewController.h; path = ViewControllers/LRBaseViewController.h; sourceTree = "<group>"; };
 		D81AAF7B1C45E29C00B46544 /* LRBaseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LRBaseViewController.m; path = ViewControllers/LRBaseViewController.m; sourceTree = "<group>"; };
@@ -771,6 +776,7 @@
 		D82504881CC2DE5900B0024B /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				978662A41D63435900209667 /* Rokkitt.otf */,
 				D852B12E1CC4667F004D4BA4 /* Flags */,
 			);
 			name = Resources;
@@ -1210,6 +1216,8 @@
 		D8C23FD81C51E1EC0043F8BE /* Categories */ = {
 			isa = PBXGroup;
 			children = (
+				9786629C1D624BBD00209667 /* UIColor+Utilities.h */,
+				9786629D1D624BBD00209667 /* UIColor+Utilities.m */,
 				D8C23FD91C51E23D0043F8BE /* NSString+Utilities.h */,
 				D8C23FDA1C51E23D0043F8BE /* NSString+Utilities.m */,
 				D863727F1C5B1FFB00D02DC3 /* NSNumber+Utilities.h */,
@@ -1342,6 +1350,7 @@
 				D852B2C61CC4667F004D4BA4 /* sm.png in Resources */,
 				D852B2C01CC4667F004D4BA4 /* sd.png in Resources */,
 				D852B2131CC4667F004D4BA4 /* al.png in Resources */,
+				978662A51D63435900209667 /* Rokkitt.otf in Resources */,
 				D852B2941CC4667F004D4BA4 /* mn.png in Resources */,
 				D852B2A51CC4667F004D4BA4 /* nl.png in Resources */,
 				D852B2451CC4667F004D4BA4 /* dz.png in Resources */,
@@ -1619,6 +1628,7 @@
 				975C1B401CA9CEDC009536CF /* BroadcastQueueModel.m in Sources */,
 				D862FF441C9F5397007DF128 /* SegmentedSettingCell.m in Sources */,
 				D862FF4D1C9F53FB007DF128 /* SettingCell.m in Sources */,
+				9786629E1D624BBD00209667 /* UIColor+Utilities.m in Sources */,
 				D8B72E7F1C9DEAD60081723F /* ScheduleRecurringCell.m in Sources */,
 				978337791CBED6B500C3C3F7 /* LRAdminReportedViewController.m in Sources */,
 				977D751A1CC167EB00C4D7A0 /* ReportCell.m in Sources */,
