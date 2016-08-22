@@ -426,7 +426,7 @@ typedef NS_ENUM(NSUInteger, Mode) {
             ScheduleModel* scheduledBroadcast = self.scheduledBroadcasts[indexPath.row];
             cell.name.text = scheduledBroadcast.name;
             cell.language.text = scheduledBroadcast.language;
-            cell.location.text = [NSString stringWithFormat:@"%@, %@ %@", scheduledBroadcast.city, scheduledBroadcast.state, scheduledBroadcast.country];
+            cell.location.text = [NSString stringWithFormat:@"%@, %@", scheduledBroadcast.city, scheduledBroadcast.state];
             
             if(scheduledBroadcast.isSingle)
             {
@@ -442,6 +442,9 @@ typedef NS_ENUM(NSUInteger, Mode) {
             
             if([ScheduleManager sharedManager].notificationsEnabled)
             {
+                cell.alarm.hidden = NO;
+                cell.alarm.image = [[ScheduleManager sharedManager] reminderSetForBroadcastWithId:scheduledBroadcast.sid] ? [UIImage imageNamed:@"AlarmOnBlue"] : [UIImage imageNamed:@"AlarmOffBlue"];
+                
 //                cell.reminderButton.hidden = NO;
 //                UIImage* image = [[ScheduleManager sharedManager] reminderSetForBroadcastWithId:scheduledBroadcast.sid] ? [UIImage imageNamed:@"AlarmOn"] : [UIImage imageNamed:@"AlarmOff"];
 //                [cell.reminderButton setImage:image forState:UIControlStateNormal];
@@ -450,6 +453,7 @@ typedef NS_ENUM(NSUInteger, Mode) {
             }
             else
             {
+                cell.alarm.hidden = YES;
 //                cell.reminderButton.hidden = YES;
             }
             
@@ -487,6 +491,18 @@ typedef NS_ENUM(NSUInteger, Mode) {
         {
             [self broadcastSelected:self.broadcasts[indexPath.row]];
         }
+    } else if(indexPath.section == SectionScheduledBroadcasts) {
+        ScheduleModel* schedule = self.scheduledBroadcasts[indexPath.row];
+        if([[ScheduleManager sharedManager] reminderSetForBroadcastWithId:schedule.sid])
+        {
+            [[ScheduleManager sharedManager] removeReminderForScheduledBroadcast:schedule];
+        }
+        else
+        {
+            [[ScheduleManager sharedManager] addReminderForScheduledBroadcast:schedule broadcaster:NO];
+        }
+        
+        [self.tableView reloadData];
     }
 }
 
@@ -597,21 +613,21 @@ typedef NS_ENUM(NSUInteger, Mode) {
     }
 }
 
-- (IBAction)onReminder:(id)sender
-{
-    NSInteger row = ((UIView*)sender).tag;
-    
-    ScheduleModel* schedule = self.scheduledBroadcasts[row];
-    if([[ScheduleManager sharedManager] reminderSetForBroadcastWithId:schedule.sid])
-    {
-        [[ScheduleManager sharedManager] removeReminderForScheduledBroadcast:schedule];
-    }
-    else
-    {
-        [[ScheduleManager sharedManager] addReminderForScheduledBroadcast:schedule broadcaster:NO];
-    }
-    
-    [self.tableView reloadData];
-}
+//- (IBAction)onReminder:(id)sender
+//{
+//    NSInteger row = ((UIView*)sender).tag;
+//    
+//    ScheduleModel* schedule = self.scheduledBroadcasts[row];
+//    if([[ScheduleManager sharedManager] reminderSetForBroadcastWithId:schedule.sid])
+//    {
+//        [[ScheduleManager sharedManager] removeReminderForScheduledBroadcast:schedule];
+//    }
+//    else
+//    {
+//        [[ScheduleManager sharedManager] addReminderForScheduledBroadcast:schedule broadcaster:NO];
+//    }
+//    
+//    [self.tableView reloadData];
+//}
 
 @end

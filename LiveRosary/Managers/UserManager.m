@@ -329,7 +329,7 @@ NSString * const NotificationUserLoggedOut = @"NotificationUserLoggedOut";
             self.email = email;
             self.password = password;
             self.currentUser = [[UserModel alloc] initWithDict:result.user];
-            if(self.currentUser.avatar != nil && self.currentUser.avatar.integerValue != 0)
+            if(self.currentUser.avatar != nil)// && self.currentUser.avatar.integerValue != 0)
             {
                 [self downloadAvatarImageWithCompletion:^(NSError *error) {
                     [self loadAvatarImage];
@@ -496,7 +496,7 @@ NSString * const NotificationUserLoggedOut = @"NotificationUserLoggedOut";
 
 - (UIImage*)imageForCountryName:(NSString*)name
 {
-    return [UIImage imageNamed:[NSString stringWithFormat:@"%@.png", [self codeForCountryName:name]]];
+    return [UIImage imageNamed:[NSString stringWithFormat:@"%@.png", [[self codeForCountryName:name] lowercaseString]]];
 }
 
 - (NSString*)nameForCountryCode:(NSString*)code

@@ -22,6 +22,7 @@
 @property (nonatomic, weak) IBOutlet UITableView* tableView;
 @property (nonatomic, weak) IBOutlet UILabel* broadcastTime;
 @property (nonatomic, weak) IBOutlet UIButton* stopButton;
+@property (nonatomic, weak) IBOutlet UILabel* listenerCount;
 
 @property (nonatomic, strong) NSString* broadcastId;
 @property (nonatomic, strong) NSTimer* meterTimer;
@@ -41,6 +42,10 @@
     self.meter.holdPeak = NO;
     
     self.listeners = [NSMutableArray new];
+    
+    self.listenerCount.text = @"0";
+    self.listenerCount.font = [UIFont fontWithName:@"Rokkitt" size:24.0f];
+    self.broadcastTime.font = [UIFont fontWithName:@"Rokkitt" size:24.0f];
     
 }
 
@@ -80,7 +85,8 @@
                     int remainingMinutes = totalRemainingSeconds / 60;
                     int remainingSeconds = totalRemainingSeconds % 60;
                     
-                    self.broadcastTime.text = [NSString stringWithFormat:@"%d:%02d / %d:%02d", minutes, seconds, remainingMinutes, remainingSeconds];
+                    //self.broadcastTime.text = [NSString stringWithFormat:@"%d:%02d / %d:%02d", minutes, seconds, remainingMinutes, remainingSeconds];
+                    self.broadcastTime.text = [NSString stringWithFormat:@"%02d:%02d", minutes, seconds];
                     
                     if(totalRemainingSeconds < 300)
                     {
@@ -158,6 +164,7 @@
                             }
                         }
                         
+                        self.listenerCount.text = [NSString stringWithFormat:@"%d", (int)self.listeners.count];
                         [self.tableView reloadData];
                     });
                 }];
@@ -171,11 +178,6 @@
     [super viewWillDisappear:animated];
     
     [self stopBroadcasting];
-}
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 - (NSString*)screenName
@@ -238,10 +240,10 @@
     return self.listeners.count;
 }
 
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
-{
-    return @"Listeners";
-}
+//- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+//{
+//    return @"Listeners";
+//}
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {

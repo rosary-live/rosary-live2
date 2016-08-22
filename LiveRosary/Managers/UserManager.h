@@ -26,6 +26,7 @@ FOUNDATION_EXTERN NSString * const NotificationUserLoggedOut;
 @property (nonatomic, strong, readonly) NSArray<NSString*>* languages;
 @property (nonatomic, strong, readonly) NSArray<NSString*>* countryCodes;
 @property (nonatomic, readonly) NSDictionary* userDictionary;
+@property (nonatomic, strong) NSString* broadcastLanguage;
 
 + (instancetype)sharedManager;
 

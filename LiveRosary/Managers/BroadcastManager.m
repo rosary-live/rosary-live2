@@ -133,24 +133,27 @@
 
 - (NSData*)infoDataForBroadcastId:(NSString*)bid
 {
-    return [NSJSONSerialization dataWithJSONObject:@{
-                                                     @"version": @(1),
-                                                     @"bid": bid,
-                                                     @"start": @((int)[[NSDate date] timeIntervalSince1970]),
-                                                     @"language": [UserManager sharedManager].currentUser.language,
-                                                     @"user": [UserManager sharedManager].currentUser.email,
-                                                     @"name": [NSString stringWithFormat:@"%@ %@", [UserManager sharedManager].currentUser.firstName, [UserManager sharedManager].currentUser.lastName],
-                                                     @"lat": [UserManager sharedManager].currentUser.latitude,
-                                                     @"lon": [UserManager sharedManager].currentUser.longitude,
-                                                     @"city": [UserManager sharedManager].currentUser.city,
-                                                     @"state": [UserManager sharedManager].currentUser.state,
-                                                     @"country": [UserManager sharedManager].currentUser.country,
-                                                     @"rate": @(11025),
-                                                     @"bits": @(8),
-                                                     @"channels": @(1),
-                                                     @"compression": @"ACC",
-                                                     @"segment_duration": @(10000)
-                                                     }
+    NSDictionary* info = @{
+                           @"version": @(1),
+                           @"bid": bid,
+                           @"start": @((int)[[NSDate date] timeIntervalSince1970]),
+                           @"language": [UserManager sharedManager].broadcastLanguage,
+                           @"user": [UserManager sharedManager].currentUser.email,
+                           @"name": [NSString stringWithFormat:@"%@ %@", [UserManager sharedManager].currentUser.firstName, [UserManager sharedManager].currentUser.lastName],
+                           @"lat": [UserManager sharedManager].currentUser.latitude,
+                           @"lon": [UserManager sharedManager].currentUser.longitude,
+                           @"city": [UserManager sharedManager].currentUser.city,
+                           @"state": [UserManager sharedManager].currentUser.state,
+                           @"country": [UserManager sharedManager].currentUser.country,
+                           @"rate": @(11025),
+                           @"bits": @(8),
+                           @"channels": @(1),
+                           @"compression": @"ACC",
+                           @"segment_duration": @(10000)
+                           };
+    NSLog(@"bcinfo: %@", info);
+    
+    return [NSJSONSerialization dataWithJSONObject:info
                                            options:0 error:nil];
 }
 

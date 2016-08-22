@@ -9,6 +9,7 @@
 #import "SlideShow.h"
 #import "ConfigModel.h"
 #import <SDWebImage/UIImageView+WebCache.h>
+#import <PureLayout/PureLayout.h>
 
 @interface SlideShow ()
 
@@ -36,21 +37,17 @@
     self.slideImage1.alpha = 1.0;
     [self addSubview:self.slideImage1];
     
+    [self.slideImage1 autoPinEdgesToSuperviewEdges];
+    
     self.slideImage2 = [[UIImageView alloc] initWithFrame:self.frame];
     self.slideImage2.contentMode = UIViewContentModeScaleAspectFill;
     self.slideImage2.backgroundColor = [UIColor clearColor];
     self.slideImage2.opaque = NO;
     self.slideImage2.alpha = 0.0;
     [self addSubview:self.slideImage2];
-}
 
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect {
-    // Drawing code
+    [self.slideImage2 autoPinEdgesToSuperviewEdges];
 }
-*/
 
 - (void)start
 {

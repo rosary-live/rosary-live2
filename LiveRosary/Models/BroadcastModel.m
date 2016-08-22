@@ -28,7 +28,7 @@
 
 - (NSString*)description
 {
-    return [NSString stringWithFormat:@"%@ seq:%@ created:%@ updated:%@ live:%@ user:%@", self.bid, self.sequence, [self.created dateForNumber], [self.updated dateForNumber], self.live, self.user];
+    return [NSString stringWithFormat:@"%@ seq:%@ created:%@ updated:%@ live:%@ user:%@ lang:%@", self.bid, self.sequence, [self.created dateForNumber], [self.updated dateForNumber], self.live, self.user, self.language];
 }
 
 #pragma mark - MKAnnotation

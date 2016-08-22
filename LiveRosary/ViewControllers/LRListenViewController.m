@@ -21,6 +21,7 @@
 #import "DBUser.h"
 #import "ListenerCell.h"
 #import <PureLayout/PureLayout.h>
+#import "UIImageView+Utilities.h"
 
 NSString * const kLastIntentionKey = @"LastIntention";
 
@@ -32,6 +33,7 @@ NSString * const kLastIntentionKey = @"LastIntention";
 @property (nonatomic, weak) IBOutlet UILabel* date;
 @property (nonatomic, weak) IBOutlet UILabel* location;
 @property (nonatomic, weak) IBOutlet UIImageView* flag;
+@property (nonatomic, weak) IBOutlet UIImageView* rosary;
 
 @property (nonatomic, weak) IBOutlet UILabel* status;
 @property (nonatomic, weak) IBOutlet UILabel* listenerCount;
@@ -50,7 +52,7 @@ NSString * const kLastIntentionKey = @"LastIntention";
 @property (nonatomic, weak) IBOutlet NSLayoutConstraint* broadcasterConstraint;
 
 @property (nonatomic, strong) MBProgressHUD *hud;
-@property (nonatomic, strong) SlideShow* slideShow;
+@property (nonatomic, strong) IBOutlet SlideShow* slideShow;
 
 
 @property (nonatomic, strong) NSTimer* playTimer;
@@ -67,6 +69,8 @@ NSString * const kLastIntentionKey = @"LastIntention";
 
 @property (nonatomic, strong) NSMutableArray* listeners;
 
+@property (nonatomic) BOOL buttonPanelOpen;
+
 @end
 
 @implementation LRListenViewController
@@ -76,8 +80,13 @@ NSString * const kLastIntentionKey = @"LastIntention";
     
     self.navigationController.navigationBar.topItem.title = @"Stop";
     
+    self.view.backgroundColor = [UIColor colorFromHexString:@"#29488a"];
+    
     self.isReport = self.reportedBroadcast != nil;
     self.listeners = [NSMutableArray new];
+    
+    self.listenerCount.font = [UIFont fontWithName:@"Rokkitt" size:24.0f];
+    self.status.font = [UIFont fontWithName:@"Rokkitt" size:24.0f];
     
     self.listenerCount.text = @"";
     self.status.text = @"00:00";
@@ -140,7 +149,8 @@ NSString * const kLastIntentionKey = @"LastIntention";
                           self.isReport ? self.reportedBroadcast.b_state : self.broadcast.state];
     self.date.text = [NSDateFormatter localizedStringFromDate:[self.isReport ? self.reportedBroadcast.b_updated : self.broadcast.updated dateForNumber] dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterShortStyle];
     self.flag.image = [[UserManager sharedManager] imageForCountryName:self.isReport ? self.reportedBroadcast.b_country : self.broadcast.country];
-
+    [self.rosary addRosaryAnimation];
+    [self.rosary startAnimating];
     //self.status.text = @"Loading";
     
     NSString* urlString = [NSString stringWithFormat:@"https://s3.amazonaws.com/liverosaryavatars/%@", [self.broadcast.user stringByReplacingOccurrencesOfString:@"@" withString:@"-"]];
@@ -305,6 +315,8 @@ NSString * const kLastIntentionKey = @"LastIntention";
 {
     [super viewWillAppear:animated];
     self.reporting = NO;
+    
+    [self closeButtonPanel];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -328,11 +340,6 @@ NSString * const kLastIntentionKey = @"LastIntention";
     {
         [[BroadcastQueueModel sharedInstance] sendExitForBroadcastId:self.reportedBroadcast.bid ? self.reportedBroadcast.bid : self.broadcast.bid toUserWithEmail:nil withDictionary:[UserManager sharedManager].userDictionary];
     }
-}
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 - (NSString*)screenName
@@ -390,9 +397,6 @@ NSString * const kLastIntentionKey = @"LastIntention";
     [self updateUser:self.reportedBroadcast.b_email toLevel:@"banned"];
 }
 
-- (IBAction)onReport:(id)sender {
-}
-
 - (IBAction)onDonate:(id)sender {
 }
 
@@ -401,7 +405,27 @@ NSString * const kLastIntentionKey = @"LastIntention";
 }
 
 - (IBAction)onArrowButton:(id)sender {
-    self.broadcasterConstraint.constant = -60;
+    if(self.buttonPanelOpen) {
+        [self closeButtonPanel];
+    } else {
+        [self openButtonPanel];
+    }
+}
+
+- (void)openButtonPanel {
+    [self.arrowButton setImage:[UIImage imageNamed:@"ArrowDown"] forState:UIControlStateNormal];
+    self.buttonPanelOpen = YES;
+    self.broadcasterConstraint.constant = 0;
+    [UIView animateWithDuration:1
+                     animations:^{
+                         [self.view setNeedsLayout];
+                     }];
+}
+
+- (void)closeButtonPanel {
+    [self.arrowButton setImage:[UIImage imageNamed:@"ArrowUp"] forState:UIControlStateNormal];
+    self.buttonPanelOpen = NO;
+    self.broadcasterConstraint.constant = -37;
     [UIView animateWithDuration:1
                      animations:^{
                          [self.view setNeedsLayout];
@@ -469,17 +493,17 @@ NSString * const kLastIntentionKey = @"LastIntention";
 
 - (void)buffering
 {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        self.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-        self.hud.labelText = @"Buffering";
-    });
+//    dispatch_async(dispatch_get_main_queue(), ^{
+//        self.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+//        self.hud.labelText = @"Buffering";
+//    });
 }
 
 - (void)playing
 {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self.hud hide:YES];
-    });
+//    dispatch_async(dispatch_get_main_queue(), ^{
+//        [self.hud hide:YES];
+//    });
 }
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
@@ -555,10 +579,10 @@ NSString * const kLastIntentionKey = @"LastIntention";
     return self.listeners.count;
 }
 
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
-{
-    return @"Listeners";
-}
+//- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+//{
+//    return @"Listeners";
+//}
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -566,7 +590,7 @@ NSString * const kLastIntentionKey = @"LastIntention";
     NSDictionary* listener = self.listeners[indexPath.row];
     cell.name.text = [NSString stringWithFormat:@"%@ %@", listener[@"firstName"], listener[@"lastName"]];
     cell.intention.text = listener[@"intention"];
-    cell.flag.image = [[UserManager sharedManager] imageForCountryCode:listener[@"country"]];
+    cell.flag.image = [[UserManager sharedManager] imageForCountryName:listener[@"country"]];
     
     NSString* urlString = [NSString stringWithFormat:@"https://s3.amazonaws.com/liverosaryavatars/%@", [listener[@"email"] stringByReplacingOccurrencesOfString:@"@" withString:@"-"]];
     [cell.avatar sd_setImageWithURL:[NSURL URLWithString:urlString] placeholderImage:[UIImage imageNamed:@"AvatarImage"] options:0];

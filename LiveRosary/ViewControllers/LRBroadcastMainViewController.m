@@ -11,13 +11,17 @@
 #import "ScheduleSingleCell.h"
 #import "NSNumber+Utilities.h"
 #import "LRScheduleBroadcastViewController.h"
+#import "UserManager.h"
 
-@interface LRBroadcastMainViewController () <UITableViewDataSource, UITableViewDelegate>
+@interface LRBroadcastMainViewController () <UITableViewDataSource, UITableViewDelegate, UIPickerViewDelegate, UIPickerViewDataSource>
 
 @property (nonatomic, weak) IBOutlet UITableView* tableView;
 @property (nonatomic, weak) IBOutlet UIButton* startBroadcasting;
 @property (nonatomic, weak) IBOutlet UITextField* language;
 
+@property (nonatomic, strong) UIPickerView* languagePickerView;
+
+@property (nonatomic, strong) NSMutableArray<NSString*>* languages;
 @property (nonatomic, strong) NSArray<ScheduleModel*>* scheduledBroadcasts;
 
 @end
@@ -28,6 +32,7 @@
     [super viewDidLoad];
 
     [self addDrawerButton];
+    [self addLanguagePickerView];
     
     self.startBroadcasting.layer.cornerRadius = 4;
     
@@ -116,11 +121,62 @@
     return cell;
 }
 
+- (IBAction)onLanguagePickerDone:(id)sender
+{
+    [self.language resignFirstResponder];
+}
 
-//#pragma mark - UITableViewDelegate
-//
-//- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-//{
-//}
+-(void)addLanguagePickerView
+{
+    self.languages = [[UserManager sharedManager].languages mutableCopy];
+    
+    self.languagePickerView = [[UIPickerView alloc] init];
+    self.languagePickerView.dataSource = self;
+    self.languagePickerView.delegate = self;
+    self.languagePickerView.showsSelectionIndicator = YES;
+    
+    UIBarButtonItem* doneButton = [[UIBarButtonItem alloc]
+                                   initWithTitle:@"Done" style:UIBarButtonItemStyleDone
+                                   target:self action:@selector(onLanguagePickerDone:)];
+    
+    UIToolbar* toolBar = [[UIToolbar alloc] initWithFrame:
+                          CGRectMake(0, self.view.frame.size.height-
+                                     self.languagePickerView.frame.size.height-50, 320, 50)];
+    
+    [toolBar setBarStyle:UIBarStyleBlackOpaque];
+    NSArray *toolbarItems = [NSArray arrayWithObjects:doneButton, nil];
+    [toolBar setItems:toolbarItems];
+    self.language.inputView = self.languagePickerView;
+    self.language.inputAccessoryView = toolBar;
+    self.language.text = [UserManager sharedManager].currentUser.language;
+    [UserManager sharedManager].broadcastLanguage = self.language.text;
+    
+    [self.languagePickerView selectRow:[self.languages indexOfObject:[UserManager sharedManager].currentUser.language] inComponent:0 animated:NO];
+}
+
+#pragma mark - UIPickerViewDataSource
+
+- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView
+{
+    return 1;
+}
+
+- (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
+{
+    return self.languages.count;
+}
+
+#pragma mark - UIPickerViewDelegate
+
+- (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
+{
+    [self.language setText:[self.languages objectAtIndex:row]];
+    [UserManager sharedManager].broadcastLanguage = [self.languages objectAtIndex:row];
+}
+
+- (NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component
+{
+    return [self.languages objectAtIndex:row];
+}
 
 @end
