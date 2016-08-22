@@ -15,6 +15,8 @@
 @property (nonatomic, weak) IBOutlet UILabel* location;
 @property (nonatomic, weak) IBOutlet UILabel* language;
 @property (nonatomic, weak) IBOutlet UILabel* schedule;
-@property (nonatomic, weak) IBOutlet UIButton* reminderButton;
+@property (nonatomic, weak) IBOutlet UIImageView* alarm;
+@property (nonatomic, weak) IBOutlet UIImageView* rosary;
+@property (nonatomic, weak) IBOutlet UIImageView* flag;
 
 @end

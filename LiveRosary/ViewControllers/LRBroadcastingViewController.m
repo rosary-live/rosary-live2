@@ -248,7 +248,8 @@
     ListenerCell* cell = [tableView dequeueReusableCellWithIdentifier:@"ListenerCell" forIndexPath:indexPath];
     NSDictionary* listener = self.listeners[indexPath.row];
     cell.name.text = [NSString stringWithFormat:@"%@ %@", listener[@"firstName"], listener[@"lastName"]];
-    cell.location.text = [NSString stringWithFormat:@"%@ %@ %@", listener[@"city"], listener[@"state"], listener[@"country"]];
+    //cell.location.text = [NSString stringWithFormat:@"%@ %@ %@", listener[@"city"], listener[@"state"], listener[@"country"]];
+    cell.flag.image = [[UserManager sharedManager] imageForCountryName:listener[@"country"]];
     cell.intention.text = listener[@"intention"];
     
     NSString* urlString = [NSString stringWithFormat:@"https://s3.amazonaws.com/liverosaryavatars/%@", [listener[@"email"] stringByReplacingOccurrencesOfString:@"@" withString:@"-"]];

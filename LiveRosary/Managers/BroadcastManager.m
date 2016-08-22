@@ -188,8 +188,10 @@
     
     ++self.startingNumToBuffer;
     self.numToBuffer = self.startingNumToBuffer;
-    [[AudioManager sharedManager] stopPlaying];
-    [[AudioManager sharedManager] prepareToPlay];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [[AudioManager sharedManager] stopPlaying];
+        [[AudioManager sharedManager] prepareToPlay];
+    });
 }
 
 #pragma mark - TransferManagerDelegate

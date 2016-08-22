@@ -15,6 +15,8 @@
 @interface LRBroadcastMainViewController () <UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic, weak) IBOutlet UITableView* tableView;
+@property (nonatomic, weak) IBOutlet UIButton* startBroadcasting;
+@property (nonatomic, weak) IBOutlet UITextField* language;
 
 @property (nonatomic, strong) NSArray<ScheduleModel*>* scheduledBroadcasts;
 
@@ -25,7 +27,11 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    [self addDrawerButton];    
+    [self addDrawerButton];
+    
+    self.startBroadcasting.layer.cornerRadius = 4;
+    
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Add"] style:UIBarButtonItemStylePlain target:self action:@selector(onAdd:)];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -52,6 +58,11 @@
 {
     return @"Broadcast Main";
 }
+
+- (IBAction)onAdd:(id)sender {
+    [self performSegueWithIdentifier:@"ToSchedule" sender:sender];
+}
+
 
 #pragma mark - Navigation
 

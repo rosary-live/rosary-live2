@@ -20,12 +20,12 @@
 		978337791CBED6B500C3C3F7 /* LRAdminReportedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 978337781CBED6B500C3C3F7 /* LRAdminReportedViewController.m */; };
 		9786629E1D624BBD00209667 /* UIColor+Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 9786629D1D624BBD00209667 /* UIColor+Utilities.m */; };
 		978662A51D63435900209667 /* Rokkitt.otf in Resources */ = {isa = PBXBuildFile; fileRef = 978662A41D63435900209667 /* Rokkitt.otf */; };
+		97D7F4ED1D6A1BC000B91CAC /* UIImageView+Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 97D7F4EC1D6A1BC000B91CAC /* UIImageView+Utilities.m */; };
 		D81AAF7C1C45E29C00B46544 /* LRBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D81AAF7B1C45E29C00B46544 /* LRBaseViewController.m */; };
 		D820FB061C4452A9000899DB /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D820FB051C4452A9000899DB /* main.m */; };
 		D820FB091C4452A9000899DB /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D820FB081C4452A9000899DB /* AppDelegate.m */; };
 		D820FB0F1C4452A9000899DB /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D820FB0D1C4452A9000899DB /* Main.storyboard */; };
 		D820FB111C4452A9000899DB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D820FB101C4452A9000899DB /* Assets.xcassets */; };
-		D820FB141C4452A9000899DB /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D820FB121C4452A9000899DB /* LaunchScreen.storyboard */; };
 		D82506151CC3207200B0024B /* LanguagePicker.m in Sources */ = {isa = PBXBuildFile; fileRef = D82506141CC3207200B0024B /* LanguagePicker.m */; };
 		D82506181CC3208600B0024B /* CountryPicker.m in Sources */ = {isa = PBXBuildFile; fileRef = D82506171CC3208600B0024B /* CountryPicker.m */; };
 		D83F6A971C47054C005F07E0 /* LRBroadcastMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D83F6A961C47054C005F07E0 /* LRBroadcastMainViewController.m */; };
@@ -336,6 +336,8 @@
 		9786629C1D624BBD00209667 /* UIColor+Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIColor+Utilities.h"; path = "Categories/UIColor+Utilities.h"; sourceTree = "<group>"; };
 		9786629D1D624BBD00209667 /* UIColor+Utilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIColor+Utilities.m"; path = "Categories/UIColor+Utilities.m"; sourceTree = "<group>"; };
 		978662A41D63435900209667 /* Rokkitt.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Rokkitt.otf; path = Resources/Rokkitt.otf; sourceTree = "<group>"; };
+		97D7F4EB1D6A1BC000B91CAC /* UIImageView+Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIImageView+Utilities.h"; path = "Categories/UIImageView+Utilities.h"; sourceTree = "<group>"; };
+		97D7F4EC1D6A1BC000B91CAC /* UIImageView+Utilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIImageView+Utilities.m"; path = "Categories/UIImageView+Utilities.m"; sourceTree = "<group>"; };
 		BD4753DF687E71C09BECA0B1 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		D81AAF7A1C45E29C00B46544 /* LRBaseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LRBaseViewController.h; path = ViewControllers/LRBaseViewController.h; sourceTree = "<group>"; };
 		D81AAF7B1C45E29C00B46544 /* LRBaseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LRBaseViewController.m; path = ViewControllers/LRBaseViewController.m; sourceTree = "<group>"; };
@@ -345,7 +347,6 @@
 		D820FB081C4452A9000899DB /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		D820FB0E1C4452A9000899DB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		D820FB101C4452A9000899DB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		D820FB131C4452A9000899DB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		D820FB151C4452A9000899DB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D82506131CC3207200B0024B /* LanguagePicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LanguagePicker.h; path = Views/LanguagePicker.h; sourceTree = "<group>"; };
 		D82506141CC3207200B0024B /* LanguagePicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LanguagePicker.m; path = Views/LanguagePicker.m; sourceTree = "<group>"; };
@@ -757,7 +758,6 @@
 				D820FB081C4452A9000899DB /* AppDelegate.m */,
 				D820FB0D1C4452A9000899DB /* Main.storyboard */,
 				D820FB101C4452A9000899DB /* Assets.xcassets */,
-				D820FB121C4452A9000899DB /* LaunchScreen.storyboard */,
 				D820FB151C4452A9000899DB /* Info.plist */,
 				D820FB041C4452A9000899DB /* Supporting Files */,
 			);
@@ -1222,6 +1222,8 @@
 				D8C23FDA1C51E23D0043F8BE /* NSString+Utilities.m */,
 				D863727F1C5B1FFB00D02DC3 /* NSNumber+Utilities.h */,
 				D86372801C5B1FFB00D02DC3 /* NSNumber+Utilities.m */,
+				97D7F4EB1D6A1BC000B91CAC /* UIImageView+Utilities.h */,
+				97D7F4EC1D6A1BC000B91CAC /* UIImageView+Utilities.m */,
 			);
 			name = Categories;
 			sourceTree = "<group>";
@@ -1450,7 +1452,6 @@
 				D852B2B81CC4667F004D4BA4 /* re.png in Resources */,
 				D852B2BE1CC4667F004D4BA4 /* sb.png in Resources */,
 				D852B22D1CC4667F004D4BA4 /* bw.png in Resources */,
-				D820FB141C4452A9000899DB /* LaunchScreen.storyboard in Resources */,
 				D852B29D1CC4667F004D4BA4 /* mx.png in Resources */,
 				D852B2CE1CC4667F004D4BA4 /* tc.png in Resources */,
 				D852B24B1CC4667F004D4BA4 /* es.png in Resources */,
@@ -1609,6 +1610,7 @@
 				D820FB091C4452A9000899DB /* AppDelegate.m in Sources */,
 				D84A21171C8E6CD0006C4D63 /* LRChangePasswordViewController.m in Sources */,
 				977632DE1CAE02A4005F4DAE /* LRResetPasswordViewController.m in Sources */,
+				97D7F4ED1D6A1BC000B91CAC /* UIImageView+Utilities.m in Sources */,
 				975C1B3D1CA9873D009536CF /* SlideShow.m in Sources */,
 				D863727D1C5AFED900D02DC3 /* DBBroadcast.m in Sources */,
 				977632DB1CADA8C0005F4DAE /* AnalyticsManager.m in Sources */,
@@ -1654,14 +1656,6 @@
 				D820FB0E1C4452A9000899DB /* Base */,
 			);
 			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
-		D820FB121C4452A9000899DB /* LaunchScreen.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				D820FB131C4452A9000899DB /* Base */,
-			);
-			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -1754,6 +1748,7 @@
 			baseConfigurationReference = BD4753DF687E71C09BECA0B1 /* Pods.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = LiveRosary/LiveRosary.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -1769,6 +1764,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.pocketcake.LiveRosary;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -1777,6 +1773,7 @@
 			baseConfigurationReference = 0A322FD56E2A135557AC420B /* Pods.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = LiveRosary/LiveRosary.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -1792,6 +1789,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.pocketcake.LiveRosary;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

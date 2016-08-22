@@ -20,6 +20,7 @@
 #import "ScheduleManager.h"
 #import "ReportCell.h"
 #import "ReportedBroadcastModel.h"
+#import "UIImageView+Utilities.h"
 
 typedef NS_ENUM(NSUInteger, Section) {
     SectionBroadcasts,
@@ -36,7 +37,9 @@ typedef NS_ENUM(NSUInteger, Mode) {
 @property (nonatomic, weak) IBOutlet UITableView* tableView;
 @property (nonatomic, weak) IBOutlet MKMapView* mapView;
 @property (nonatomic, weak) IBOutlet UITextField* language;
-@property (nonatomic, weak) IBOutlet UISegmentedControl* modeSegmentControl;
+//@property (nonatomic, weak) IBOutlet UISegmentedControl* modeSegmentControl;
+@property (nonatomic, weak) IBOutlet UIButton* mapMode;
+@property (nonatomic, weak) IBOutlet UIButton* listMode;
 
 @property (nonatomic, strong) UIPickerView* languagePickerView;
 
@@ -269,31 +272,30 @@ typedef NS_ENUM(NSUInteger, Mode) {
     [self.language resignFirstResponder];
 }
 
-- (IBAction)onModeChange:(id)sender
-{
-    Mode mode = [self.modeSegmentControl selectedSegmentIndex];
-    switch(mode)
-    {
-        case ModeList:
-            [self changeToListMode];
-            break;
-            
-        case ModeMap:
-            [self changeToMapMode];
-            break;
-    }
+- (IBAction)onMapMode:(id)sender {
+    [self changeToMapMode];
+}
+
+- (IBAction)onListMode:(id)sender {
+    [self changeToListMode];
 }
 
 - (void)changeToListMode
 {
     self.tableView.hidden = NO;
     self.mapView.hidden = YES;
+    
+    [self.listMode setImage:[UIImage imageNamed:@"ListOn"] forState:UIControlStateNormal];
+    [self.mapMode setImage:[UIImage imageNamed:@"MapOff"] forState:UIControlStateNormal];
 }
 
 - (void)changeToMapMode
 {
     self.tableView.hidden = YES;
     self.mapView.hidden = NO;
+
+    [self.mapMode setImage:[UIImage imageNamed:@"MapOn"] forState:UIControlStateNormal];
+    [self.listMode setImage:[UIImage imageNamed:@"ListOff"] forState:UIControlStateNormal];
 }
 
 - (void)centerMapView
@@ -402,9 +404,13 @@ typedef NS_ENUM(NSUInteger, Mode) {
                 BroadcastModel* broadcast = self.broadcasts[indexPath.row];
                 cell.name.text = broadcast.name;
                 cell.language.text = broadcast.language;
-                cell.location.text = [NSString stringWithFormat:@"%@, %@ %@", broadcast.city, broadcast.state, broadcast.country];
+                cell.location.text = [NSString stringWithFormat:@"%@, %@", broadcast.city, broadcast.state];
                 cell.date.text = [NSString stringWithFormat:@" %@ %@", [NSDateFormatter localizedStringFromDate:[broadcast.updated dateForNumber] dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterNoStyle], [NSDateFormatter localizedStringFromDate:[broadcast.updated dateForNumber] dateStyle:NSDateFormatterNoStyle timeStyle:NSDateFormatterShortStyle]];
-                cell.live.text = broadcast.isLive ? @"LIVE" : @"ENDED";
+                //cell.live.text = broadcast.isLive ? @"LIVE" : @"ENDED";
+                cell.flag.image = [[UserManager sharedManager] imageForCountryName:broadcast.country];
+                cell.alarm.hidden = YES;
+                [cell.rosary addRosaryAnimation];
+                [cell.rosary startAnimating];
                 
                 NSString* urlString = [NSString stringWithFormat:@"https://s3.amazonaws.com/liverosaryavatars/%@", [broadcast.user stringByReplacingOccurrencesOfString:@"@" withString:@"-"]];
                 [cell.avatar sd_setImageWithURL:[NSURL URLWithString:urlString] placeholderImage:[UIImage imageNamed:@"AvatarImage"] options:0];
@@ -436,15 +442,15 @@ typedef NS_ENUM(NSUInteger, Mode) {
             
             if([ScheduleManager sharedManager].notificationsEnabled)
             {
-                cell.reminderButton.hidden = NO;
-                UIImage* image = [[ScheduleManager sharedManager] reminderSetForBroadcastWithId:scheduledBroadcast.sid] ? [UIImage imageNamed:@"AlarmOn"] : [UIImage imageNamed:@"AlarmOff"];
-                [cell.reminderButton setImage:image forState:UIControlStateNormal];
-                [cell.reminderButton addTarget:self action:@selector(onReminder:) forControlEvents:UIControlEventTouchUpInside];
-                cell.reminderButton.tag = indexPath.row;
+//                cell.reminderButton.hidden = NO;
+//                UIImage* image = [[ScheduleManager sharedManager] reminderSetForBroadcastWithId:scheduledBroadcast.sid] ? [UIImage imageNamed:@"AlarmOn"] : [UIImage imageNamed:@"AlarmOff"];
+//                [cell.reminderButton setImage:image forState:UIControlStateNormal];
+//                [cell.reminderButton addTarget:self action:@selector(onReminder:) forControlEvents:UIControlEventTouchUpInside];
+//                cell.reminderButton.tag = indexPath.row;
             }
             else
             {
-                cell.reminderButton.hidden = YES;
+//                cell.reminderButton.hidden = YES;
             }
             
             return cell;

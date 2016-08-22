@@ -10,6 +10,10 @@
 
 @interface LRAdminMainViewController ()
 
+@property (nonatomic, weak) IBOutlet UIView* allBroadcastsView;
+@property (nonatomic, weak) IBOutlet UIView* reportedBroadcastsView;
+@property (nonatomic, weak) IBOutlet UIView* manageUsersView;
+
 @end
 
 @implementation LRAdminMainViewController
@@ -18,6 +22,12 @@
     [super viewDidLoad];
 
     [self addDrawerButton];
+    
+    self.view.backgroundColor = [UIColor colorFromHexString:@"#E7D8B9"];
+    
+    self.allBroadcastsView.layer.cornerRadius = 4;
+    self.reportedBroadcastsView.layer.cornerRadius = 4;
+    self.manageUsersView.layer.cornerRadius = 4;
 }
 
 - (void)didReceiveMemoryWarning {

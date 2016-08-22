@@ -35,9 +35,10 @@ NSString * const kLastIntentionKey = @"LastIntention";
 
 @property (nonatomic, weak) IBOutlet UILabel* status;
 @property (nonatomic, weak) IBOutlet UILabel* listenerCount;
+@property (nonatomic, weak) IBOutlet UIButton* arrowButton;
 
-@property (nonatomic, weak) IBOutlet UIView* intentionView;
-@property (nonatomic, weak) IBOutlet UITextField* intention;
+//@property (nonatomic, weak) IBOutlet UIView* intentionView;
+//@property (nonatomic, weak) IBOutlet UITextField* intention;
 
 @property (nonatomic, weak) IBOutlet UITableView* tableView;
 
@@ -45,6 +46,8 @@ NSString * const kLastIntentionKey = @"LastIntention";
 @property (nonatomic, weak) IBOutlet UIButton* report;
 @property (nonatomic, weak) IBOutlet UIButton* revokeBroadcastPriv;
 @property (nonatomic, weak) IBOutlet UIButton* banUser;
+
+@property (nonatomic, weak) IBOutlet NSLayoutConstraint* broadcasterConstraint;
 
 @property (nonatomic, strong) MBProgressHUD *hud;
 @property (nonatomic, strong) SlideShow* slideShow;
@@ -54,7 +57,7 @@ NSString * const kLastIntentionKey = @"LastIntention";
 
 
 @property (nonatomic) BOOL editingIntention;
-@property (nonatomic, strong) NSString* lastIntention;
+//@property (nonatomic, strong) NSString* lastIntention;
 
 @property (nonatomic) BOOL reporting;
 
@@ -76,9 +79,12 @@ NSString * const kLastIntentionKey = @"LastIntention";
     self.isReport = self.reportedBroadcast != nil;
     self.listeners = [NSMutableArray new];
     
+    self.listenerCount.text = @"";
+    self.status.text = @"00:00";
+    
     if(self.isReport)
     {
-        self.intention.hidden = YES;
+        //self.intention.hidden = YES;
         self.report.hidden = YES;
         self.revokeBroadcastPriv.hidden = NO;
         self.banUser.hidden = NO;
@@ -87,18 +93,35 @@ NSString * const kLastIntentionKey = @"LastIntention";
     {
         if(self.playFromStart)
         {
-            self.intention.hidden = YES;
+            //self.intention.hidden = YES;
             self.report.hidden = YES;
         }
         else
         {
-            self.lastIntention = [[NSUserDefaults standardUserDefaults] objectForKey:kLastIntentionKey];
-            if(self.lastIntention == nil) self.lastIntention = @"";
+            UIAlertController* intentionAlert = [UIAlertController alertControllerWithTitle:nil message:@"Enter your intention message." preferredStyle:UIAlertControllerStyleAlert];
+
+            [intentionAlert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+                textField.placeholder = @"Intention";
+            }];
             
-            self.intention.text = self.lastIntention;
+            [intentionAlert addAction:[UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                NSString* intention = intentionAlert.textFields.firstObject.text;
+                NSMutableDictionary* userDict = [[UserManager sharedManager].userDictionary mutableCopy];    userDict[@"intention"] = intention != nil ? intention : @"";
+                [[AnalyticsManager sharedManager] event:@"SetIntention" info:@{@"bid": self.broadcast.bid, @"Intention": userDict[@"intention"]}];
+                
+                [[BroadcastQueueModel sharedInstance] sendUpdateForBroadcastId:self.broadcast.bid toUserWithEmail:nil withDictionary:userDict];
+            }]];
             
-            [self.view addSubview:self.intentionView];
-            [self.intentionView autoCenterInSuperviewMargins];
+            [self presentViewController:intentionAlert animated:YES completion:nil];
+            
+            
+//            self.lastIntention = [[NSUserDefaults standardUserDefaults] objectForKey:kLastIntentionKey];
+//            if(self.lastIntention == nil) self.lastIntention = @"";
+//            
+//            self.intention.text = self.lastIntention;
+//            
+//            [self.view addSubview:self.intentionView];
+//            [self.intentionView autoCenterInSuperviewMargins];
         }
         
 //        self.intentionLabel.hidden = NO;
@@ -118,7 +141,7 @@ NSString * const kLastIntentionKey = @"LastIntention";
     self.date.text = [NSDateFormatter localizedStringFromDate:[self.isReport ? self.reportedBroadcast.b_updated : self.broadcast.updated dateForNumber] dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterShortStyle];
     self.flag.image = [[UserManager sharedManager] imageForCountryName:self.isReport ? self.reportedBroadcast.b_country : self.broadcast.country];
 
-    self.status.text = @"Loading";
+    //self.status.text = @"Loading";
     
     NSString* urlString = [NSString stringWithFormat:@"https://s3.amazonaws.com/liverosaryavatars/%@", [self.broadcast.user stringByReplacingOccurrencesOfString:@"@" withString:@"-"]];
     [self.avatar sd_setImageWithURL:[NSURL URLWithString:urlString] placeholderImage:[UIImage imageNamed:@"AvatarImage"] options:0];
@@ -142,7 +165,7 @@ NSString * const kLastIntentionKey = @"LastIntention";
                 
                 if(broadcast.isLive || self.playFromStart)
                 {
-                    self.status.text = @"Playing";
+                    //self.status.text = @"Playing";
                     [[BroadcastManager sharedManager] startPlayingBroadcastWithId:self.broadcast.bid atSequence:self.playFromStart ? 1 : broadcast.sequence.integerValue completion:^(BOOL insufficientBandwidth) {
                         
                         dispatch_async(dispatch_get_main_queue(), ^{
@@ -162,7 +185,7 @@ NSString * const kLastIntentionKey = @"LastIntention";
                                     int playTime = baseTime + (int)(CACurrentMediaTime() - self.startTime);
                                     int minutes = playTime / 60;
                                     int seconds = playTime % 60;
-                                    self.status.text = [NSString stringWithFormat:@"Playing %d:%02d", minutes, seconds];
+                                    self.status.text = [NSString stringWithFormat:@"%02d:%02d", minutes, seconds];
                                 } repeats:YES];
                                 
                                 [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
@@ -202,7 +225,7 @@ NSString * const kLastIntentionKey = @"LastIntention";
                                                         if(![listenerEmail isEqualToString:[UserManager sharedManager].email] && !noResponse)
                                                         {
                                                             NSMutableDictionary* userDict = [[UserManager sharedManager].userDictionary mutableCopy];
-                                                            userDict[@"intention"] = self.intention.text != nil ? self.intention.text : @"";
+                                                            userDict[@"intention"] = @"";
                                                             [[BroadcastQueueModel sharedInstance] sendEnterForBroadcastId:self.broadcast.bid toUserWithEmail:listenerEmail withDictionary:userDict];
                                                         }
                                                     }
@@ -232,13 +255,14 @@ NSString * const kLastIntentionKey = @"LastIntention";
                                                     }
                                                 }
                                                 
+                                                self.listenerCount.text = [NSString stringWithFormat:@"%d", (int)self.listeners.count];
                                                 [self.tableView reloadData];
                                             });
                                         }];
                                         
                                         [[AnalyticsManager sharedManager] event:@"Play" info:@{@"bid": self.broadcast.bid}];
                                         NSMutableDictionary* userDict = [[UserManager sharedManager].userDictionary mutableCopy];
-                                        userDict[@"intention"] = self.intention.text != nil ? self.intention.text : @"";
+                                        userDict[@"intention"] = @"";
                                         [[BroadcastQueueModel sharedInstance] sendEnterForBroadcastId:self.broadcast.bid toUserWithEmail:nil withDictionary:userDict];
                                     }];
                                 }
@@ -249,7 +273,7 @@ NSString * const kLastIntentionKey = @"LastIntention";
                 }
                 else
                 {
-                    self.status.text = @"Broadcast Has Ended";
+                    //self.status.text = @"Broadcast Has Ended";
                 }
             });
         }
@@ -316,6 +340,9 @@ NSString * const kLastIntentionKey = @"LastIntention";
     return @"Listen";
 }
 
+- (void)promptForIntention {
+}
+
 - (NSDictionary*)listenerForEmail:(NSString*)email
 {
     if(email != nil && email.length > 0)
@@ -363,17 +390,35 @@ NSString * const kLastIntentionKey = @"LastIntention";
     [self updateUser:self.reportedBroadcast.b_email toLevel:@"banned"];
 }
 
-- (IBAction)onSetIntention:(id)sender
-{
-    self.lastIntention = self.intention.text;
-    [[NSUserDefaults standardUserDefaults] setObject:self.lastIntention forKey:kLastIntentionKey];
-    [[NSUserDefaults standardUserDefaults] synchronize];
-    
-    NSMutableDictionary* userDict = [[UserManager sharedManager].userDictionary mutableCopy];    userDict[@"intention"] = self.intention.text != nil ? self.intention.text : @"";
-    [[AnalyticsManager sharedManager] event:@"CangedIntention" info:@{@"bid": self.broadcast.bid, @"Intention": userDict[@"intention"]}];
-    
-    [[BroadcastQueueModel sharedInstance] sendUpdateForBroadcastId:self.broadcast.bid toUserWithEmail:nil withDictionary:userDict];
+- (IBAction)onReport:(id)sender {
 }
+
+- (IBAction)onDonate:(id)sender {
+}
+
+- (IBAction)onStopListening:(id)sender {
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (IBAction)onArrowButton:(id)sender {
+    self.broadcasterConstraint.constant = -60;
+    [UIView animateWithDuration:1
+                     animations:^{
+                         [self.view setNeedsLayout];
+                     }];
+}
+
+//- (IBAction)onSetIntention:(id)sender
+//{
+//    self.lastIntention = self.intention.text;
+//    [[NSUserDefaults standardUserDefaults] setObject:self.lastIntention forKey:kLastIntentionKey];
+//    [[NSUserDefaults standardUserDefaults] synchronize];
+//    
+//    NSMutableDictionary* userDict = [[UserManager sharedManager].userDictionary mutableCopy];    userDict[@"intention"] = self.intention.text != nil ? self.intention.text : @"";
+//    [[AnalyticsManager sharedManager] event:@"CangedIntention" info:@{@"bid": self.broadcast.bid, @"Intention": userDict[@"intention"]}];
+//    
+//    [[BroadcastQueueModel sharedInstance] sendUpdateForBroadcastId:self.broadcast.bid toUserWithEmail:nil withDictionary:userDict];
+//}
 
 - (void)updateUser:(NSString*)email toLevel:(NSString*)level
 {
@@ -415,7 +460,7 @@ NSString * const kLastIntentionKey = @"LastIntention";
         [[AnalyticsManager sharedManager] event:@"PlayDuration" info:@{@"bid": self.broadcast.bid, @"duration": @(CACurrentMediaTime() - self.startTime), @"over": @(1)}];
 
         dispatch_async(dispatch_get_main_queue(), ^{
-            self.status.text = @"Broadcast Has Ended";
+            //self.status.text = @"Broadcast Has Ended";
             [self stopSlideShow];
             self.resumeSlideShow.hidden = YES;
         });
@@ -452,7 +497,7 @@ NSString * const kLastIntentionKey = @"LastIntention";
     self.slideShow.alpha = 0.0;
     self.slideShow.hidden = NO;
     [self.slideShow start];
-    [[self navigationController] setNavigationBarHidden:YES animated:YES];
+//    [[self navigationController] setNavigationBarHidden:YES animated:YES];
     [UIView animateWithDuration:0.5 animations:^{
         self.slideShow.alpha = 1.0;
     }];
@@ -465,7 +510,7 @@ NSString * const kLastIntentionKey = @"LastIntention";
         self.slideShow.alpha = 0.0;
     } completion:^(BOOL finished) {
         self.slideShow.hidden = YES;
-        [[self navigationController] setNavigationBarHidden:NO animated:YES];
+//        [[self navigationController] setNavigationBarHidden:NO animated:YES];
     }];
 }
 
@@ -520,8 +565,8 @@ NSString * const kLastIntentionKey = @"LastIntention";
     ListenerCell* cell = [tableView dequeueReusableCellWithIdentifier:@"ListenerCell" forIndexPath:indexPath];
     NSDictionary* listener = self.listeners[indexPath.row];
     cell.name.text = [NSString stringWithFormat:@"%@ %@", listener[@"firstName"], listener[@"lastName"]];
-    cell.location.text = [NSString stringWithFormat:@"%@ %@ %@", listener[@"city"], listener[@"state"], listener[@"country"]];
     cell.intention.text = listener[@"intention"];
+    cell.flag.image = [[UserManager sharedManager] imageForCountryCode:listener[@"country"]];
     
     NSString* urlString = [NSString stringWithFormat:@"https://s3.amazonaws.com/liverosaryavatars/%@", [listener[@"email"] stringByReplacingOccurrencesOfString:@"@" withString:@"-"]];
     [cell.avatar sd_setImageWithURL:[NSURL URLWithString:urlString] placeholderImage:[UIImage imageNamed:@"AvatarImage"] options:0];

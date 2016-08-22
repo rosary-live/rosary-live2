@@ -15,6 +15,8 @@
 @property (nonatomic, weak) IBOutlet UILabel* language;
 @property (nonatomic, weak) IBOutlet UILabel* date;
 @property (nonatomic, weak) IBOutlet UILabel* location;
-@property (nonatomic, weak) IBOutlet UILabel* live;
+@property (nonatomic, weak) IBOutlet UIImageView* flag;
+@property (nonatomic, weak) IBOutlet UIImageView* rosary;
+@property (nonatomic, weak) IBOutlet UIImageView* alarm;
 
 @end

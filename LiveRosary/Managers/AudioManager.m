@@ -497,7 +497,7 @@
         
         [self.decompressCondition unlock];
         
-        if(!self.isPlaying) break;
+        if(!self.isPlaying) continue;
 
         if(fileWrapper != nil && fileWrapper.filename != nil)
         {
