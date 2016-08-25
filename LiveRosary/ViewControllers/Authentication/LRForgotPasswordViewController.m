@@ -14,6 +14,8 @@
 
 @interface LRForgotPasswordViewController ()
 
+@property (nonatomic, weak) IBOutlet UILabel* header;
+
 @property (nonatomic, weak) IBOutlet UITextField* email;
 @property (nonatomic, weak) IBOutlet UILabel* instructions;
 
@@ -25,7 +27,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+    
+    self.header.font = [UIFont fontWithName:@"Rokkitt" size:26.0f];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -36,6 +39,10 @@
 - (NSString*)screenName
 {
     return @"Forgot Password";
+}
+
+- (BOOL)hideNavBar {
+    return YES;
 }
 
 /*
@@ -108,6 +115,11 @@
                 });
             }];
         }
-    }];}
+    }];
+}
+
+- (IBAction)onBack:(id)sender {
+    [self.navigationController popViewControllerAnimated:YES];
+}
 
 @end

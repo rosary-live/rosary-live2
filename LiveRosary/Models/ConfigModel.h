@@ -18,6 +18,7 @@
 @property (nonatomic, readonly) NSInteger slideShowStartDelay;
 @property (nonatomic, readonly) NSInteger slideShowChangeInterval;
 @property (nonatomic, strong, readonly) NSArray* slideImageURLs;
+@property (nonatomic, strong, readonly) NSString* donateURL;
 
 + (instancetype)sharedInstance;
 

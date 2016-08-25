@@ -16,6 +16,8 @@
 
 @interface LRCreateUserViewController ()
 
+@property (nonatomic, weak) IBOutlet UILabel* header;
+
 @property (nonatomic, weak) IBOutlet UITextField* firstName;
 @property (nonatomic, weak) IBOutlet UITextField* lastName;
 @property (nonatomic, weak) IBOutlet UITextField* email;
@@ -47,11 +49,13 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    self.header.font = [UIFont fontWithName:@"Rokkitt" size:26.0f];
+
     [self populateLanguage];
     [self populateLocation];
     
     self.languagePicker = [[LanguagePicker alloc] initWithTextField:self.language inView:self.view];
-    self.countryPicker = [[CountryPicker alloc] initWithTextField:self.country inView:self.view];
+    self.countryPicker = [[CountryPicker alloc] initWithTextField:self.country inView:self.view];    
 }
 
 - (void)didReceiveMemoryWarning {
@@ -62,6 +66,10 @@
 - (NSString*)screenName
 {
     return @"Create User";
+}
+
+- (BOOL)hideNavBar {
+    return YES;
 }
 
 /*
@@ -137,6 +145,10 @@
     {
         [[AnalyticsManager sharedManager] event:@"CreateNoGeocode" info:nil];
     }
+}
+
+- (IBAction)onGPS:(id)sender {
+    [self populateLocation];
 }
 
 - (IBAction)onCreate:(id)sender

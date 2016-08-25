@@ -1,6 +1,16 @@
 {
 	"sampleRate": 11025,
-	"segmentSizeSeconds": 5,
+	"segmentSizeSeconds": 3,
 	"maxBroadcastSeconds": 1800,
-	"compressionBitRate": 10000
+	"slideShowStartDelay": 5,
+	"slideShowChangeInterval": 10,
+	"slideImageURLs": [
+		"https://s3.amazonaws.com/liverosaryweb/slides/slide1.jpg",
+		"https://s3.amazonaws.com/liverosaryweb/slides/slide2.jpg",
+		"https://s3.amazonaws.com/liverosaryweb/slides/slide3.jpg",
+		"https://s3.amazonaws.com/liverosaryweb/slides/slide4.jpg",
+		"https://s3.amazonaws.com/liverosaryweb/slides/slide5.jpg",
+		"https://s3.amazonaws.com/liverosaryweb/slides/slide6.jpg",
+		],
+	"donateURL": "http://www.liverosaryapp.com/"
 }

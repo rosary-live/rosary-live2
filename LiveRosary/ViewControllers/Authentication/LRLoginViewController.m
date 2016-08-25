@@ -12,6 +12,8 @@
 
 @interface LRLoginViewController ()
 
+@property (nonatomic, weak) IBOutlet UILabel* header;
+
 @property (nonatomic, weak) IBOutlet UITextField* email;
 @property (nonatomic, weak) IBOutlet UITextField* password;
 
@@ -23,17 +25,17 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
-}
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+    
+    self.header.font = [UIFont fontWithName:@"Rokkitt" size:26.0f];
 }
 
 - (NSString*)screenName
 {
     return @"Login";
+}
+
+- (BOOL)hideNavBar {
+    return YES;
 }
 
 /*
@@ -89,6 +91,10 @@
             }
         });
     }];
+}
+
+- (IBAction)onBak:(id)sender {
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField*)aTextField

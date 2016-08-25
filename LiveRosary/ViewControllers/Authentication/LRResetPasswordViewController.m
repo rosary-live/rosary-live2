@@ -12,6 +12,8 @@
 
 @interface LRResetPasswordViewController ()
 
+@property (nonatomic, weak) IBOutlet UILabel* header;
+
 @property (nonatomic, weak) IBOutlet UITextField* updatedPassword;
 @property (nonatomic, weak) IBOutlet UITextField* verifyPassword;
 
@@ -23,7 +25,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+    
+    self.header.font = [UIFont fontWithName:@"Rokkitt" size:26.0f];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -34,6 +37,10 @@
 - (NSString*)screenName
 {
     return @"Reset Password";
+}
+
+- (BOOL)hideNavBar {
+    return YES;
 }
 
 /*

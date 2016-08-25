@@ -22,6 +22,7 @@
 #import "ListenerCell.h"
 #import <PureLayout/PureLayout.h>
 #import "UIImageView+Utilities.h"
+#import "LRDonateViewController.h"
 
 NSString * const kLastIntentionKey = @"LastIntention";
 
@@ -70,6 +71,8 @@ NSString * const kLastIntentionKey = @"LastIntention";
 @property (nonatomic, strong) NSMutableArray* listeners;
 
 @property (nonatomic) BOOL buttonPanelOpen;
+
+@property (nonatomic) BOOL donating;
 
 @end
 
@@ -314,31 +317,38 @@ NSString * const kLastIntentionKey = @"LastIntention";
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    self.reporting = NO;
     
-    [self closeButtonPanel];
+    if(self.donating) {
+        self.donating = NO;
+    } else {
+        self.reporting = NO;
+        
+        [self closeButtonPanel];
+    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
     
-    [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
-    
-    if([BroadcastManager sharedManager].state == BroadcastStatePlaying)
-    {
-        if(!self.isReport)
+    if(!self.donating) {
+        [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
+        
+        if([BroadcastManager sharedManager].state == BroadcastStatePlaying)
         {
-            [[AnalyticsManager sharedManager] event:@"LeftPlayerScreen" info:@{@"bid": self.broadcast.bid}];
-            [[AnalyticsManager sharedManager] event:@"PlayDuration" info:@{@"bid": self.broadcast.bid, @"duration": @(CACurrentMediaTime() - self.startTime), @"over": @(0)}];
-        }
+            if(!self.isReport)
+            {
+                [[AnalyticsManager sharedManager] event:@"LeftPlayerScreen" info:@{@"bid": self.broadcast.bid}];
+                [[AnalyticsManager sharedManager] event:@"PlayDuration" info:@{@"bid": self.broadcast.bid, @"duration": @(CACurrentMediaTime() - self.startTime), @"over": @(0)}];
+            }
 
-        [[BroadcastManager sharedManager] stopPlaying];
-    }
-    
-    if(!self.playFromStart)
-    {
-        [[BroadcastQueueModel sharedInstance] sendExitForBroadcastId:self.reportedBroadcast.bid ? self.reportedBroadcast.bid : self.broadcast.bid toUserWithEmail:nil withDictionary:[UserManager sharedManager].userDictionary];
+            [[BroadcastManager sharedManager] stopPlaying];
+        }
+        
+        if(!self.playFromStart)
+        {
+            [[BroadcastQueueModel sharedInstance] sendExitForBroadcastId:self.reportedBroadcast.bid ? self.reportedBroadcast.bid : self.broadcast.bid toUserWithEmail:nil withDictionary:[UserManager sharedManager].userDictionary];
+        }
     }
 }
 
@@ -395,9 +405,6 @@ NSString * const kLastIntentionKey = @"LastIntention";
 - (IBAction)onBanUser:(id)sender
 {
     [self updateUser:self.reportedBroadcast.b_email toLevel:@"banned"];
-}
-
-- (IBAction)onDonate:(id)sender {
 }
 
 - (IBAction)onStopListening:(id)sender {
@@ -467,9 +474,13 @@ NSString * const kLastIntentionKey = @"LastIntention";
 
 // In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    LRReportBroadcastViewController* reportViewController = [segue destinationViewController];
-    reportViewController.broadcast = self.broadcast;
-    self.reporting = YES;
+    if([segue.destinationViewController isKindOfClass:[LRReportBroadcastViewController class]]) {
+        LRReportBroadcastViewController* reportViewController = segue.destinationViewController;
+        reportViewController.broadcast = self.broadcast;
+        self.reporting = YES;
+    } else if([segue.destinationViewController isKindOfClass:[LRDonateViewController class]]) {
+        self.donating = YES;
+    }
 }
 
 #pragma mark - BroadcastManagerDelegate

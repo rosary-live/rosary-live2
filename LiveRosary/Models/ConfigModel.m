@@ -41,6 +41,7 @@ NSString * const UserDefaultsKeyConfigSettings = @"ConfigSettings";
             _segmentSizeSeconds = 5.0;
             _slideShowStartDelay = 5;
             _slideShowChangeInterval = 10;
+            _donateURL = @"http://www.liverosaryapp.com/";
         }
     }
     return self;
@@ -83,6 +84,7 @@ NSString * const UserDefaultsKeyConfigSettings = @"ConfigSettings";
     _slideShowStartDelay = ((NSNumber*)configDict[@"slideShowStartDelay"]).integerValue;
     _slideShowChangeInterval = ((NSNumber*)configDict[@"slideShowChangeInterval"]).integerValue;
     _slideImageURLs = configDict[@"slideImageURLs"];
+    _donateURL = configDict[@"donateURL"];
 }
 
 @end

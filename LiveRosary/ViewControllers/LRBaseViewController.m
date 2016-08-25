@@ -22,7 +22,11 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.view.backgroundColor = [UIColor colorFromHexString:@"#dcdcd8"];    
+    self.view.backgroundColor = [UIColor colorFromHexString:@"#dcdcd8"];
+    
+    if([self hideNavBar]) {
+        [self.navigationController setNavigationBarHidden:YES animated:NO];
+    }
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -103,6 +107,10 @@
 {
     NSAssert(NO, @"Must override screenName!");
     return nil;
+}
+
+- (BOOL)hideNavBar {
+    return NO;
 }
 
 @end

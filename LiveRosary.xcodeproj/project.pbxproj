@@ -21,6 +21,7 @@
 		9786629E1D624BBD00209667 /* UIColor+Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 9786629D1D624BBD00209667 /* UIColor+Utilities.m */; };
 		978662A51D63435900209667 /* Rokkitt.otf in Resources */ = {isa = PBXBuildFile; fileRef = 978662A41D63435900209667 /* Rokkitt.otf */; };
 		97D7F4ED1D6A1BC000B91CAC /* UIImageView+Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 97D7F4EC1D6A1BC000B91CAC /* UIImageView+Utilities.m */; };
+		97D7F50F1D6BB0AB00B91CAC /* LRDonateViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 97D7F50E1D6BB0AB00B91CAC /* LRDonateViewController.m */; };
 		D81AAF7C1C45E29C00B46544 /* LRBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D81AAF7B1C45E29C00B46544 /* LRBaseViewController.m */; };
 		D820FB061C4452A9000899DB /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D820FB051C4452A9000899DB /* main.m */; };
 		D820FB091C4452A9000899DB /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D820FB081C4452A9000899DB /* AppDelegate.m */; };
@@ -338,6 +339,8 @@
 		978662A41D63435900209667 /* Rokkitt.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Rokkitt.otf; path = Resources/Rokkitt.otf; sourceTree = "<group>"; };
 		97D7F4EB1D6A1BC000B91CAC /* UIImageView+Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIImageView+Utilities.h"; path = "Categories/UIImageView+Utilities.h"; sourceTree = "<group>"; };
 		97D7F4EC1D6A1BC000B91CAC /* UIImageView+Utilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIImageView+Utilities.m"; path = "Categories/UIImageView+Utilities.m"; sourceTree = "<group>"; };
+		97D7F50D1D6BB0AB00B91CAC /* LRDonateViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LRDonateViewController.h; path = ViewControllers/LRDonateViewController.h; sourceTree = "<group>"; };
+		97D7F50E1D6BB0AB00B91CAC /* LRDonateViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LRDonateViewController.m; path = ViewControllers/LRDonateViewController.m; sourceTree = "<group>"; };
 		BD4753DF687E71C09BECA0B1 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		D81AAF7A1C45E29C00B46544 /* LRBaseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LRBaseViewController.h; path = ViewControllers/LRBaseViewController.h; sourceTree = "<group>"; };
 		D81AAF7B1C45E29C00B46544 /* LRBaseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LRBaseViewController.m; path = ViewControllers/LRBaseViewController.m; sourceTree = "<group>"; };
@@ -1113,6 +1116,8 @@
 				D8A0274A1C8B527600715277 /* BroadcastsViewController.m */,
 				974C30DA1CAB43B40053CA55 /* LRReportBroadcastViewController.h */,
 				974C30DB1CAB43B40053CA55 /* LRReportBroadcastViewController.m */,
+				97D7F50D1D6BB0AB00B91CAC /* LRDonateViewController.h */,
+				97D7F50E1D6BB0AB00B91CAC /* LRDonateViewController.m */,
 			);
 			name = "View Controllers";
 			sourceTree = "<group>";
@@ -1604,6 +1609,7 @@
 				D8A0EFEE1C4C70ED0006B910 /* LiveRosaryAuthenticationClient.m in Sources */,
 				974C30DC1CAB43B40053CA55 /* LRReportBroadcastViewController.m in Sources */,
 				977D752D1CC1776A00C4D7A0 /* LRAdminTakeActionViewController.m in Sources */,
+				97D7F50F1D6BB0AB00B91CAC /* LRDonateViewController.m in Sources */,
 				D82506151CC3207200B0024B /* LanguagePicker.m in Sources */,
 				D8A0EFE61C4C32290006B910 /* BaseModel.m in Sources */,
 				D8427CF41C601BDA00A8CE5F /* ConfigModel.m in Sources */,

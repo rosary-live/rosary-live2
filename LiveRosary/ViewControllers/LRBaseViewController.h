@@ -18,5 +18,6 @@
 
 - (void)addDrawerButton;
 - (NSString*)screenName;
+- (BOOL)hideNavBar;
 
 @end
