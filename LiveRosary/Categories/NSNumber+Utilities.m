@@ -73,7 +73,7 @@
 {
     int hour = (int)[self hour];
     int min = (int)[self minute];
-    return [NSString stringWithFormat:@"%d:%02d %@", hour > 12 ? hour - 12 : hour, min, hour > 12 ? @"PM" : @"AM"];
+    return [NSString stringWithFormat:@"%d:%02d %@", hour > 12 ? hour - 12 : (hour == 0 ? 12 : hour ), min, hour > 12 ? @"PM" : @"AM"];
 }
 
 @end
