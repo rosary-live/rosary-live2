@@ -37,9 +37,9 @@ typedef NS_ENUM(NSUInteger, Mode) {
 @property (nonatomic, weak) IBOutlet UITableView* tableView;
 @property (nonatomic, weak) IBOutlet MKMapView* mapView;
 @property (nonatomic, weak) IBOutlet UITextField* language;
-//@property (nonatomic, weak) IBOutlet UISegmentedControl* modeSegmentControl;
 @property (nonatomic, weak) IBOutlet UIButton* mapMode;
 @property (nonatomic, weak) IBOutlet UIButton* listMode;
+@property (nonatomic, weak) IBOutlet UIButton* alarmFilter;
 
 @property (nonatomic, strong) UIPickerView* languagePickerView;
 
@@ -228,6 +228,15 @@ typedef NS_ENUM(NSUInteger, Mode) {
         
         self.scheduledBroadcasts = [self.scheduledBroadcasts filteredArrayUsingPredicate:filter];
     }
+    
+    // Alarm filter
+    if(self.alarmFilter.selected) {
+        NSPredicate* filter = [NSPredicate predicateWithBlock:^BOOL(id  _Nonnull evaluatedObject, NSDictionary<NSString *,id> * _Nullable bindings) {
+            return [[ScheduleManager sharedManager] reminderSetForBroadcastWithId:((ScheduleModel*)evaluatedObject).sid];
+        }];
+        
+        self.scheduledBroadcasts = [self.scheduledBroadcasts filteredArrayUsingPredicate:filter];
+    }
 }
 
 - (void)sortReportedBroadcasts
@@ -278,6 +287,12 @@ typedef NS_ENUM(NSUInteger, Mode) {
 
 - (IBAction)onListMode:(id)sender {
     [self changeToListMode];
+}
+
+- (IBAction)onAlarmFilter:(id)sender {
+    self.alarmFilter.selected = !self.alarmFilter.selected;
+    [self filterScheduledBroadcasts];
+    [self.tableView reloadData];
 }
 
 - (void)changeToListMode
@@ -374,6 +389,10 @@ typedef NS_ENUM(NSUInteger, Mode) {
             return nil;
     }
 }
+
+//- (UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+//    UILabel* header = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 30)];
+//}
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {

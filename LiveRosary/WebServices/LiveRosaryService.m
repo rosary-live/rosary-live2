@@ -134,6 +134,9 @@ NSString* const kBaseURL = @"https://9wwr7dvesk.execute-api.us-east-1.amazonaws.
     }];
 }
 
+- (void)requestBroadcastForEmail:(NSString*)email completion:(void (^)(NSError* error))completion {
+}
+
 - (void)addScheduledBroadcastWithDictionary:(NSDictionary*)dictionary completion:(void (^)(NSError* error))completion
 {
     NSMutableDictionary* dictWithAction = [dictionary mutableCopy];

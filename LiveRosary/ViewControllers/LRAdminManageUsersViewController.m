@@ -158,16 +158,16 @@ typedef NS_ENUM(NSUInteger, Level) {
     NSMutableArray* actions = [NSMutableArray new];
     UserModel* user = self.searchResults.count > 0 ? self.searchResults[indexPath.row] : self.users[indexPath.row];
     
-    if(![user.level isEqualToString:@"admin"])
-    {
-        UITableViewRowAction* adminAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal title:@"Admin" handler:^(UITableViewRowAction * _Nonnull action, NSIndexPath * _Nonnull indexPath) {
-
-            [self updateUser:user toLevel:@"admin"];
-        }];
-        
-        adminAction.backgroundColor = [UIColor orangeColor];
-        [actions addObject:adminAction];
-    }
+//    if(![user.level isEqualToString:@"admin"])
+//    {
+//        UITableViewRowAction* adminAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal title:@"Admin" handler:^(UITableViewRowAction * _Nonnull action, NSIndexPath * _Nonnull indexPath) {
+//
+//            [self updateUser:user toLevel:@"admin"];
+//        }];
+//        
+//        adminAction.backgroundColor = [UIColor orangeColor];
+//        [actions addObject:adminAction];
+//    }
     
     if(![user.level isEqualToString:@"broadcaster"])
     {

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15G31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="fXM-eo-erc">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15G1004" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="fXM-eo-erc">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
@@ -2568,7 +2568,7 @@ Intention 2</string>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="2NN-nm-Hfe" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2174" y="3294"/>
+            <point key="canvasLocation" x="2986" y="3294"/>
         </scene>
         <!--User Profile Nav-->
         <scene sceneID="LRP-6W-wyv">
@@ -2683,7 +2683,7 @@ Intention 2</string>
                                                     </constraints>
                                                 </imageView>
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Rosary1" translatesAutoresizingMaskIntoConstraints="NO" id="GdQ-lL-841">
-                                                    <rect key="frame" x="580" y="1" width="20" height="68.5"/>
+                                                    <rect key="frame" x="580" y="1" width="20" height="69"/>
                                                     <color key="backgroundColor" red="0.1843137255" green="0.23921568630000001" blue="0.4549019608" alpha="1" colorSpace="calibratedRGB"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="20" id="fkE-RG-FJm"/>
@@ -2797,7 +2797,7 @@ test</string>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="AlarmOffBlue" translatesAutoresizingMaskIntoConstraints="NO" id="2gI-bJ-s58">
-                                                    <rect key="frame" x="542" y="47.5" width="24" height="24"/>
+                                                    <rect key="frame" x="542" y="48" width="24" height="24"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="24" id="3BS-aF-gEU"/>
                                                         <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="24" id="8Jr-DE-146"/>
@@ -2971,7 +2971,7 @@ test</string>
                                 </connections>
                             </tableView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Rtv-Pi-fUM">
-                                <rect key="frame" x="478" y="3" width="40" height="40"/>
+                                <rect key="frame" x="505" y="3" width="40" height="40"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="40" id="dxu-lz-Yfj"/>
                                     <constraint firstAttribute="width" constant="40" id="hvy-ck-NO8"/>
@@ -2983,7 +2983,7 @@ test</string>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="h6B-1N-OSB">
-                                <rect key="frame" x="540" y="3" width="40" height="40"/>
+                                <rect key="frame" x="552" y="3" width="40" height="40"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="40" id="Msu-VR-dpc"/>
                                     <constraint firstAttribute="width" constant="40" id="VKe-sR-zIp"/>
@@ -2992,6 +2992,19 @@ test</string>
                                 <state key="normal" image="ListOn"/>
                                 <connections>
                                     <action selector="onListMode:" destination="RGe-SW-VKd" eventType="touchUpInside" id="PsN-ep-B4m"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HCk-ku-ejF">
+                                <rect key="frame" x="458" y="3" width="40" height="40"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="40" id="Ws1-2U-QDB"/>
+                                    <constraint firstAttribute="width" constant="40" id="u2e-EX-clp"/>
+                                </constraints>
+                                <inset key="contentEdgeInsets" minX="4" minY="4" maxX="4" maxY="4"/>
+                                <state key="normal" image="AlarmOffBlue"/>
+                                <state key="selected" image="AlarmOnBlue"/>
+                                <connections>
+                                    <action selector="onAlarmFilter:" destination="RGe-SW-VKd" eventType="touchUpInside" id="4hg-NB-ux9"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -3005,17 +3018,25 @@ test</string>
                             <constraint firstItem="6Lz-cb-geZ" firstAttribute="top" secondItem="2pT-4g-JZm" secondAttribute="bottom" constant="8" id="Lcd-dj-DgH"/>
                             <constraint firstItem="2pT-4g-JZm" firstAttribute="leading" secondItem="gIU-hV-a5U" secondAttribute="leading" constant="5" id="N7t-fu-Q6N"/>
                             <constraint firstItem="h6B-1N-OSB" firstAttribute="top" secondItem="see-vF-4If" secondAttribute="bottom" constant="3" id="NW9-a2-UFj"/>
+                            <constraint firstItem="Rtv-Pi-fUM" firstAttribute="leading" secondItem="HCk-ku-ejF" secondAttribute="trailing" constant="7" id="Uwe-zw-d1r"/>
                             <constraint firstItem="h6B-1N-OSB" firstAttribute="top" secondItem="see-vF-4If" secondAttribute="bottom" constant="3" id="Uy7-fe-jMh"/>
                             <constraint firstItem="2pT-4g-JZm" firstAttribute="top" secondItem="see-vF-4If" secondAttribute="bottom" constant="8" id="VHg-qI-hbJ"/>
                             <constraint firstItem="HTS-0l-2Ej" firstAttribute="leading" secondItem="gIU-hV-a5U" secondAttribute="leading" id="Z05-BZ-dGD"/>
+                            <constraint firstItem="h6B-1N-OSB" firstAttribute="top" secondItem="see-vF-4If" secondAttribute="bottom" constant="3" id="aD5-la-0BH"/>
                             <constraint firstItem="AW2-8T-wbz" firstAttribute="top" secondItem="6Lz-cb-geZ" secondAttribute="bottom" id="bo4-T6-WS3"/>
                             <constraint firstItem="h6B-1N-OSB" firstAttribute="trailing" secondItem="gIU-hV-a5U" secondAttribute="trailingMargin" id="cSS-RG-TFr"/>
                             <constraint firstItem="AW2-8T-wbz" firstAttribute="top" secondItem="HTS-0l-2Ej" secondAttribute="bottom" id="el2-0b-lm2"/>
+                            <constraint firstItem="h6B-1N-OSB" firstAttribute="leading" secondItem="Rtv-Pi-fUM" secondAttribute="trailing" constant="7" id="geY-DM-Tcu"/>
+                            <constraint firstAttribute="trailing" secondItem="h6B-1N-OSB" secondAttribute="trailing" constant="8" id="gyh-fs-vs6"/>
+                            <constraint firstItem="Rtv-Pi-fUM" firstAttribute="top" secondItem="see-vF-4If" secondAttribute="bottom" constant="3" id="hwO-CY-snh"/>
                             <constraint firstItem="6Lz-cb-geZ" firstAttribute="leading" secondItem="gIU-hV-a5U" secondAttribute="leading" id="pED-uF-42p"/>
                             <constraint firstAttribute="trailing" secondItem="6Lz-cb-geZ" secondAttribute="trailing" id="tAI-mA-g7Z"/>
+                            <constraint firstItem="HCk-ku-ejF" firstAttribute="top" secondItem="see-vF-4If" secondAttribute="bottom" constant="3" id="vYh-o1-tgj"/>
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
+                                <exclude reference="EWY-vU-Ldv"/>
+                                <exclude reference="GnP-zW-bdk"/>
                                 <exclude reference="NW9-a2-UFj"/>
                                 <exclude reference="cSS-RG-TFr"/>
                             </mask>
@@ -3023,6 +3044,7 @@ test</string>
                     </view>
                     <nil key="simulatedStatusBarMetrics"/>
                     <connections>
+                        <outlet property="alarmFilter" destination="HCk-ku-ejF" id="29I-63-Nl8"/>
                         <outlet property="language" destination="2pT-4g-JZm" id="2mb-Lj-p8y"/>
                         <outlet property="listMode" destination="h6B-1N-OSB" id="RnV-di-AFS"/>
                         <outlet property="mapMode" destination="Rtv-Pi-fUM" id="OP2-PF-JhF"/>
@@ -3033,6 +3055,25 @@ test</string>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="IqJ-PL-uYv" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="606" y="3208"/>
+        </scene>
+        <!--Broadcast Request-->
+        <scene sceneID="UUh-oC-QbQ">
+            <objects>
+                <viewController id="h3r-jg-zjs" customClass="BroadcastRequestViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="DSA-HW-08C"/>
+                        <viewControllerLayoutGuide type="bottom" id="3df-xP-ctM"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="hpH-tf-pwL">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" title="Broadcast Request" id="BVy-ui-ByQ"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="9jD-Tw-x9M" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1421" y="3911"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="TmX-bb-gzF">
@@ -3052,11 +3093,30 @@ test</string>
             </objects>
             <point key="canvasLocation" x="606" y="-417"/>
         </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="ZDK-Lr-97s">
+            <objects>
+                <navigationController storyboardIdentifier="BroadcastRequest" automaticallyAdjustsScrollViewInsets="NO" id="trG-36-Z7D" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="3iw-hW-PD1">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="h3r-jg-zjs" kind="relationship" relationship="rootViewController" id="kOQ-nc-2G0"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="S9k-d5-xcu" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="609" y="3911"/>
+        </scene>
     </scenes>
     <resources>
         <image name="AdminBackground" width="540" height="960"/>
         <image name="AlarmOffBlue" width="39" height="48"/>
         <image name="AlarmOffWhite" width="39" height="48"/>
+        <image name="AlarmOnBlue" width="39" height="48"/>
         <image name="ArrowDown" width="36" height="13"/>
         <image name="AvatarImage" width="117" height="117"/>
         <image name="BroadcastBackground" width="540" height="427"/>

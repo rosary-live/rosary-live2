@@ -66,10 +66,10 @@ typedef NS_ENUM(NSUInteger, MenuOption) {
         {
             [self.menuOptions addObject:@(MenuOptionListen)];
             
-            if(user.userLevel == UserLevelBroadcaster || user.userLevel == UserLevelAdmin)
-            {
+            //if(user.userLevel == UserLevelBroadcaster || user.userLevel == UserLevelAdmin)
+            //{
                 [self.menuOptions addObject:@(MenuOptionBroadcast)];
-            }
+            //}
 
             if(user.userLevel == UserLevelAdmin)
             {
@@ -158,8 +158,10 @@ typedef NS_ENUM(NSUInteger, MenuOption) {
             break;
             
         case MenuOptionBroadcast:
-            if(self.mm_drawerController.centerViewController == self.broadcastMainViewController) selected = YES;
-            cell.title.text = @"Broadcast";
+            if(self.mm_drawerController.centerViewController == self.broadcastRequestViewController) selected = YES;
+            cell.title.text = @"Broadcast Request";
+//            if(self.mm_drawerController.centerViewController == self.broadcastMainViewController) selected = YES;
+//            cell.title.text = @"Broadcast";
             break;
             
         case MenuOptionAdmin:
@@ -197,7 +199,8 @@ typedef NS_ENUM(NSUInteger, MenuOption) {
             break;
             
         case MenuOptionBroadcast:
-            centerViewController = self.broadcastMainViewController;
+            centerViewController = self.broadcastRequestViewController;
+//            centerViewController = self.broadcastMainViewController;
             break;
             
         case MenuOptionAdmin:

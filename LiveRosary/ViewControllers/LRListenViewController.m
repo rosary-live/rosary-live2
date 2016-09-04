@@ -81,7 +81,7 @@ NSString * const kLastIntentionKey = @"LastIntention";
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.navigationController.navigationBar.topItem.title = @"Stop";
+    self.navigationController.navigationBar.topItem.title = @"Back";
     
     self.view.backgroundColor = [UIColor colorFromHexString:@"#29488a"];
     

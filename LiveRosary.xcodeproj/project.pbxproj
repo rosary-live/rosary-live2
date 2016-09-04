@@ -20,6 +20,7 @@
 		978337791CBED6B500C3C3F7 /* LRAdminReportedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 978337781CBED6B500C3C3F7 /* LRAdminReportedViewController.m */; };
 		9786629E1D624BBD00209667 /* UIColor+Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 9786629D1D624BBD00209667 /* UIColor+Utilities.m */; };
 		978662A51D63435900209667 /* Rokkitt.otf in Resources */ = {isa = PBXBuildFile; fileRef = 978662A41D63435900209667 /* Rokkitt.otf */; };
+		97C725351D74B065006F6F97 /* BroadcastRequestViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 97C725341D74B064006F6F97 /* BroadcastRequestViewController.m */; };
 		97D7F4ED1D6A1BC000B91CAC /* UIImageView+Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 97D7F4EC1D6A1BC000B91CAC /* UIImageView+Utilities.m */; };
 		97D7F50F1D6BB0AB00B91CAC /* LRDonateViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 97D7F50E1D6BB0AB00B91CAC /* LRDonateViewController.m */; };
 		D81AAF7C1C45E29C00B46544 /* LRBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D81AAF7B1C45E29C00B46544 /* LRBaseViewController.m */; };
@@ -337,6 +338,8 @@
 		9786629C1D624BBD00209667 /* UIColor+Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIColor+Utilities.h"; path = "Categories/UIColor+Utilities.h"; sourceTree = "<group>"; };
 		9786629D1D624BBD00209667 /* UIColor+Utilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIColor+Utilities.m"; path = "Categories/UIColor+Utilities.m"; sourceTree = "<group>"; };
 		978662A41D63435900209667 /* Rokkitt.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Rokkitt.otf; path = Resources/Rokkitt.otf; sourceTree = "<group>"; };
+		97C725331D74B064006F6F97 /* BroadcastRequestViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BroadcastRequestViewController.h; path = ViewControllers/BroadcastRequestViewController.h; sourceTree = "<group>"; };
+		97C725341D74B064006F6F97 /* BroadcastRequestViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BroadcastRequestViewController.m; path = ViewControllers/BroadcastRequestViewController.m; sourceTree = "<group>"; };
 		97D7F4EB1D6A1BC000B91CAC /* UIImageView+Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIImageView+Utilities.h"; path = "Categories/UIImageView+Utilities.h"; sourceTree = "<group>"; };
 		97D7F4EC1D6A1BC000B91CAC /* UIImageView+Utilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIImageView+Utilities.m"; path = "Categories/UIImageView+Utilities.m"; sourceTree = "<group>"; };
 		97D7F50D1D6BB0AB00B91CAC /* LRDonateViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LRDonateViewController.h; path = ViewControllers/LRDonateViewController.h; sourceTree = "<group>"; };
@@ -1092,6 +1095,8 @@
 				D8EAFEC01C5D29E100C38EBA /* LRListenViewController.m */,
 				D83F6A951C47054C005F07E0 /* LRBroadcastMainViewController.h */,
 				D83F6A961C47054C005F07E0 /* LRBroadcastMainViewController.m */,
+				97C725331D74B064006F6F97 /* BroadcastRequestViewController.h */,
+				97C725341D74B064006F6F97 /* BroadcastRequestViewController.m */,
 				D8B72E861C9E144A0081723F /* LRBroadcastingViewController.h */,
 				D8B72E871C9E144A0081723F /* LRBroadcastingViewController.m */,
 				D8B72E891C9E14980081723F /* LRScheduleBroadcastViewController.h */,
@@ -1607,6 +1612,7 @@
 				977D750B1CBEE2D100C4D7A0 /* DBReportedBroadcast.m in Sources */,
 				D874848A1CAA067000C99A2D /* ListenerCell.m in Sources */,
 				D8A0EFEE1C4C70ED0006B910 /* LiveRosaryAuthenticationClient.m in Sources */,
+				97C725351D74B065006F6F97 /* BroadcastRequestViewController.m in Sources */,
 				974C30DC1CAB43B40053CA55 /* LRReportBroadcastViewController.m in Sources */,
 				977D752D1CC1776A00C4D7A0 /* LRAdminTakeActionViewController.m in Sources */,
 				97D7F50F1D6BB0AB00B91CAC /* LRDonateViewController.m in Sources */,
