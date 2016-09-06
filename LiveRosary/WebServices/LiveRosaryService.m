@@ -8,6 +8,7 @@
 
 #import "LiveRosaryService.h"
 #import <AFNetworking/AFNetworking.h>
+#import "UserManager.h"
 
 NSString* const kApiKey = @"hhpm1l5N771l3eZf7V4Lk8AjWyYgZbPM7XPPU8Jw";
 NSString* const kBaseURL = @"https://9wwr7dvesk.execute-api.us-east-1.amazonaws.com/prod";
@@ -134,7 +135,12 @@ NSString* const kBaseURL = @"https://9wwr7dvesk.execute-api.us-east-1.amazonaws.
     }];
 }
 
-- (void)requestBroadcastForEmail:(NSString*)email completion:(void (^)(NSError* error))completion {
+- (void)requestBroadcastPermissionWithReason:(NSString*)reason completion:(void (^)(NSError* error))completion {
+    NSDictionary* dictionary = @{ @"email": [UserManager sharedManager].email, @"password": [UserManager sharedManager].password, @"broadcastRequest": reason };
+    
+    [self postMethod:@"UpdateUser" withDictionary:dictionary completion:^(id response, NSError *error) {
+        safeBlock(completion, error);
+    }];
 }
 
 - (void)addScheduledBroadcastWithDictionary:(NSDictionary*)dictionary completion:(void (^)(NSError* error))completion

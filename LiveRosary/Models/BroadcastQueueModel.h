@@ -21,4 +21,6 @@ typedef void (^EventReceive)(NSArray* events);
 - (void)sendUpdateForBroadcastId:(NSString*)bid toUserWithEmail:(NSString*)email withDictionary:(NSDictionary*)dictionary;
 - (void)sendExitForBroadcastId:(NSString*)bid toUserWithEmail:(NSString*)email withDictionary:(NSDictionary*)dictionary;
 
+- (void)sendTerminateForBroadcastId:(NSString*)bid;
+
 @end

@@ -8,6 +8,8 @@
 
 #import "LRUserProfileMainViewController.h"
 #import "UserManager.h"
+#import "LiveRosaryService.h"
+#import <MBProgressHUD/MBProgressHUD.h>
 
 @interface LRUserProfileMainViewController ()
 
@@ -19,6 +21,8 @@
 @property (nonatomic, weak) IBOutlet UILabel* city;
 @property (nonatomic, weak) IBOutlet UILabel* state;
 @property (nonatomic, weak) IBOutlet UILabel* country;
+
+@property (nonatomic, strong) MBProgressHUD *hud;
 
 @end
 
@@ -64,6 +68,34 @@
     // Pass the selected object to the new view controller.
 }
 */
+
+- (IBAction)onBroadcastRequest:(id)sender {
+    UIAlertController* intentionAlert = [UIAlertController alertControllerWithTitle:nil message:@"Enter your reason for requesting broadcast permission." preferredStyle:UIAlertControllerStyleAlert];
+    
+    [intentionAlert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+        textField.placeholder = @"Reason";
+    }];
+    
+    [intentionAlert addAction:[UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        NSString* reason = intentionAlert.textFields.firstObject.text;
+        reason = reason != nil ? reason : @"";
+        [[AnalyticsManager sharedManager] event:@"RequestBroadcastPermission" info:@{@"user": [UserManager sharedManager].email, @"Reason": reason}];
+
+        self.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        self.hud.labelText = @"Sending Request";
+        [[LiveRosaryService sharedService] requestBroadcastPermissionWithReason:reason completion:^(NSError *error) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.hud hide:YES];
+                
+                if(error != nil) {
+                    [UIAlertView bk_showAlertViewWithTitle:nil message:@"Error sending request." cancelButtonTitle:@"Ok" otherButtonTitles:nil handler:nil];
+                }
+            });
+        }];
+    }]];
+    
+    [self presentViewController:intentionAlert animated:YES completion:nil];
+}
 
 - (IBAction)onLogout:(id)sender
 {

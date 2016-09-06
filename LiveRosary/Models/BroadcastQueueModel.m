@@ -219,6 +219,18 @@ NSString * const kBroadcastQueueBaseURL = @"https://sqs.us-east-1.amazonaws.com/
     }
 }
 
+- (void)sendTerminateForBroadcastId:(NSString*)bid
+{
+    NSDictionary* messageDict = @{
+                                  @"type": @"terminate",
+                                  @"bid": bid,
+                                  @"email": [UserManager sharedManager].email,
+                                  @"password": [UserManager sharedManager].password
+                                  };
+    
+    [self sendMessage:messageDict toBroadcastWithId:bid];
+}
+
 - (void)sendMessage:(NSDictionary*)dictionary toBroadcastWithId:(NSString*)bid
 {
     [[LiveRosaryService sharedService] sendMessage:dictionary toBroadcast:bid completion:^(NSError *error) {

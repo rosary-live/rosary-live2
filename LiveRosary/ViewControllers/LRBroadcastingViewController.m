@@ -161,6 +161,12 @@
                                         [[AnalyticsManager sharedManager] event:@"UpdateBroadcastDuplicate" info:@{@"bid": brodcastId}];
                                     }
                                 }
+                            } else if([type isEqualToString:@"terminate"]) {
+                                [UIAlertView bk_showAlertViewWithTitle:nil message:@"This broadcast has been terminated." cancelButtonTitle:@"Ok" otherButtonTitles:nil handler:^(UIAlertView *alertView, NSInteger buttonIndex) {
+                                    
+                                    [self stopBroadcasting];
+                                    [self.navigationController popViewControllerAnimated:YES];
+                                }];
                             }
                         }
                         

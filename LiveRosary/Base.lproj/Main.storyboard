@@ -212,7 +212,7 @@
                                 <constraints>
                                     <constraint firstAttribute="height" constant="190" id="8FJ-mS-kxF"/>
                                 </constraints>
-                                <string key="text">An email will as been sent to the email you entered. Open the email on this device and click the link. This will open the LiveRosary App and allow you to change your password.</string>
+                                <string key="text">An email with instructions on how you can reset your password has been sent. Open the email on this device and click the link. This will open the LiveRosary app and allow you to change your password.</string>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
@@ -684,14 +684,29 @@ line 2</string>
                                                     <segue destination="YPE-Qx-xPG" kind="show" id="9dt-y5-fhy"/>
                                                 </connections>
                                             </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="E6D-7O-GAe">
+                                                <rect key="frame" x="261" y="28" width="77" height="35"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="77" id="4xP-oG-2h3"/>
+                                                    <constraint firstAttribute="height" constant="35" id="5Wd-q4-Ev7"/>
+                                                </constraints>
+                                                <state key="normal" title="Terminate">
+                                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                </state>
+                                                <connections>
+                                                    <action selector="onTerminateBroadcast:" destination="AKf-93-N7p" eventType="touchUpInside" id="ZdL-hW-yYq"/>
+                                                </connections>
+                                            </button>
                                         </subviews>
                                         <color key="backgroundColor" red="0.68627450980392157" green="0.69019607843137254" blue="0.67450980392156867" alpha="1" colorSpace="calibratedRGB"/>
                                         <constraints>
+                                            <constraint firstItem="E6D-7O-GAe" firstAttribute="centerX" secondItem="vco-yz-nQE" secondAttribute="centerX" id="16v-6y-Koy"/>
                                             <constraint firstItem="ycn-EX-WJ7" firstAttribute="top" secondItem="vco-yz-nQE" secondAttribute="top" constant="20" id="91a-xK-EZj"/>
                                             <constraint firstAttribute="trailing" secondItem="ZZ9-OP-Jgm" secondAttribute="trailing" constant="8" id="GnV-ah-KAT"/>
                                             <constraint firstItem="CHq-Z2-3zI" firstAttribute="leading" secondItem="vco-yz-nQE" secondAttribute="leading" constant="8" id="Gx1-0W-eL9"/>
                                             <constraint firstItem="ycn-EX-WJ7" firstAttribute="centerX" secondItem="vco-yz-nQE" secondAttribute="centerX" id="K0c-6d-xSU"/>
                                             <constraint firstItem="KnN-5s-sgX" firstAttribute="centerX" secondItem="vco-yz-nQE" secondAttribute="centerX" id="QOE-cU-SZM"/>
+                                            <constraint firstItem="E6D-7O-GAe" firstAttribute="top" secondItem="KnN-5s-sgX" secondAttribute="bottom" constant="7" id="UhV-nr-kpc"/>
                                             <constraint firstItem="CHq-Z2-3zI" firstAttribute="top" secondItem="vco-yz-nQE" secondAttribute="top" constant="30" id="cqL-G9-Ncb"/>
                                             <constraint firstItem="ycn-EX-WJ7" firstAttribute="top" secondItem="KnN-5s-sgX" secondAttribute="bottom" constant="8" id="gWm-4v-h91"/>
                                             <constraint firstItem="ZZ9-OP-Jgm" firstAttribute="top" secondItem="vco-yz-nQE" secondAttribute="top" constant="29" id="qQX-Qg-9I4"/>
@@ -813,6 +828,7 @@ line 2</string>
                         <outlet property="broadcasterConstraint" destination="VLb-fC-9Yi" id="Jc9-Rf-EAz"/>
                         <outlet property="buttonView" destination="vco-yz-nQE" id="yKm-J8-lLM"/>
                         <outlet property="date" destination="OE0-G7-3ZR" id="lTG-Kl-I9k"/>
+                        <outlet property="donateButton" destination="ycn-EX-WJ7" id="ppA-we-9u2"/>
                         <outlet property="flag" destination="yyj-3c-9JJ" id="vOC-m7-l3k"/>
                         <outlet property="language" destination="le9-v0-HcO" id="Yj0-1S-VMI"/>
                         <outlet property="listenerCount" destination="BAP-bs-hNY" id="vx1-8A-7Vf"/>
@@ -822,6 +838,7 @@ line 2</string>
                         <outlet property="slideShow" destination="bW3-52-Y6D" id="Bf3-vP-f6g"/>
                         <outlet property="status" destination="WSM-i0-EZl" id="hco-Mv-Pfc"/>
                         <outlet property="tableView" destination="jCX-aA-cwS" id="Gbg-Bo-Tp0"/>
+                        <outlet property="terminateButton" destination="E6D-7O-GAe" id="nuT-Fs-0Wy"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="238-ec-7pc" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -2405,7 +2422,7 @@ Intention 2</string>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ScL-PL-vxU">
-                                <rect key="frame" x="260" y="321" width="81" height="30"/>
+                                <rect key="frame" x="260" y="357" width="81" height="30"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="30" id="I1X-KF-PHP"/>
                                     <constraint firstAttribute="width" constant="81" id="MU9-6n-Tub"/>
@@ -2413,6 +2430,17 @@ Intention 2</string>
                                 <state key="normal" title="Logout"/>
                                 <connections>
                                     <action selector="onLogout:" destination="SBd-AO-yZh" eventType="touchUpInside" id="FDU-fO-498"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bdA-sS-gcL">
+                                <rect key="frame" x="172" y="316" width="256" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="WiZ-8l-GhW"/>
+                                    <constraint firstAttribute="width" constant="256" id="Yk2-vh-Cfl"/>
+                                </constraints>
+                                <state key="normal" title="Request Permission to Broadcast"/>
+                                <connections>
+                                    <action selector="onBroadcastRequest:" destination="SBd-AO-yZh" eventType="touchUpInside" id="lEd-B4-k7f"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -2426,10 +2454,13 @@ Intention 2</string>
                             <constraint firstItem="TVr-RY-wGh" firstAttribute="top" secondItem="l0F-RW-02o" secondAttribute="bottom" constant="1" id="DpN-lr-bWY"/>
                             <constraint firstItem="l0F-RW-02o" firstAttribute="top" secondItem="iA6-oh-LE8" secondAttribute="bottom" constant="1" id="H34-qW-u5k"/>
                             <constraint firstItem="Qja-kR-1Pb" firstAttribute="top" secondItem="g60-wY-bbD" secondAttribute="bottom" constant="25" id="H9Y-ci-zQw"/>
+                            <constraint firstItem="ScL-PL-vxU" firstAttribute="top" secondItem="bdA-sS-gcL" secondAttribute="bottom" constant="11" id="KVV-SL-Cp2"/>
                             <constraint firstItem="ScL-PL-vxU" firstAttribute="top" secondItem="Qja-kR-1Pb" secondAttribute="bottom" constant="13" id="LeN-6T-qv3"/>
                             <constraint firstItem="Bdw-VD-ptJ" firstAttribute="top" secondItem="FRX-NB-77Q" secondAttribute="bottom" constant="20" id="UFZ-uX-Ao1"/>
                             <constraint firstItem="iA6-oh-LE8" firstAttribute="leading" secondItem="u6p-ja-6bt" secondAttribute="trailing" constant="8" id="Uwu-Ps-Q6c"/>
                             <constraint firstItem="g60-wY-bbD" firstAttribute="leading" secondItem="u6p-ja-6bt" secondAttribute="trailing" constant="8" id="VDV-K3-Be9"/>
+                            <constraint firstItem="bdA-sS-gcL" firstAttribute="centerX" secondItem="H4M-70-8ge" secondAttribute="centerX" id="XYC-om-pho"/>
+                            <constraint firstItem="bdA-sS-gcL" firstAttribute="top" secondItem="Qja-kR-1Pb" secondAttribute="bottom" constant="8" id="bDO-nJ-Ogf"/>
                             <constraint firstItem="TVr-RY-wGh" firstAttribute="leading" secondItem="u6p-ja-6bt" secondAttribute="trailing" constant="8" id="cwd-fw-ohC"/>
                             <constraint firstItem="sgA-pL-OGj" firstAttribute="leading" secondItem="u6p-ja-6bt" secondAttribute="trailing" constant="8" id="fWm-j9-IVx"/>
                             <constraint firstItem="otl-30-BIA" firstAttribute="leading" secondItem="u6p-ja-6bt" secondAttribute="trailing" constant="8" id="gzW-oH-Ce7"/>
@@ -2439,6 +2470,11 @@ Intention 2</string>
                             <constraint firstItem="l0F-RW-02o" firstAttribute="leading" secondItem="u6p-ja-6bt" secondAttribute="trailing" constant="8" id="uhK-4L-e4a"/>
                             <constraint firstItem="u6p-ja-6bt" firstAttribute="leading" secondItem="Bdw-VD-ptJ" secondAttribute="leading" id="wca-vQ-XZ7"/>
                         </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="LeN-6T-qv3"/>
+                            </mask>
+                        </variation>
                     </view>
                     <navigationItem key="navigationItem" title="User Profile" id="gxb-5u-MOo">
                         <barButtonItem key="rightBarButtonItem" systemItem="edit" id="eWJ-QU-wQd">

@@ -202,7 +202,8 @@
     [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];
     [[UINavigationBar appearance] setTranslucent:NO];
     [[UINavigationBar appearance] setBarTintColor:[UIColor colorFromHexString:@"#2f3d74"]];
-    [[UINavigationBar appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
+    [[UINavigationBar appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor],
+                                                           NSFontAttributeName: [UIFont fontWithName:@"Rokkitt" size:26.0f]}];
     
     [[UINavigationBar appearance] setBackgroundImage:[UIImage imageNamed:@"navigation.png"]
                                        forBarMetrics:UIBarMetricsDefault];
@@ -216,11 +217,11 @@
 //                                                           [UIFont fontWithName:@"HelveticaNeue-CondensedBlack" size:21.0], NSFontAttributeName, nil]];
     
     [[UIButton appearance] setTintColor:[UIColor colorFromHexString:@"#344479"]];
-    [[UIButton appearance] setFont:[UIFont fontWithName:@"Rokkitt" size:18]];
+    [[UIButton appearance] setFont:[UIFont fontWithName:@"Veranda" size:18]];
     
-    [[UITextField appearance] setFont:[UIFont fontWithName:@"Rokkitt" size:14]];
+    [[UITextField appearance] setFont:[UIFont fontWithName:@"Veranda" size:14]];
     
-    [[UILabel appearance] setFont:[UIFont fontWithName:@"Rokkitt" size:15]];
+    [[UILabel appearance] setFont:[UIFont fontWithName:@"Veranda" size:12]];
 }
 
 @end

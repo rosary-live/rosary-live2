@@ -50,6 +50,9 @@ NSString * const kLastIntentionKey = @"LastIntention";
 @property (nonatomic, weak) IBOutlet UIButton* revokeBroadcastPriv;
 @property (nonatomic, weak) IBOutlet UIButton* banUser;
 
+@property (nonatomic, weak) IBOutlet UIButton* donateButton;
+@property (nonatomic, weak) IBOutlet UIButton* terminateButton;
+
 @property (nonatomic, weak) IBOutlet NSLayoutConstraint* broadcasterConstraint;
 
 @property (nonatomic, weak) IBOutlet UIView* buttonView;
@@ -96,6 +99,9 @@ NSString * const kLastIntentionKey = @"LastIntention";
     
     if(self.isReport)
     {
+        self.donateButton.hidden = YES;
+        self.terminateButton.hidden = NO;
+        
         //self.intention.hidden = YES;
         self.report.hidden = YES;
         self.revokeBroadcastPriv.hidden = NO;
@@ -103,6 +109,9 @@ NSString * const kLastIntentionKey = @"LastIntention";
     }
     else
     {
+        self.donateButton.hidden = NO;
+        self.terminateButton.hidden = YES;
+        
         if(self.playFromStart)
         {
             //self.intention.hidden = YES;
@@ -271,6 +280,13 @@ NSString * const kLastIntentionKey = @"LastIntention";
                                                                 [self.listeners replaceObjectAtIndex:index withObject:listener];
                                                             }
                                                         }
+                                                    } else if([type isEqualToString:@"terminate"]) {
+                                                        [[BroadcastManager sharedManager] stopPlaying];
+                                                        
+                                                        [UIAlertView bk_showAlertViewWithTitle:nil message:@"This broadcast has been terminated." cancelButtonTitle:@"Ok" otherButtonTitles:nil handler:^(UIAlertView *alertView, NSInteger buttonIndex) {
+                                                            
+                                                            [self.navigationController popViewControllerAnimated:YES];
+                                                        }];
                                                     }
                                                 }
                                                 
@@ -292,7 +308,10 @@ NSString * const kLastIntentionKey = @"LastIntention";
                 }
                 else
                 {
-                    //self.status.text = @"Broadcast Has Ended";
+                    [UIAlertView bk_showAlertViewWithTitle:nil message:@"Broadcast has ended." cancelButtonTitle:@"Ok" otherButtonTitles:nil handler:^(UIAlertView *alertView, NSInteger buttonIndex) {
+                        
+                        [self.navigationController popViewControllerAnimated:YES];
+                    }];
                 }
             });
         }
@@ -413,6 +432,16 @@ NSString * const kLastIntentionKey = @"LastIntention";
     [self updateUser:self.reportedBroadcast.b_email toLevel:@"banned"];
 }
 
+- (IBAction)onTerminateBroadcast:(id)sender {
+    [UIAlertView bk_showAlertViewWithTitle:nil message:@"Are you sure you want to terminate this broadcast?" cancelButtonTitle:@"Cancel" otherButtonTitles:@[@"Terminate"] handler:^(UIAlertView *alertView, NSInteger buttonIndex) {
+        
+        if(buttonIndex == 1) {
+            [[BroadcastQueueModel sharedInstance] sendTerminateForBroadcastId:self.reportedBroadcast.bid];
+        }
+    }];
+    
+}
+
 - (IBAction)onStopListening:(id)sender {
     [self.navigationController popViewControllerAnimated:YES];
 }
@@ -501,9 +530,13 @@ NSString * const kLastIntentionKey = @"LastIntention";
         [[AnalyticsManager sharedManager] event:@"PlayDuration" info:@{@"bid": self.broadcast.bid, @"duration": @(CACurrentMediaTime() - self.startTime), @"over": @(1)}];
 
         dispatch_async(dispatch_get_main_queue(), ^{
-            //self.status.text = @"Broadcast Has Ended";
             [self stopSlideShow];
             self.resumeSlideShow.hidden = YES;
+            
+            [UIAlertView bk_showAlertViewWithTitle:nil message:@"Broadcast has ended." cancelButtonTitle:@"Ok" otherButtonTitles:nil handler:^(UIAlertView *alertView, NSInteger buttonIndex) {
+                
+                [self.navigationController popViewControllerAnimated:YES];
+            }];
         });
     }
 }
