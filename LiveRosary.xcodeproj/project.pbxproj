@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		97421F7B1D7DF2DE009F75A3 /* BroadcastRequestUserCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 97421F7A1D7DF2DE009F75A3 /* BroadcastRequestUserCell.m */; };
 		974C30DC1CAB43B40053CA55 /* LRReportBroadcastViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 974C30DB1CAB43B40053CA55 /* LRReportBroadcastViewController.m */; };
 		975C1B3D1CA9873D009536CF /* SlideShow.m in Sources */ = {isa = PBXBuildFile; fileRef = 975C1B3C1CA9873D009536CF /* SlideShow.m */; };
 		975C1B401CA9CEDC009536CF /* BroadcastQueueModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 975C1B3F1CA9CEDC009536CF /* BroadcastQueueModel.m */; };
@@ -312,6 +313,8 @@
 
 /* Begin PBXFileReference section */
 		0A322FD56E2A135557AC420B /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
+		97421F791D7DF2DE009F75A3 /* BroadcastRequestUserCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BroadcastRequestUserCell.h; path = Cells/BroadcastRequestUserCell.h; sourceTree = "<group>"; };
+		97421F7A1D7DF2DE009F75A3 /* BroadcastRequestUserCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BroadcastRequestUserCell.m; path = Cells/BroadcastRequestUserCell.m; sourceTree = "<group>"; };
 		974C30DA1CAB43B40053CA55 /* LRReportBroadcastViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LRReportBroadcastViewController.h; path = ViewControllers/LRReportBroadcastViewController.h; sourceTree = "<group>"; };
 		974C30DB1CAB43B40053CA55 /* LRReportBroadcastViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LRReportBroadcastViewController.m; path = ViewControllers/LRReportBroadcastViewController.m; sourceTree = "<group>"; };
 		974C30DD1CAC38F10053CA55 /* LiveRosary.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = LiveRosary.entitlements; sourceTree = "<group>"; };
@@ -1150,6 +1153,8 @@
 				977D75191CC167EB00C4D7A0 /* ReportCell.m */,
 				D852B2ED1CC47775004D4BA4 /* UserCell.h */,
 				D852B2EE1CC47775004D4BA4 /* UserCell.m */,
+				97421F791D7DF2DE009F75A3 /* BroadcastRequestUserCell.h */,
+				97421F7A1D7DF2DE009F75A3 /* BroadcastRequestUserCell.m */,
 			);
 			name = Cells;
 			sourceTree = "<group>";
@@ -1629,6 +1634,7 @@
 				D852B2F21CC47B15004D4BA4 /* DBUser.m in Sources */,
 				D86372731C5ADEF900D02DC3 /* BroadcastModel.m in Sources */,
 				D8427CEA1C5F1FAC00A8CE5F /* LRCreateUserViewController.m in Sources */,
+				97421F7B1D7DF2DE009F75A3 /* BroadcastRequestUserCell.m in Sources */,
 				D885FA6A1C446FA2002904AC /* LRListenMainViewController.m in Sources */,
 				D8B72E8B1C9E14980081723F /* LRScheduleBroadcastViewController.m in Sources */,
 				D8A0EFEB1C4C707B0006B910 /* LiveRosaryAuthenticatedIdentityProvider.m in Sources */,

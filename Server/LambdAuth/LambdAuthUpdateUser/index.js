@@ -73,9 +73,26 @@ function updateUser(email, event, fn) {
 		fn);
 }
 
+function updateUserWithBroadcastRequest(email, text, fn) {
+	dynamodb.updateItem({
+			TableName: config.DDB_TABLE,
+			Key: {
+				email: {
+					S: email
+				}
+			},
+			AttributeUpdates: {
+				breq: { Action: 'PUT', Value: { N: '1' } },
+				reqtext: { Action: 'PUT', Value: { S: text } }
+			}
+		},
+		fn);	
+}
+
 exports.handler = function(event, context) {
 	var email = event.email;
 	var password = event.password;
+	var broadcastRequest = event.broadcastRequest;
 
 	getUser(email, function(err, correctHash, salt) {
 		if (err) {
@@ -92,14 +109,25 @@ exports.handler = function(event, context) {
 						context.fail({success: false, message: 'Email or password incorrect.', error: err});
 					} else {
 						if (hash == correctHash) {
-							updateUser(email, event, function(err, data) {
-								if (err) {
-									context.fail({success: false, message: 'Update failed.', error: err});
-								} else {
-									console.log('User updated: ' + email);
-									context.succeed({success: true});
-								}
-							});
+							if(broadcastRequest != null) {
+								updateUserWithBroadcastRequest(email, broadcastRequest, function(err, data) {
+									if (err) {
+										context.fail({success: false, message: 'Update for broadcast request failed.', error: err});
+									} else {
+										console.log('User updated with broadcast request: ' + email);
+										context.succeed({success: true});
+									}
+								});
+							} else {
+								updateUser(email, event, function(err, data) {
+									if (err) {
+										context.fail({success: false, message: 'Update failed.', error: err});
+									} else {
+										console.log('User updated: ' + email);
+										context.succeed({success: true});
+									}
+								});
+							}
 						} else {
 							// Login failed
 							console.log('User login failed: ' + email);

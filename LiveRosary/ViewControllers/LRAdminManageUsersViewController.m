@@ -14,6 +14,7 @@
 #import "UserManager.h"
 #import <SDWebImage/UIImageView+WebCache.h>
 #import <MBProgressHUD/MBProgressHUD.h>
+#import "BroadcastRequestUserCell.h"
 
 typedef NS_ENUM(NSUInteger, Level) {
     LevelAll,
@@ -21,6 +22,11 @@ typedef NS_ENUM(NSUInteger, Level) {
     LevelBroadcast,
     LevelListen,
     LevelBanned
+};
+
+typedef NS_ENUM(NSUInteger, Section) {
+    SectionBroadcastRequests,
+    SectionAll,
 };
 
 @interface LRAdminManageUsersViewController () <UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate>
@@ -33,6 +39,7 @@ typedef NS_ENUM(NSUInteger, Level) {
 
 @property (nonnull, readonly) NSString* currentLevel;
 @property (nonnull, strong) NSArray* users;
+@property (nonatomic, strong) NSArray<UserModel *>* usersWithBroadcastRequest;
 
 @property (nonatomic, strong) NSArray* searchResults;
 @property (nonatomic, strong) NSDictionary* searchMoreKey;
@@ -46,6 +53,8 @@ typedef NS_ENUM(NSUInteger, Level) {
     
     self.searchBar.delegate = self;
     [self onFilterChanged:nil];
+    
+    [self updateUsersWithBroadcastRequest];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -73,11 +82,32 @@ typedef NS_ENUM(NSUInteger, Level) {
     switch(self.filter.selectedSegmentIndex)
     {
         case LevelAdmin: return @"admin";
-        case LevelBroadcast: return @"broadcaster";
+        case LevelBroadcast: return @"broadcast";
         case LevelListen: return @"listener";
         case LevelBanned: return @"banned";
         default: return nil;
     }
+}
+
+- (NSString*)currentFilterName {
+    switch(self.filter.selectedSegmentIndex) {
+        case LevelAll: return @"All Users";
+        case LevelAdmin: return @"Admin Users";
+        case LevelBroadcast: return @"Broadcaster Users";
+        case LevelListen: return @"Listener Users";
+        case LevelBanned: return @"Banned Users";
+    }
+    
+    return @"";
+}
+
+- (void)updateUsersWithBroadcastRequest {
+    [[DBUser sharedInstance] getUsersWithBroadcastRequest:nil completion:^(NSArray<UserModel *> *users, NSDictionary *moreKey, NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.usersWithBroadcastRequest = users;
+            [self.tableView reloadData];
+        });
+    }];
 }
 
 - (IBAction)onFilterChanged:(id)sender
@@ -103,24 +133,73 @@ typedef NS_ENUM(NSUInteger, Level) {
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return 1;
+    return 2;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return self.searchResults.count > 0 ? self.searchResults.count + 1 : self.users.count;
+    switch(section) {
+        case SectionBroadcastRequests:
+            return self.usersWithBroadcastRequest.count;
+            
+        case SectionAll:
+            return self.searchResults.count > 0 ? self.searchResults.count + 1 : self.users.count;
+    }
+    
+    return 0;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    return 30.0f;
+}
+
+- (UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    UIView* header = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 30)];
+    header.backgroundColor = [UIColor colorFromHexString:@"#e0e0dc"];
+    UILabel* headerText = [[UILabel alloc] initWithFrame:CGRectMake(8, 0, tableView.frame.size.width - 16, 30)];
+    headerText.font = [UIFont fontWithName:@"Veranda" size:22.0f];
+    
+    switch(section) {
+        case SectionBroadcastRequests:
+            headerText.text = @"Broadcast Requests";
+            break;
+            
+        case SectionAll:
+            headerText.text = self.searchResults.count > 0 ? @"Search Results" : [self currentFilterName];
+            break;
+    }
+    
+    [header addSubview:headerText];
+    
+    return header;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if(self.searchResults.count > 0 && indexPath.row >= self.searchResults.count)
-    {
-        UITableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:@"SearchCompleteCell" forIndexPath:indexPath];
-        return cell;
-    }
-    else
-    {
-        UserCell* cell = [tableView dequeueReusableCellWithIdentifier:@"UserCell" forIndexPath:indexPath];
+    if(indexPath.section == SectionAll) {
+        if(self.searchResults.count > 0 && indexPath.row >= self.searchResults.count)
+        {
+            UITableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:@"SearchCompleteCell" forIndexPath:indexPath];
+            return cell;
+        }
+        else
+        {
+            UserCell* cell = [tableView dequeueReusableCellWithIdentifier:@"UserCell" forIndexPath:indexPath];
+            UserModel* user = self.searchResults.count > 0 ? self.searchResults[indexPath.row] : self.users[indexPath.row];
+            cell.email.text = user.email;
+            cell.name.text = [NSString stringWithFormat:@"%@ %@", user.firstName, user.lastName];
+            cell.location.text = [NSString stringWithFormat:@"%@, %@", user.city, user.state];
+            cell.language.text = user.language;
+            cell.level.text = user.level;
+            cell.countryFlag.image = [[UserManager sharedManager] imageForCountryName:user.country];
+
+            NSString* urlString = [NSString stringWithFormat:@"https://s3.amazonaws.com/liverosaryavatars/%@", [user.email stringByReplacingOccurrencesOfString:@"@" withString:@"-"]];
+            [cell.avatar sd_setImageWithURL:[NSURL URLWithString:urlString] placeholderImage:[UIImage imageNamed:@"AvatarImage"] options:0];
+            
+            return cell;
+        }
+    } else {
+        BroadcastRequestUserCell* cell = [tableView dequeueReusableCellWithIdentifier:@"BroadcastRequestUserCell" forIndexPath:indexPath];
         UserModel* user = self.searchResults.count > 0 ? self.searchResults[indexPath.row] : self.users[indexPath.row];
         cell.email.text = user.email;
         cell.name.text = [NSString stringWithFormat:@"%@ %@", user.firstName, user.lastName];
@@ -128,9 +207,11 @@ typedef NS_ENUM(NSUInteger, Level) {
         cell.language.text = user.language;
         cell.level.text = user.level;
         cell.countryFlag.image = [[UserManager sharedManager] imageForCountryName:user.country];
-
+        
         NSString* urlString = [NSString stringWithFormat:@"https://s3.amazonaws.com/liverosaryavatars/%@", [user.email stringByReplacingOccurrencesOfString:@"@" withString:@"-"]];
         [cell.avatar sd_setImageWithURL:[NSURL URLWithString:urlString] placeholderImage:[UIImage imageNamed:@"AvatarImage"] options:0];
+        
+        cell.requestText.text = user.reqtext;
         
         return cell;
     }
@@ -140,16 +221,26 @@ typedef NS_ENUM(NSUInteger, Level) {
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 70.0f;
+    switch(indexPath.section) {
+        case SectionAll:
+            return 70.0f;
+            
+        case SectionBroadcastRequests:
+            return 133.0f;
+   }
+    
+    return 0.0;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if(self.searchResults.count > 0 && indexPath.row >= self.searchResults.count)
-    {
-        self.searchBar.text = @"";
-        self.searchResults = nil;
-        [tableView reloadData];
+    if(indexPath.section == SectionAll) {
+        if(self.searchResults.count > 0 && indexPath.row >= self.searchResults.count)
+        {
+            self.searchBar.text = @"";
+            self.searchResults = nil;
+            [tableView reloadData];
+        }
     }
 }
 
@@ -169,37 +260,78 @@ typedef NS_ENUM(NSUInteger, Level) {
 //        [actions addObject:adminAction];
 //    }
     
-    if(![user.level isEqualToString:@"broadcaster"])
-    {
-        UITableViewRowAction* broadcastAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal title:@"Broadcast" handler:^(UITableViewRowAction * _Nonnull action, NSIndexPath * _Nonnull indexPath) {
+    if(indexPath.section == SectionAll) {
+        if(![user.level isEqualToString:@"broadcaster"])
+        {
+            UITableViewRowAction* broadcastAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal title:@"Broadcast" handler:^(UITableViewRowAction * _Nonnull action, NSIndexPath * _Nonnull indexPath) {
+                
+                [self updateUser:user toLevel:@"broadcaster"];
+            }];
             
-            [self updateUser:user toLevel:@"broadcaster"];
-        }];
+            broadcastAction.backgroundColor = [UIColor blueColor];
+            [actions addObject:broadcastAction];
+        }
         
-        broadcastAction.backgroundColor = [UIColor blueColor];
-        [actions addObject:broadcastAction];
-    }
-    
-    if(![user.level isEqualToString:@"listener"])
-    {
-        UITableViewRowAction* listenAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal title:@"Listen" handler:^(UITableViewRowAction * _Nonnull action, NSIndexPath * _Nonnull indexPath) {
+        if(![user.level isEqualToString:@"listener"])
+        {
+            UITableViewRowAction* listenAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal title:@"Listen" handler:^(UITableViewRowAction * _Nonnull action, NSIndexPath * _Nonnull indexPath) {
+                
+                [self updateUser:user toLevel:@"listener"];
+            }];
             
-            [self updateUser:user toLevel:@"listener"];
-        }];
+            listenAction.backgroundColor = [UIColor greenColor];
+            [actions addObject:listenAction];
+        }
         
-        listenAction.backgroundColor = [UIColor greenColor];
-        [actions addObject:listenAction];
-    }
-    
-    if(![user.level isEqualToString:@"banned"])
-    {
-        UITableViewRowAction* banAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal title:@"Ban" handler:^(UITableViewRowAction * _Nonnull action, NSIndexPath * _Nonnull indexPath) {
+        if(![user.level isEqualToString:@"banned"])
+        {
+            UITableViewRowAction* banAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal title:@"Ban" handler:^(UITableViewRowAction * _Nonnull action, NSIndexPath * _Nonnull indexPath) {
 
-            [self updateUser:user toLevel:@"banned"];
+                [self updateUser:user toLevel:@"banned"];
+            }];
+            
+            banAction.backgroundColor = [UIColor redColor];
+            [actions addObject:banAction];
+        }
+    } else {
+        UITableViewRowAction* approveAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal title:@"Approve" handler:^(UITableViewRowAction * _Nonnull action, NSIndexPath * _Nonnull indexPath) {
+
+            self.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+            self.hud.labelText = @"Updating User";
+            
+            [[LiveRosaryService sharedService] updateUserForBroadcastRequest:user.email approve:YES adminEmail:[UserManager sharedManager].email adminPassword:[UserManager sharedManager].password completion:^(NSError *error) {
+                
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self.hud hide:YES];
+                    [self.tableView reloadData];
+                    
+                    [self updateUsersWithBroadcastRequest];
+                });
+            }];
         }];
         
-        banAction.backgroundColor = [UIColor redColor];
-        [actions addObject:banAction];
+        approveAction.backgroundColor = [UIColor greenColor];
+        [actions addObject:approveAction];
+        
+        UITableViewRowAction* denyAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal title:@"Deny" handler:^(UITableViewRowAction * _Nonnull action, NSIndexPath * _Nonnull indexPath) {
+            
+            self.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+            self.hud.labelText = @"Updating User";
+            
+            [[LiveRosaryService sharedService] updateUserForBroadcastRequest:user.email approve:NO adminEmail:[UserManager sharedManager].email adminPassword:[UserManager sharedManager].password completion:^(NSError *error) {
+                
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self.hud hide:YES];
+                    [self.tableView reloadData];
+                    
+                    [self updateUsersWithBroadcastRequest];
+                });
+            }];
+        }];
+        
+        denyAction.backgroundColor = [UIColor redColor];
+        [actions addObject:denyAction];
+        
     }
     
     return actions;

@@ -20,17 +20,18 @@ BUCKET=$(jq -r '.BUCKET' config.json)
 MAX_AGE=$(jq -r '.MAX_AGE' config.json)
 IDENTITY_POOL_ID=$(jq -r '.IDENTITY_POOL_ID' config.json)
 DEVELOPER_PROVIDER_NAME=$(jq -r '.DEVELOPER_PROVIDER_NAME' config.json)
+PROFILE=$(jq -r '.AWS_PROFILE' config.json)
 
 # Updating Lambda functions
 for f in $(ls -1); do
   if [[ $f != LambdAuth* ]]; then
     continue
   fi
-   echo "Updating function $f begin..."
+   echo "Updating ${PROFILE} function $f begin..."
 	cp config.json $f/
   cd $f
   zip -r $f.zip index.js config.json
-  aws lambda update-function-code --function-name ${f} --zip-file fileb://${f}.zip --region $REGION
+  aws lambda update-function-code --profile ${PROFILE} --function-name ${f} --zip-file fileb://${f}.zip --region $REGION
 	rm config.json
 	rm $f.zip
   cd ..

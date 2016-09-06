@@ -251,6 +251,9 @@ NSString* const kAllLevels = @"_ALL_";
     }];
 }
 
+- (void)getBroadcastRequestersWithCompletion:(void (^)(NSArray<UserModel*>* users, NSDictionary* moreKey, NSError* error))completion {
+}
+
 - (void)updateLevelForEmail:(NSString*)email from:(NSString*)fromLevel to:(NSString*)toLevel
 {
     NSArray* allUsers = self.levels[kAllLevels];

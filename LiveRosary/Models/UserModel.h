@@ -29,6 +29,8 @@ typedef NS_ENUM(NSUInteger, UserLevel) {
 @property (nonatomic, strong) NSNumber* avatar;
 @property (nonatomic, strong) NSString* level;
 @property (nonatomic, readonly) UserLevel userLevel;
+@property (nonatomic, strong) NSNumber* breq;
+@property (nonatomic, strong) NSString* reqtext;
 
 - (id)initWithDict:(NSDictionary*)dict;
 

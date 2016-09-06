@@ -7,6 +7,7 @@ var config = require('./config.json');
 
 // Get reference to AWS clients
 var dynamodb = new AWS.DynamoDB();
+var ses = new AWS.SES();
 
 function computeHash(password, salt, fn) {
 	// Bytesize
@@ -66,11 +67,66 @@ function updateUserLevel(email, level, fn) {
 		fn);
 }
 
+function updateUserForBroadcastApproved(email, approved, fn) {
+
+	var updates;
+
+	if(approved) {
+		updates = { level: { Action: 'PUT', Value: { S: 'admin' } },
+					breq: { Action: 'DELETE' },
+					reqtext: { Action: 'DELETE'} };
+	} else {
+		updates = { breq: { Action: 'DELETE' },
+					reqtext: { Action: 'DELETE'} };
+	}
+
+	dynamodb.updateItem({
+			TableName: config.DDB_TABLE,
+			Key: {
+				email: {
+					S: email
+				}
+			},
+			AttributeUpdates: updates
+		},
+		fn);
+}
+
+function sendEmail(email, approved, fn) {
+	var subject = 'LiveRosary Broadcast Request ' + approved ? 'Approved' : 'Denied';
+	ses.sendEmail({
+		Source: config.EMAIL_SOURCE,
+		Destination: {
+			ToAddresses: [
+				email
+			]
+		},
+		Message: {
+			Subject: {
+				Data: subject
+			},
+			Body: {
+				Html: {
+					Data: '<html><head>'
+					+ '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />'
+					+ '<title>' + subject + '</title>'
+					+ '</head><body>'
+					+ approved ? 'We regret to inform you that your request for broadcaster priviledge has been denied.' :
+								 'We are happy to inform you that your request for broadcaster priviledge has been approved.'
+					+ '<br><br>'
+					+ '</body></html>'
+				}
+			}
+		}
+	}, fn);
+}
+
 exports.handler = function(event, context) {
 	var email = event.email;
 	var password = event.password;
 	var updateEmail = event.updateEmail;
 	var updateLevel = event.updateLevel;
+	var broadcastApprove = event.broadcastApprove;
 
 	getUser(email, function(err, correctHash, salt, level) {
 		if (err) {
@@ -93,16 +149,34 @@ exports.handler = function(event, context) {
 						if (err) {
 							context.fail({success: false, message: 'Email or password incorrect.', error: err});
 						} else {
-							if (hash == correctHash) {							
-								updateUserLevel(updateEmail, updateLevel, function(err, data) {
-									if (err) {
-										console.log('User failed: ' + err);
-										context.fail({success: false, message: 'Update failed.', error: err});
-									} else {
-										console.log('User updated: ' + email);
-										context.succeed({success: true});
-									}
-								});
+							if (hash == correctHash) {	
+
+								if(updateLevel) {
+									updateUserLevel(updateEmail, updateLevel, function(err, data) {
+										if (err) {
+											console.log('User update failed: ' + err);
+											context.fail({success: false, message: 'Update failed.', error: err});
+										} else {
+											console.log('User updated: ' + email);
+											context.succeed({success: true});
+										}
+									});
+								} else if(broadcastApprove != null) {
+									updateUserForBroadcastApproved(updateEmail, broadcastApprove, function(err, data) {
+										if (err) {
+											console.log('User update failed: ' + err);
+											context.fail({success: false, message: 'Update failed.', error: err});
+										} else {
+											console.log('User updated: ' + email);
+											sendEmail(updateEmail, broadcastApprove, function(err, data) {
+												if(err) console.log("Error sending email: " + err);
+												context.succeed({success: true});
+											});
+										}
+									});
+								} else {
+									context.fail({success: false, message: 'Bad Request.', error: 'bad request'});									
+								}
 							} else {
 								// Login failed
 								console.log('User login failed: ' + email);

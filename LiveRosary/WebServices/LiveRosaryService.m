@@ -193,6 +193,14 @@ NSString* const kBaseURL = @"https://9wwr7dvesk.execute-api.us-east-1.amazonaws.
     }];
 }
 
+- (void)updateUserForBroadcastRequest:(NSString*)email approve:(BOOL)approve adminEmail:(NSString*)adminEmail adminPassword:(NSString*)adminPassword completion:(void (^)(NSError* error))completion {
+    NSDictionary* dictionary = @{ @"email": adminEmail, @"password": adminPassword, @"updateEmail": email, @"broadcastApprove": @(approve) };
+    
+    [self postMethod:@"UpdateUserLevel" withDictionary:dictionary completion:^(id response, NSError *error) {
+        safeBlock(completion, error);
+    }];
+}
+
 - (void)startBroadcastingWithEmail:(NSString*)email andBroadcastId:(NSString*)bid completion:(void (^)(NSError* error))completion
 {
     NSDictionary* dictionary = @{

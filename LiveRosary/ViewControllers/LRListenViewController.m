@@ -52,12 +52,12 @@ NSString * const kLastIntentionKey = @"LastIntention";
 
 @property (nonatomic, weak) IBOutlet NSLayoutConstraint* broadcasterConstraint;
 
+@property (nonatomic, weak) IBOutlet UIView* buttonView;
+
 @property (nonatomic, strong) MBProgressHUD *hud;
 @property (nonatomic, strong) IBOutlet SlideShow* slideShow;
 
-
 @property (nonatomic, strong) NSTimer* playTimer;
-
 
 @property (nonatomic) BOOL editingIntention;
 //@property (nonatomic, strong) NSString* lastIntention;
@@ -159,6 +159,12 @@ NSString * const kLastIntentionKey = @"LastIntention";
     NSString* urlString = [NSString stringWithFormat:@"https://s3.amazonaws.com/liverosaryavatars/%@", [self.broadcast.user stringByReplacingOccurrencesOfString:@"@" withString:@"-"]];
     [self.avatar sd_setImageWithURL:[NSURL URLWithString:urlString] placeholderImage:[UIImage imageNamed:@"AvatarImage"] options:0];
 
+    
+    UITapGestureRecognizer* buttonViewCloseTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onArrowButton:)];
+    buttonViewCloseTap.numberOfTapsRequired = 1;
+    buttonViewCloseTap.numberOfTouchesRequired = 1;
+    [self.buttonView addGestureRecognizer:buttonViewCloseTap];
+    
     
     self.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     self.hud.labelText = @"Loading";
@@ -432,7 +438,7 @@ NSString * const kLastIntentionKey = @"LastIntention";
 - (void)closeButtonPanel {
     [self.arrowButton setImage:[UIImage imageNamed:@"ArrowUp"] forState:UIControlStateNormal];
     self.buttonPanelOpen = NO;
-    self.broadcasterConstraint.constant = -37;
+    self.broadcasterConstraint.constant = -40;
     [UIView animateWithDuration:1
                      animations:^{
                          [self.view setNeedsLayout];

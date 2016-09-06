@@ -375,24 +375,30 @@ typedef NS_ENUM(NSUInteger, Mode) {
     }
 }
 
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
-{
-    switch(section)
-    {
-        case SectionBroadcasts:
-            return self.showReportedBroadcasts ? @"Reported Broadcasts" : @"Live Broadcasts";
-            
-        case SectionScheduledBroadcasts:
-            return @"Scheduled Broadcasts";
-            
-        default:
-            return nil;
-    }
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    return 30.0f;
 }
 
-//- (UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-//    UILabel* header = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 30)];
-//}
+- (UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    UIView* header = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 30)];
+    header.backgroundColor = [UIColor colorFromHexString:@"#e0e0dc"];
+    UILabel* headerText = [[UILabel alloc] initWithFrame:CGRectMake(8, 0, tableView.frame.size.width - 16, 30)];
+    headerText.font = [UIFont fontWithName:@"Veranda" size:22.0f];
+    
+    switch(section) {
+        case SectionBroadcasts:
+            headerText.text = self.showReportedBroadcasts ? @"Reported Broadcasts" : @"Live Broadcasts";
+            break;
+            
+        case SectionScheduledBroadcasts:
+            headerText.text = @"Scheduled Broadcasts";
+            break;
+    }
+    
+    [header addSubview:headerText];
+    
+    return header;
+}
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {

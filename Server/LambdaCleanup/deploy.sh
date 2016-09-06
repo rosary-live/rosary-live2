@@ -22,9 +22,10 @@ BUCKET=$(jq -r '.BUCKET' config.json)
 MAX_AGE=$(jq -r '.MAX_AGE' config.json)
 IDENTITY_POOL_ID=$(jq -r '.IDENTITY_POOL_ID' config.json)
 DEVELOPER_PROVIDER_NAME=$(jq -r '.DEVELOPER_PROVIDER_NAME' config.json)
+PROFILE=$(jq -r '.AWS_PROFILE' config.json)
 
-echo "Updating function $FUNCTION begin..."
+echo "Updating ${PROFILE} function $FUNCTION begin..."
 zip -r $FUNCTION.zip index.js config.json
-aws lambda update-function-code --function-name ${FUNCTION} --zip-file fileb://${FUNCTION}.zip --region $REGION
+aws lambda update-function-code --profile ${PROFILE} --function-name ${FUNCTION} --zip-file fileb://${FUNCTION}.zip --region $REGION
 rm $FUNCTION.zip
 echo "Updating function $FUNCTION end"
