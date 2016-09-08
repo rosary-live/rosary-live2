@@ -238,9 +238,9 @@
 //                                                           [UIFont fontWithName:@"HelveticaNeue-CondensedBlack" size:21.0], NSFontAttributeName, nil]];
     
     [[UIButton appearance] setTintColor:[UIColor colorFromHexString:@"#344479"]];
-    [[UIButton appearance] setFont:[UIFont fontWithName:@"Veranda" size:14]];
+    //[[UIButton appearance] setFont:[UIFont fontWithName:@"Veranda" size:14]];
     
-    [[UITextField appearance] setFont:[UIFont fontWithName:@"Veranda" size:12]];
+    //[[UITextField appearance] setFont:[UIFont fontWithName:@"Veranda" size:12]];
     
     //[[UILabel appearance] setFont:[UIFont fontWithName:@"Veranda" size:10]];
 }

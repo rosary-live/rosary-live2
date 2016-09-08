@@ -147,7 +147,7 @@ typedef NS_ENUM(NSUInteger, MenuOption) {
 {
     DrawerCell* cell = [tableView dequeueReusableCellWithIdentifier:@"DrawerCell" forIndexPath:indexPath];
     
-    cell.title.font = [UIFont fontWithName:@"Rokkitt" size:30.0];
+//    cell.title.font = [UIFont fontWithName:@"Rokkitt" size:30.0];
     
     BOOL selected = NO;
     switch(((NSNumber*)self.menuOptions[indexPath.row]).integerValue)
