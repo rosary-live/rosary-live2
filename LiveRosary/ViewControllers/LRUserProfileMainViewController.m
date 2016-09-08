@@ -22,6 +22,8 @@
 @property (nonatomic, weak) IBOutlet UILabel* state;
 @property (nonatomic, weak) IBOutlet UILabel* country;
 
+@property (nonatomic, weak) IBOutlet UIButton* broadcastRequestButton;
+
 @property (nonatomic, strong) MBProgressHUD *hud;
 
 @end
@@ -47,6 +49,12 @@
     self.city.text = [UserManager sharedManager].currentUser.city;
     self.state.text = [UserManager sharedManager].currentUser.state;
     self.country.text = [UserManager sharedManager].currentUser.country;
+    
+    if(![[UserManager sharedManager].currentUser.level isEqualToString:@"listener"]) {
+        self.broadcastRequestButton.hidden = YES;
+    } else {
+        self.broadcastRequestButton.hidden = NO;
+    }
 }
 
 - (void)didReceiveMemoryWarning {

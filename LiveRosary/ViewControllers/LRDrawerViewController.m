@@ -66,10 +66,10 @@ typedef NS_ENUM(NSUInteger, MenuOption) {
         {
             [self.menuOptions addObject:@(MenuOptionListen)];
             
-            //if(user.userLevel == UserLevelBroadcaster || user.userLevel == UserLevelAdmin)
-            //{
+            if(user.userLevel == UserLevelBroadcaster || user.userLevel == UserLevelAdmin)
+            {
                 [self.menuOptions addObject:@(MenuOptionBroadcast)];
-            //}
+            }
 
             if(user.userLevel == UserLevelAdmin)
             {

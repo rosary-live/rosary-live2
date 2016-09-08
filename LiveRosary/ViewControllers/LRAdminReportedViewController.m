@@ -33,6 +33,12 @@
     }
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    self.navigationItem.title = @"Reported";
+}
+
 - (NSString*)screenName
 {
     return @"Admin Reported Broadcasts";

@@ -72,7 +72,7 @@ function updateUserForBroadcastApproved(email, approved, fn) {
 	var updates;
 
 	if(approved) {
-		updates = { level: { Action: 'PUT', Value: { S: 'admin' } },
+		updates = { level: { Action: 'PUT', Value: { S: 'broadcaster' } },
 					breq: { Action: 'DELETE' },
 					reqtext: { Action: 'DELETE'} };
 	} else {

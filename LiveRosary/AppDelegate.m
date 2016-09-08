@@ -22,6 +22,8 @@
 @property (nonatomic, strong) MMDrawerController* drawerController;
 @property (nonatomic, strong) LRDrawerViewController* drawerViewController;
 @property (nonatomic, strong) UIView* noNetworkView;
+@property (nonatomic) BOOL startupComplete;
+@property (nonatomic, strong) NSURL* deepLinkURL;
 
 @end
 
@@ -95,6 +97,14 @@
     
     [[AFNetworkReachabilityManager sharedManager] startMonitoring];
     
+    self.startupComplete = YES;
+    
+    if(self.deepLinkURL != nil) {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [self.drawerViewController showPasswordReset];
+        });        
+    }
+    
     return YES;
 }
 
@@ -108,36 +118,47 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userLoggedIn) name:NotificationUserLoggedIn object:nil];
 
-    Branch *branch = [Branch getInstance];
-    [branch initSessionWithLaunchOptions:launchOptions andRegisterDeepLinkHandler:^(NSDictionary *params, NSError *error) {
-        // params are the deep linked params associated with the link that the user clicked before showing up.
-        NSLog(@"deep link data: %@", [params description]);
-        
-        NSNumber* branchLinkClicked = params[@"+clicked_branch_link"];
-        if(branchLinkClicked != nil && branchLinkClicked.boolValue)
-        {
-            NSString* identifier = params[@"$canonical_identifier"];
-            if([identifier isEqualToString:@"LostPassword"])
-            {
-                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                    [self.drawerViewController showPasswordReset];
-                });
-            }
-        }
-    }];
+//    Branch *branch = [Branch getInstance];
+//    [branch initSessionWithLaunchOptions:launchOptions andRegisterDeepLinkHandler:^(NSDictionary *params, NSError *error) {
+//        // params are the deep linked params associated with the link that the user clicked before showing up.
+//        NSLog(@"deep link data: %@", [params description]);
+//        
+//        NSNumber* branchLinkClicked = params[@"+clicked_branch_link"];
+//        if(branchLinkClicked != nil && branchLinkClicked.boolValue)
+//        {
+//            NSString* identifier = params[@"$canonical_identifier"];
+//            if([identifier isEqualToString:@"LostPassword"])
+//            {
+//                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//                    [self.drawerViewController showPasswordReset];
+//                });
+//            }
+//        }
+//    }];
     
     return YES;
 }
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
-    [[Branch getInstance] handleDeepLink:url];
+//    [[Branch getInstance] handleDeepLink:url];
+    
+    if([url.host isEqualToString:@"forgotPassword"]) {
+        if(self.startupComplete) {
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [self.drawerViewController showPasswordReset];
+            });
+        } else {
+            self.deepLinkURL = url;
+        }
+    }
+    
     return YES;
 }
 
-- (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity restorationHandler:(void (^)(NSArray *))restorationHandler {
-    [[Branch getInstance] continueUserActivity:userActivity];
-    return YES;
-}
+//- (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity restorationHandler:(void (^)(NSArray *))restorationHandler {
+//    [[Branch getInstance] continueUserActivity:userActivity];
+//    return YES;
+//}
 
 - (void)applicationWillResignActive:(UIApplication *)application {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
@@ -217,11 +238,11 @@
 //                                                           [UIFont fontWithName:@"HelveticaNeue-CondensedBlack" size:21.0], NSFontAttributeName, nil]];
     
     [[UIButton appearance] setTintColor:[UIColor colorFromHexString:@"#344479"]];
-    [[UIButton appearance] setFont:[UIFont fontWithName:@"Veranda" size:18]];
+    [[UIButton appearance] setFont:[UIFont fontWithName:@"Veranda" size:14]];
     
-    [[UITextField appearance] setFont:[UIFont fontWithName:@"Veranda" size:14]];
+    [[UITextField appearance] setFont:[UIFont fontWithName:@"Veranda" size:12]];
     
-    [[UILabel appearance] setFont:[UIFont fontWithName:@"Veranda" size:12]];
+    //[[UILabel appearance] setFont:[UIFont fontWithName:@"Veranda" size:10]];
 }
 
 @end

@@ -71,8 +71,12 @@ function process(bucket, key, bid, seq, callback) {
 										live: { Action: 'PUT',
 													Value: { N: live } },
 									  },
+					Expected: {	live: { ComparisonOperator: 'NE', AttributeValueList: [ { N: '0' } ] },
+								sequence: { ComparisonOperator: 'LE', AttributeValueList: [ { N: seq.toString() } ] }
+					},
 					ReturnValues: 'NONE'
 				}, function(err, data) {
+					if(err) console.log("updateItem error: %j", err);
 					if(err) callback(err, null);
 					else callback(null, data);
 				});	

@@ -97,11 +97,16 @@ NSString * const kLastIntentionKey = @"LastIntention";
     self.listenerCount.text = @"";
     self.status.text = @"00:00";
     
-    if(self.isReport)
-    {
+    if([[UserManager sharedManager].currentUser.level isEqualToString:@"admin"]) {
         self.donateButton.hidden = YES;
         self.terminateButton.hidden = NO;
-        
+    } else {
+        self.donateButton.hidden = NO;
+        self.terminateButton.hidden = YES;
+    }
+    
+    if(self.isReport)
+    {
         //self.intention.hidden = YES;
         self.report.hidden = YES;
         self.revokeBroadcastPriv.hidden = NO;
@@ -109,9 +114,6 @@ NSString * const kLastIntentionKey = @"LastIntention";
     }
     else
     {
-        self.donateButton.hidden = NO;
-        self.terminateButton.hidden = YES;
-        
         if(self.playFromStart)
         {
             //self.intention.hidden = YES;
@@ -436,7 +438,7 @@ NSString * const kLastIntentionKey = @"LastIntention";
     [UIAlertView bk_showAlertViewWithTitle:nil message:@"Are you sure you want to terminate this broadcast?" cancelButtonTitle:@"Cancel" otherButtonTitles:@[@"Terminate"] handler:^(UIAlertView *alertView, NSInteger buttonIndex) {
         
         if(buttonIndex == 1) {
-            [[BroadcastQueueModel sharedInstance] sendTerminateForBroadcastId:self.reportedBroadcast.bid];
+            [[BroadcastQueueModel sharedInstance] sendTerminateForBroadcastId:self.isReport ? self.reportedBroadcast.bid : self.broadcast.bid];
         }
     }];
     
@@ -467,7 +469,7 @@ NSString * const kLastIntentionKey = @"LastIntention";
 - (void)closeButtonPanel {
     [self.arrowButton setImage:[UIImage imageNamed:@"ArrowUp"] forState:UIControlStateNormal];
     self.buttonPanelOpen = NO;
-    self.broadcasterConstraint.constant = -40;
+    self.broadcasterConstraint.constant = -42;
     [UIView animateWithDuration:1
                      animations:^{
                          [self.view setNeedsLayout];

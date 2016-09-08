@@ -500,7 +500,7 @@ typedef NS_ENUM(NSUInteger, Mode) {
     }
     else
     {
-        return 70.0f;
+        return 75.0f;
     }
 }
 

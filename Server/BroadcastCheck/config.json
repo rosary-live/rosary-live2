@@ -1,6 +1,6 @@
 {
   "AWS_ACCOUNT_ID": "767603916237",
-  "AWS_PROFILE": "socialup",
+  "AWS_PROFILE": "liverosary",
   "REGION": "us-east-1",
   "BUCKET": "liverosaryweb",
   "MAX_AGE": "10",
