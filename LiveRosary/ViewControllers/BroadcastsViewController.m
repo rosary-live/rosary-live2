@@ -299,6 +299,7 @@ typedef NS_ENUM(NSUInteger, Mode) {
 {
     self.tableView.hidden = NO;
     self.mapView.hidden = YES;
+    self.alarmFilter.hidden = NO;
     
     [self.listMode setImage:[UIImage imageNamed:@"ListOn"] forState:UIControlStateNormal];
     [self.mapMode setImage:[UIImage imageNamed:@"MapOff"] forState:UIControlStateNormal];
@@ -308,6 +309,7 @@ typedef NS_ENUM(NSUInteger, Mode) {
 {
     self.tableView.hidden = YES;
     self.mapView.hidden = NO;
+    self.alarmFilter.hidden = YES;
 
     [self.mapMode setImage:[UIImage imageNamed:@"MapOn"] forState:UIControlStateNormal];
     [self.listMode setImage:[UIImage imageNamed:@"ListOff"] forState:UIControlStateNormal];
