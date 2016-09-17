@@ -52,9 +52,9 @@ typedef NS_ENUM(NSUInteger, Section) {
     [super viewDidLoad];
     
     self.searchBar.delegate = self;
-    [self onFilterChanged:nil];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(update)];
     
-    [self updateUsersWithBroadcastRequest];
+    [self update];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -65,6 +65,11 @@ typedef NS_ENUM(NSUInteger, Section) {
 - (NSString*)screenName
 {
     return @"Admin Manage Users";
+}
+
+- (void)update {
+    [self onFilterChanged:nil];
+    [self updateUsersWithBroadcastRequest];
 }
 
 /*
@@ -200,7 +205,7 @@ typedef NS_ENUM(NSUInteger, Section) {
         }
     } else {
         BroadcastRequestUserCell* cell = [tableView dequeueReusableCellWithIdentifier:@"BroadcastRequestUserCell" forIndexPath:indexPath];
-        UserModel* user = self.searchResults.count > 0 ? self.searchResults[indexPath.row] : self.users[indexPath.row];
+        UserModel* user = self.usersWithBroadcastRequest[indexPath.row];
         cell.email.text = user.email;
         cell.name.text = [NSString stringWithFormat:@"%@ %@", user.firstName, user.lastName];
         cell.location.text = [NSString stringWithFormat:@"%@, %@", user.city, user.state];
