@@ -43,6 +43,10 @@
 {
     [super viewWillAppear:animated];
     
+    [self update];
+}
+
+- (void)update {
     [[ScheduleManager sharedManager] myScheduledBroadcastsWithCompletion:^(NSArray<ScheduleModel *> *scheduledBroadcasts, NSError *error) {
         self.scheduledBroadcasts = scheduledBroadcasts;
         [self filterScheduledBroadcasts];
@@ -52,11 +56,6 @@
             [self.tableView reloadData];
         });
     }];
-}
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 - (NSString*)screenName
@@ -117,6 +116,37 @@
     {
         cell.schedule.text = [NSString stringWithFormat:@"From %@ to %@\n%@ at %@", [NSDateFormatter localizedStringFromDate:[schedule.from dateForNumber] dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterNoStyle], [NSDateFormatter localizedStringFromDate:[schedule.to dateForNumber] dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterNoStyle], [schedule.days daysString], [schedule.at time]];
     }
+    
+    if([[ScheduleManager sharedManager] reminderSetForBroadcastWithId:schedule.sid]) {
+        [cell.alarm setImage:[UIImage imageNamed:@"AlarmOnBlue"] forState:UIControlStateNormal];
+    } else {
+        [cell.alarm setImage:[UIImage imageNamed:@"AlarmOffBlue"] forState:UIControlStateNormal];
+    }
+    
+    [cell.alarm bk_addEventHandler:^(id sender) {
+        if([[ScheduleManager sharedManager] reminderSetForBroadcastWithId:schedule.sid]) {
+            [[ScheduleManager sharedManager] removeReminderForScheduledBroadcast:schedule];
+        } else {
+            [[ScheduleManager sharedManager] addReminderForScheduledBroadcast:schedule broadcaster:YES];
+        }
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.tableView reloadData];
+        });
+    } forControlEvents:UIControlEventTouchUpInside];
+    
+    [cell.remove bk_addEventHandler:^(id sender) {
+        [[ScheduleManager sharedManager] removeScheduledBroadcastWithId:schedule.sid completion:^(NSError *error) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if(error != nil) {
+                    [UIAlertView bk_alertViewWithTitle:nil message:@"Unabled to delete schedule broadcast."];
+                } else {
+                    [[ScheduleManager sharedManager] removeReminderForScheduledBroadcast:schedule];
+                    [self update];
+                }
+            });
+        }];
+    } forControlEvents:UIControlEventTouchUpInside];
     
     return cell;
 }

@@ -20,4 +20,9 @@
     // Configure the view for the selected state
 }
 
+- (void)prepareForReuse {
+    [self.alarm removeTarget:nil action:nil forControlEvents:UIControlEventTouchUpInside];
+    [self.remove removeTarget:nil action:nil forControlEvents:UIControlEventTouchUpInside];
+}
+
 @end

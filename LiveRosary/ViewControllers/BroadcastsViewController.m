@@ -454,6 +454,7 @@ typedef NS_ENUM(NSUInteger, Mode) {
             cell.name.text = scheduledBroadcast.name;
             cell.language.text = scheduledBroadcast.language;
             cell.location.text = [NSString stringWithFormat:@"%@, %@", scheduledBroadcast.city, scheduledBroadcast.state];
+            cell.flag.image = [[UserManager sharedManager] imageForCountryName:scheduledBroadcast.country];
             
             if(scheduledBroadcast.isSingle)
             {

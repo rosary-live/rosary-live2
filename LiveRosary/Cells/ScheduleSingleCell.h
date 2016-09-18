@@ -11,5 +11,7 @@
 @interface ScheduleSingleCell : UITableViewCell
 
 @property (nonatomic, weak) IBOutlet UILabel* schedule;
+@property (nonatomic, weak) IBOutlet UIButton* alarm;
+@property (nonatomic, weak) IBOutlet UIButton* remove;
 
 @end

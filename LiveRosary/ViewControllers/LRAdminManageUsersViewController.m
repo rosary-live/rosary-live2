@@ -87,7 +87,7 @@ typedef NS_ENUM(NSUInteger, Section) {
     switch(self.filter.selectedSegmentIndex)
     {
         case LevelAdmin: return @"admin";
-        case LevelBroadcast: return @"broadcast";
+        case LevelBroadcast: return @"broadcaster";
         case LevelListen: return @"listener";
         case LevelBanned: return @"banned";
         default: return nil;
@@ -252,7 +252,6 @@ typedef NS_ENUM(NSUInteger, Section) {
 - (nullable NSArray<UITableViewRowAction *> *)tableView:(UITableView *)tableView editActionsForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSMutableArray* actions = [NSMutableArray new];
-    UserModel* user = self.searchResults.count > 0 ? self.searchResults[indexPath.row] : self.users[indexPath.row];
     
 //    if(![user.level isEqualToString:@"admin"])
 //    {
@@ -266,11 +265,15 @@ typedef NS_ENUM(NSUInteger, Section) {
 //    }
     
     if(indexPath.section == SectionAll) {
+        UserModel* user = self.searchResults.count > 0 ? self.searchResults[indexPath.row] : self.users[indexPath.row];
+        
         if(![user.level isEqualToString:@"broadcaster"])
         {
             UITableViewRowAction* broadcastAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal title:@"Broadcast" handler:^(UITableViewRowAction * _Nonnull action, NSIndexPath * _Nonnull indexPath) {
                 
                 [self updateUser:user toLevel:@"broadcaster"];
+                [self onFilterChanged:nil];
+
             }];
             
             broadcastAction.backgroundColor = [UIColor blueColor];
@@ -282,6 +285,8 @@ typedef NS_ENUM(NSUInteger, Section) {
             UITableViewRowAction* listenAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal title:@"Listen" handler:^(UITableViewRowAction * _Nonnull action, NSIndexPath * _Nonnull indexPath) {
                 
                 [self updateUser:user toLevel:@"listener"];
+                [self onFilterChanged:nil];
+
             }];
             
             listenAction.backgroundColor = [UIColor greenColor];
@@ -293,12 +298,16 @@ typedef NS_ENUM(NSUInteger, Section) {
             UITableViewRowAction* banAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal title:@"Ban" handler:^(UITableViewRowAction * _Nonnull action, NSIndexPath * _Nonnull indexPath) {
 
                 [self updateUser:user toLevel:@"banned"];
+                [self onFilterChanged:nil];
+
             }];
             
             banAction.backgroundColor = [UIColor redColor];
             [actions addObject:banAction];
         }
     } else {
+        UserModel* user = self.usersWithBroadcastRequest[indexPath.row];
+        
         UITableViewRowAction* approveAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal title:@"Approve" handler:^(UITableViewRowAction * _Nonnull action, NSIndexPath * _Nonnull indexPath) {
 
             self.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
@@ -311,6 +320,7 @@ typedef NS_ENUM(NSUInteger, Section) {
                     [self.tableView reloadData];
                     
                     [self updateUsersWithBroadcastRequest];
+                    [self onFilterChanged:nil];
                 });
             }];
         }];

@@ -1033,6 +1033,8 @@ line 2</string>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
+                                            <outlet property="alarm" destination="omm-ek-ip5" id="WV6-o1-xQy"/>
+                                            <outlet property="remove" destination="cLg-Md-Y2V" id="p41-BA-3Ge"/>
                                             <outlet property="schedule" destination="q7R-YV-PaU" id="qir-1R-Qe0"/>
                                             <segue destination="mHu-ga-Hbf" kind="show" identifier="ToSchedule" id="Q6t-Bu-pst"/>
                                         </connections>
