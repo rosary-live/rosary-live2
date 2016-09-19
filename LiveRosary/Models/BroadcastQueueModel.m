@@ -175,11 +175,11 @@ NSString * const kBroadcastQueueBaseURL = @"https://sqs.us-east-1.amazonaws.com/
     
     if(email != nil)
     {
-        [self sendMessage:messageDict toUserWithEmail:email];
+        [self sendMessage:messageDict toUserWithEmail:email withRetries:3];
     }
     else
     {
-        [self sendMessage:messageDict toBroadcastWithId:bid];
+        [self sendMessage:messageDict toBroadcastWithId:bid withRetries:3];
     }
 }
 
@@ -193,11 +193,11 @@ NSString * const kBroadcastQueueBaseURL = @"https://sqs.us-east-1.amazonaws.com/
     
     if(email != nil)
     {
-        [self sendMessage:messageDict toUserWithEmail:email];
+        [self sendMessage:messageDict toUserWithEmail:email withRetries:3];
     }
     else
     {
-        [self sendMessage:messageDict toBroadcastWithId:bid];
+        [self sendMessage:messageDict toBroadcastWithId:bid withRetries:3];
     }
 }
 
@@ -211,11 +211,11 @@ NSString * const kBroadcastQueueBaseURL = @"https://sqs.us-east-1.amazonaws.com/
     
     if(email != nil)
     {
-        [self sendMessage:messageDict toUserWithEmail:email];
+        [self sendMessage:messageDict toUserWithEmail:email withRetries:3];
     }
     else
     {
-        [self sendMessage:messageDict toBroadcastWithId:bid];
+        [self sendMessage:messageDict toBroadcastWithId:bid withRetries:3];
     }
 }
 
@@ -228,20 +228,30 @@ NSString * const kBroadcastQueueBaseURL = @"https://sqs.us-east-1.amazonaws.com/
                                   @"password": [UserManager sharedManager].password
                                   };
     
-    [self sendMessage:messageDict toBroadcastWithId:bid];
+    [self sendMessage:messageDict toBroadcastWithId:bid withRetries:3];
 }
 
-- (void)sendMessage:(NSDictionary*)dictionary toBroadcastWithId:(NSString*)bid
+- (void)sendMessage:(NSDictionary*)dictionary toBroadcastWithId:(NSString*)bid withRetries:(NSInteger)retries
 {
     [[LiveRosaryService sharedService] sendMessage:dictionary toBroadcast:bid completion:^(NSError *error) {
         DDLogError(@"sendMessage toBroadcast %@ error: %@", bid, error);
+        
+        if(retries > 0) {
+            [self sendMessage:dictionary toBroadcastWithId:bid withRetries:retries - 1];
+        }
     }];
 }
 
-- (void)sendMessage:(NSDictionary*)dictionary toUserWithEmail:(NSString*)email
+- (void)sendMessage:(NSDictionary*)dictionary toUserWithEmail:(NSString*)email withRetries:(NSInteger)retries
 {
     [[LiveRosaryService sharedService] sendMessage:dictionary toEmail:email completion:^(NSError *error) {
-        DDLogError(@"sendMessage toEmail %@ error: %@", email, error);
+        if(error != nil) {
+            DDLogError(@"sendMessage toEmail %@ error: %@", email, error);
+            
+            if(retries > 0) {
+                [self sendMessage:dictionary toUserWithEmail:email withRetries:retries - 1];
+            }
+        }
     }];
 }
 

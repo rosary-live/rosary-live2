@@ -77,6 +77,9 @@ NSString * const kLastIntentionKey = @"LastIntention";
 
 @property (nonatomic) BOOL donating;
 
+@property (nonatomic, strong) NSMutableDictionary* updateDict;
+@property (nonatomic, strong) NSTimer* updateTimer;
+
 @end
 
 @implementation LRListenViewController
@@ -127,12 +130,15 @@ NSString * const kLastIntentionKey = @"LastIntention";
                 textField.placeholder = @"Intention";
             }];
             
+            self.updateDict =  [[UserManager sharedManager].userDictionary mutableCopy];
+            self.updateDict[@"intention"] = @"";
+            
             [intentionAlert addAction:[UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
                 NSString* intention = intentionAlert.textFields.firstObject.text;
-                NSMutableDictionary* userDict = [[UserManager sharedManager].userDictionary mutableCopy];    userDict[@"intention"] = intention != nil ? intention : @"";
-                [[AnalyticsManager sharedManager] event:@"SetIntention" info:@{@"bid": self.broadcast.bid, @"Intention": userDict[@"intention"]}];
+                self.updateDict[@"intention"] = intention != nil ? intention : @"";
+                [[AnalyticsManager sharedManager] event:@"SetIntention" info:@{@"bid": self.broadcast.bid, @"Intention": intention}];
                 
-                [[BroadcastQueueModel sharedInstance] sendUpdateForBroadcastId:self.broadcast.bid toUserWithEmail:nil withDictionary:userDict];
+                [[BroadcastQueueModel sharedInstance] sendUpdateForBroadcastId:self.broadcast.bid toUserWithEmail:nil withDictionary:self.updateDict];
             }]];
             
             [self presentViewController:intentionAlert animated:YES completion:nil];
@@ -234,6 +240,10 @@ NSString * const kLastIntentionKey = @"LastIntention";
                                         
                                         [[BroadcastQueueModel sharedInstance] startReceivingForBroadcastId:self.broadcast.bid asBroadcaster:NO event:^(NSArray *events) {
                                             NSLog(@"events %@", events);
+                                            
+                                            self.updateTimer = [NSTimer scheduledTimerWithTimeInterval:30.0 repeats:YES block:^(NSTimer * _Nonnull timer) {
+                                                [[BroadcastQueueModel sharedInstance] sendUpdateForBroadcastId:self.broadcast.bid toUserWithEmail:nil withDictionary:self.updateDict];
+                                            }];
                                             
                                             dispatch_async(dispatch_get_main_queue(), ^{
                                                 for(NSDictionary* event in events)
@@ -360,6 +370,9 @@ NSString * const kLastIntentionKey = @"LastIntention";
     
     if(!self.donating) {
         [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
+        
+        [self.updateTimer invalidate];
+        self.updateTimer = nil;
         
         if([BroadcastManager sharedManager].state == BroadcastStatePlaying)
         {
