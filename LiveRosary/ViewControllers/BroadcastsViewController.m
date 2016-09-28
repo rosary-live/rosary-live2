@@ -587,6 +587,12 @@ typedef NS_ENUM(NSUInteger, Mode) {
         if(((BroadcastModel*)annotation).isLive)
         {
             annotationView.image = [UIImage imageNamed:@"LiveMapPin"];
+            
+            UIButton* rightButton = [UIButton buttonWithType:UIButtonTypeCustom];
+            [rightButton setTitle:@"Listen" forState:UIControlStateNormal];
+            [rightButton setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
+            rightButton.frame = CGRectMake(0, 0, 100.0, 30.0);
+            annotationView.rightCalloutAccessoryView = rightButton;
         }
         else
         {
@@ -598,10 +604,6 @@ typedef NS_ENUM(NSUInteger, Mode) {
         annotationView.image = [UIImage imageNamed:@"FutureMapPin"];
     }
     
-    UIButton* rightButton = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
-    [rightButton addTarget:self action:@selector(onMapPinSelected:) forControlEvents:UIControlEventTouchUpInside];
-    [rightButton setTitle:annotation.title forState:UIControlStateNormal];
-    annotationView.rightCalloutAccessoryView = rightButton;
     annotationView.canShowCallout = YES;
     annotationView.draggable = NO;
     annotationView.centerOffset = CGPointMake(0.0f, -18.0f);
@@ -617,7 +619,9 @@ typedef NS_ENUM(NSUInteger, Mode) {
 - (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control
 {
     NSLog(@"calloutAccessoryControlTapped");
-    [self broadcastSelected:(BroadcastModel*)view.annotation];
+    if([view.annotation isKindOfClass:[BroadcastModel class]]) {
+        [self broadcastSelected:(BroadcastModel*)view.annotation];
+    }
 }
 
 - (IBAction)onMapPinSelected:(id)sender

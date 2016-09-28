@@ -136,16 +136,26 @@
     } forControlEvents:UIControlEventTouchUpInside];
     
     [cell.remove bk_addEventHandler:^(id sender) {
-        [[ScheduleManager sharedManager] removeScheduledBroadcastWithId:schedule.sid completion:^(NSError *error) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if(error != nil) {
-                    [UIAlertView bk_alertViewWithTitle:nil message:@"Unabled to delete schedule broadcast."];
-                } else {
-                    [[ScheduleManager sharedManager] removeReminderForScheduledBroadcast:schedule];
-                    [self update];
-                }
-            });
-        }];
+        
+        UIAlertController* alert = [UIAlertController alertControllerWithTitle:nil message:@"Do you really want to delete the scheduled broadcast?" preferredStyle:UIAlertControllerStyleAlert];
+        
+        [alert addAction:[UIAlertAction actionWithTitle:@"Yes" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            [[ScheduleManager sharedManager] removeScheduledBroadcastWithId:schedule.sid completion:^(NSError *error) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if(error != nil) {
+                        [UIAlertView bk_alertViewWithTitle:nil message:@"Unabled to delete schedule broadcast."];
+                    } else {
+                        [[ScheduleManager sharedManager] removeReminderForScheduledBroadcast:schedule];
+                        [self update];
+                    }
+                });
+            }];
+        }]];
+        
+        [alert addAction:[UIAlertAction actionWithTitle:@"No" style:UIAlertActionStyleCancel handler:nil]];
+        
+        [self presentViewController:alert animated:YES completion:nil];
+        
     } forControlEvents:UIControlEventTouchUpInside];
     
     return cell;

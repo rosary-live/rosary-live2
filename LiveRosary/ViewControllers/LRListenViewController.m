@@ -425,7 +425,7 @@ NSString * const kLastIntentionKey = @"LastIntention";
         else
         {
             [self startSlideShow];
-            self.resumeSlideShow.hidden = NO;
+            self.resumeSlideShow.hidden = YES;
         }
     });
 }
@@ -435,6 +435,7 @@ NSString * const kLastIntentionKey = @"LastIntention";
     [[AnalyticsManager sharedManager] event:@"ResumedSlideShow" info:@{@"bid": self.broadcast.bid}];
 
     [self startSlideShow];
+    self.resumeSlideShow.hidden = YES;
 }
 
 - (IBAction)onRevokeBroadcast:(id)sender
@@ -589,6 +590,7 @@ NSString * const kLastIntentionKey = @"LastIntention";
 //    [[self navigationController] setNavigationBarHidden:YES animated:YES];
     [UIView animateWithDuration:0.5 animations:^{
         self.slideShow.alpha = 1.0;
+        self.resumeSlideShow.hidden = YES;
     }];
 }
 
@@ -599,6 +601,7 @@ NSString * const kLastIntentionKey = @"LastIntention";
         self.slideShow.alpha = 0.0;
     } completion:^(BOOL finished) {
         self.slideShow.hidden = YES;
+        self.resumeSlideShow.hidden = NO;
 //        [[self navigationController] setNavigationBarHidden:NO animated:YES];
     }];
 }

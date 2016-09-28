@@ -32,7 +32,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>16</string>
+	<string>18</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -40,8 +40,14 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>Take profile picture.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Allow us to determine your location automatically.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>We need to capture audio to broadcast.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Upload profile picture from photo library.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Rokkitt.otf</string>
