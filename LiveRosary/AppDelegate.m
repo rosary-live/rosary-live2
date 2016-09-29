@@ -212,7 +212,7 @@
     if([UserManager sharedManager].currentUser.userLevel == UserLevelBanned)
     {
         dispatch_async(dispatch_get_main_queue(), ^{
-            [UIAlertView bk_showAlertViewWithTitle:@"Banned" message:@"You're account has been banned." cancelButtonTitle:@"Ok" otherButtonTitles:nil handler:^(UIAlertView *alertView, NSInteger buttonIndex) {
+            [UIAlertView bk_showAlertViewWithTitle:@"Banned" message:@"Your account has been banned." cancelButtonTitle:@"Ok" otherButtonTitles:nil handler:^(UIAlertView *alertView, NSInteger buttonIndex) {
                 exit(0);
             }];
         });

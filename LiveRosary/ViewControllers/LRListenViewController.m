@@ -124,7 +124,7 @@ NSString * const kLastIntentionKey = @"LastIntention";
         }
         else
         {
-            UIAlertController* intentionAlert = [UIAlertController alertControllerWithTitle:nil message:@"Enter your intention message." preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertController* intentionAlert = [UIAlertController alertControllerWithTitle:nil message:@"Enter your rosary intention." preferredStyle:UIAlertControllerStyleAlert];
 
             [intentionAlert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
                 textField.placeholder = @"Intention";
