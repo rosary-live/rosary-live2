@@ -406,7 +406,7 @@ typedef NS_ENUM(NSUInteger, Section) {
 
 - (void)updateUser:(UserModel*)user toLevel:(NSString*)level
 {
-    DDLogDebug(@"User -> %@ %@", user.email, level);
+    //DDLogDebug(@"User -> %@ %@", user.email, level);
     
     [[AnalyticsManager sharedManager] event:@"Manage Users Update" info:@{ @"tolevel": level }];
     

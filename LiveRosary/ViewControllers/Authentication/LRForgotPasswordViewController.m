@@ -69,9 +69,10 @@
         return;
     }
     
-    [[UserManager sharedManager] lostPasswordWithEmail:self.email.text link:@"liverosary://forgotPassword" completion:^(NSError *error) {
+    [self showProgress:@"Requesting Reset"];
+    [[UserManager sharedManager] lostPasswordWithEmail:[self.email.text lowercaseString] link:@"liverosary://forgotPassword" completion:^(NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.hud hide:YES];
+            [self hideProgress];
             
             if(error != nil)
             {

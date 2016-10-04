@@ -162,12 +162,12 @@
 - (void)capturedAudioFile:(NSString*)filename sequence:(NSInteger)sequence secondsOfAudio:(double)seconds lastFile:(BOOL)lastFile
 {
     [[TransferManager sharedManager] addSequenceFile:filename lastFile:lastFile];
-    DDLogDebug(@"Added file to send: %@ %d %@", filename, (int)sequence, lastFile ? @"LAST" : @"");
+    //DDLogDebug(@"Added file to send: %@ %d %@", filename, (int)sequence, lastFile ? @"LAST" : @"");
 }
 
 - (void)playedAudioFile:(NSString *)filename sequence:(NSInteger)sequence lastFile:(BOOL)lastFile
 {
-    DDLogDebug(@"Played sequence %d %@", (int)sequence, lastFile ? @"LAST" : @"");
+    //DDLogDebug(@"Played sequence %d %@", (int)sequence, lastFile ? @"LAST" : @"");
     
     if(lastFile && self.delegate != nil && [self.delegate respondsToSelector:@selector(broadcastHasEnded)])
     {
@@ -182,26 +182,26 @@
 
 - (void)playBufferUnderrun
 {
-    DDLogDebug(@"!!!!!!!!!!!! playBufferUnderrun");
+    //DDLogDebug(@"!!!!!!!!!!!! playBufferUnderrun");
     
-    if(self.delegate != nil && [self.delegate respondsToSelector:@selector(buffering)])
-    {
-        [self.delegate buffering];
-    }
-    
-    ++self.startingNumToBuffer;
-    self.numToBuffer = self.startingNumToBuffer;
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [[AudioManager sharedManager] stopPlaying];
-        [[AudioManager sharedManager] prepareToPlay];
-    });
+//    if(self.delegate != nil && [self.delegate respondsToSelector:@selector(buffering)])
+//    {
+//        [self.delegate buffering];
+//    }
+//    
+//    ++self.startingNumToBuffer;
+//    self.numToBuffer = self.startingNumToBuffer;
+//    dispatch_async(dispatch_get_main_queue(), ^{
+//        [[AudioManager sharedManager] stopPlaying];
+//        [[AudioManager sharedManager] prepareToPlay];
+//    });
 }
 
 #pragma mark - TransferManagerDelegate
 
 - (void)receivedFile:(NSString*)filename forSequence:(NSInteger)sequence lastFile:(BOOL)lastFile
 {
-    DDLogDebug(@"Received sequence %d %@", (int)sequence, lastFile ? @"LAST" : @"");
+    //DDLogDebug(@"Received sequence %d %@", (int)sequence, lastFile ? @"LAST" : @"");
     
     [[AudioManager sharedManager] addAudioFileToPlay:filename sequence:sequence lastFile:lastFile];
     

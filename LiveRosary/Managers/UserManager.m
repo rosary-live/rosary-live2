@@ -284,7 +284,7 @@ NSString * const NotificationUserLoggedOut = @"NotificationUserLoggedOut";
     NSURL *URL = [NSURL URLWithString:URLString];
     NSURLRequest *request = [NSURLRequest requestWithURL:URL];
     
-    DDLogDebug(@"Downloading avatar image %@", URLString);
+    //DDLogDebug(@"Downloading avatar image %@", URLString);
     NSURLSessionDataTask *dataTask = [manager dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
         if (error)
         {

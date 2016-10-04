@@ -8,7 +8,7 @@
   "IDENTITY_POOL_NAME": "LiveRosaryAuth",
   "DEVELOPER_PROVIDER_NAME": "login.liverosary",
   "EXTERNAL_NAME": "LiveRosary Authentication",
-  "EMAIL_SOURCE": "no.reply.liverosary@gmail.com",
+  "EMAIL_SOURCE": "noreply@rosary.live",
   "VERIFICATION_PAGE": "http://liverosaryweb.s3-website-us-east-1.amazonaws.com/verify.html",
   "RESET_PAGE": "http://liverosaryweb.s3-website-us-east-1.amazonaws.com/reset.html",
   "IDENTITY_POOL_ID": "us-east-1:e071f60e-332c-4883-a4f0-f8bc27c46173"

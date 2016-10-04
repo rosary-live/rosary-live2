@@ -73,7 +73,7 @@
     
     self.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     self.hud.labelText = @"Logging In";
-    [[UserManager sharedManager] loginWithEmail:self.email.text password:self.password.text completion:^(NSError *error) {
+    [[UserManager sharedManager] loginWithEmail:[self.email.text lowercaseString] password:self.password.text completion:^(NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.hud hide:YES];
             
@@ -85,6 +85,8 @@
             }
             else
             {
+                [[NSNotificationCenter defaultCenter] postNotificationName:LOGIN_NOTIFICATION_NAME object:nil];
+
                 [[AnalyticsManager sharedManager] event:@"UserLogin" info:nil];
                 
                 [self dismissViewControllerAnimated:YES completion:nil];

@@ -95,6 +95,10 @@
     });
 }
 
+- (void)updateScreen {
+    [self.broadcastViewController update];
+}
+
 - (void)loggedIn
 {
     if([UserManager sharedManager].currentUser.userLevel != UserLevelBanned)

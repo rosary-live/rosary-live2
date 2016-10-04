@@ -44,10 +44,10 @@
         else if(task.result)
         {
             AWSDynamoDBPaginatedOutput *paginatedOutput = task.result;
-            for(ScheduleModel* scheduledBroadcast in paginatedOutput.items)
-            {
-                DDLogDebug(@"Scheduled Broadcast: %@", scheduledBroadcast);
-            }
+//            for(ScheduleModel* scheduledBroadcast in paginatedOutput.items)
+//            {
+//                DDLogDebug(@"Scheduled Broadcast: %@", scheduledBroadcast);
+//            }
             
             _scheduledBroadcasts = paginatedOutput.items;
             [self logWithName:@"Schedule SCAN" duration:duration count:paginatedOutput.items.count error:nil];
@@ -80,7 +80,7 @@
         else if(task.result)
         {
             ScheduleModel* scheduledBroadcast = task.result;
-            DDLogDebug(@"Scheduled Broadcast: %@", scheduledBroadcast);
+            //DDLogDebug(@"Scheduled Broadcast: %@", scheduledBroadcast);
             [self logWithName:@"Schedule byId" duration:duration count:1 error:nil];
             
             safeBlock(completion, scheduledBroadcast, nil);
@@ -117,10 +117,10 @@
         else if(task.result)
         {
             AWSDynamoDBPaginatedOutput *paginatedOutput = task.result;
-            for(ScheduleModel* scheduledBroadcast in paginatedOutput.items)
-            {
-                DDLogDebug(@"Scheduled Broadcast: %@", scheduledBroadcast);
-            }
+//            for(ScheduleModel* scheduledBroadcast in paginatedOutput.items)
+//            {
+//                DDLogDebug(@"Scheduled Broadcast: %@", scheduledBroadcast);
+//            }
             
             [self logWithName:@"Schedule byEmail" duration:duration count:paginatedOutput.items.count error:nil];
             

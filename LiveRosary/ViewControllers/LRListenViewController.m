@@ -87,7 +87,8 @@ NSString * const kLastIntentionKey = @"LastIntention";
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.navigationController.navigationBar.topItem.title = @"Back";
+    //self.navigationController.navigationBar.topItem.title = @"Back";
+    self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Back" style:UIBarButtonItemStylePlain target:nil action:nil];
     
     self.view.backgroundColor = [UIColor colorFromHexString:@"#29488a"];
     
@@ -187,7 +188,7 @@ NSString * const kLastIntentionKey = @"LastIntention";
     self.hud.labelText = @"Loading";
 
     [[DBBroadcast sharedInstance] getBroadcastById:self.isReport ? self.reportedBroadcast.bid : self.broadcast.bid completion:^(BroadcastModel *broadcast, NSError *error) {
-        DDLogDebug(@"updated broadcast %@", broadcast);
+        //DDLogDebug(@"updated broadcast %@", broadcast);
         
         if(error == nil)
         {
@@ -241,10 +242,6 @@ NSString * const kLastIntentionKey = @"LastIntention";
                                         [[BroadcastQueueModel sharedInstance] startReceivingForBroadcastId:self.broadcast.bid asBroadcaster:NO event:^(NSArray *events) {
                                             NSLog(@"events %@", events);
                                             
-                                            self.updateTimer = [NSTimer scheduledTimerWithTimeInterval:30.0 repeats:YES block:^(NSTimer * _Nonnull timer) {
-                                                [[BroadcastQueueModel sharedInstance] sendUpdateForBroadcastId:self.broadcast.bid toUserWithEmail:nil withDictionary:self.updateDict];
-                                            }];
-                                            
                                             dispatch_async(dispatch_get_main_queue(), ^{
                                                 for(NSDictionary* event in events)
                                                 {
@@ -289,12 +286,15 @@ NSString * const kLastIntentionKey = @"LastIntention";
                                                             NSUInteger index = [self.listeners indexOfObject:existingListener];
                                                             if(index != NSNotFound)
                                                             {
+                                                                DDLogDebug(@"replacing listener %@", listener);
                                                                 [self.listeners replaceObjectAtIndex:index withObject:listener];
+                                                                DDLogDebug(@"listeners %@", self.listeners);
                                                             }
                                                         }
                                                     } else if([type isEqualToString:@"terminate"]) {
                                                         [[BroadcastManager sharedManager] stopPlaying];
                                                         
+                                                        DDLogDebug(@"Terminate");
                                                         [UIAlertView bk_showAlertViewWithTitle:nil message:@"This broadcast has been terminated." cancelButtonTitle:@"Ok" otherButtonTitles:nil handler:^(UIAlertView *alertView, NSInteger buttonIndex) {
                                                             
                                                             [self.navigationController popViewControllerAnimated:YES];
@@ -311,6 +311,10 @@ NSString * const kLastIntentionKey = @"LastIntention";
                                         NSMutableDictionary* userDict = [[UserManager sharedManager].userDictionary mutableCopy];
                                         userDict[@"intention"] = @"";
                                         [[BroadcastQueueModel sharedInstance] sendEnterForBroadcastId:self.broadcast.bid toUserWithEmail:nil withDictionary:userDict];
+                                        
+                                        self.updateTimer = [NSTimer bk_scheduledTimerWithTimeInterval:30.0 block:^(NSTimer *timer) {
+                                            [[BroadcastQueueModel sharedInstance] sendUpdateForBroadcastId:self.broadcast.bid toUserWithEmail:nil withDictionary:self.updateDict];
+                                        } repeats:YES];
                                     }];
                                 }
                             }
@@ -504,7 +508,7 @@ NSString * const kLastIntentionKey = @"LastIntention";
 
 - (void)updateUser:(NSString*)email toLevel:(NSString*)level
 {
-    DDLogDebug(@"User -> %@ %@", email, level);
+    //DDLogDebug(@"User -> %@ %@", email, level);
     
     self.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     self.hud.labelText = @"Updating User";

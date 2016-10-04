@@ -46,7 +46,7 @@
             AWSDynamoDBPaginatedOutput *paginatedOutput = task.result;
             for(BroadcastModel* broadcast in paginatedOutput.items)
             {
-                DDLogDebug(@"Broadcast: %@", broadcast);
+                //DDLogDebug(@"Broadcast: %@", broadcast);
             }
             
             [self logWithName:@"Broadcasts SCAN" duration:duration count:paginatedOutput.items.count error:nil];
@@ -78,7 +78,7 @@
         else if(task.result)
         {
             BroadcastModel* broadcast = task.result;
-            DDLogDebug(@"Broadcast: %@", broadcast);
+            //DDLogDebug(@"Broadcast: %@", broadcast);
             [self logWithName:@"Broadcasts byId" duration:duration count:1 error:nil];
             
             safeBlock(completion, broadcast, nil);

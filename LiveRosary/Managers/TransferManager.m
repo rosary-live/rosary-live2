@@ -106,11 +106,11 @@
         
         if(self.sendQueue.count == 0)
         {
-            DDLogInfo(@"TransferManager sendThread waiting to send");
+            //DDLogInfo(@"TransferManager sendThread waiting to send");
             [self.sendCondition wait];
         }
         
-        DDLogInfo(@"Sending");
+        //DDLogInfo(@"Sending");
         SendWrapper* wrapper = nil;
         @synchronized(self.sendQueue)
         {
@@ -122,7 +122,7 @@
         
         NSData* data = [NSData dataWithContentsOfFile:wrapper.filename];
         
-        DDLogInfo(@"Sending sequence %d  %@  %d bytes", (int)self.sequence, wrapper.filename, (int)data.length);
+        //DDLogInfo(@"Sending sequence %d  %@  %d bytes", (int)self.sequence, wrapper.filename, (int)data.length);
         AWSS3PutObjectRequest* putRequest = [AWSS3PutObjectRequest new];
         putRequest.bucket = @"liverosarybroadcast";
         putRequest.key = [NSString stringWithFormat:@"%@/%06d",  self.broadcastId, (int)self.sequence];
@@ -149,7 +149,7 @@
         if(task.error)
         {
             [[AnalyticsManager sharedManager] error:task.error name:@"UploadAudioFile"];
-            DDLogError(@"Send sequence %d error: %@", (int)self.sequence, task.error);
+            //DDLogError(@"Send sequence %d error: %@", (int)self.sequence, task.error);
         }
         else if(task.exception)
         {
@@ -159,7 +159,7 @@
         {
             [[AnalyticsManager sharedManager] event:@"UploadAudioFile" info:@{@"bid": self.broadcastId, @"duration": @(CACurrentMediaTime() - startTime)}];
 
-            DDLogInfo(@"Send sequence %d  %d bytes", (int)self.sequence, (int)data.length);
+            //DDLogInfo(@"Send sequence %d  %d bytes", (int)self.sequence, (int)data.length);
             if(self.delegate && [self.delegate respondsToSelector:@selector(sentFile:forSequence:lastFile:)])
             {
                 [self.delegate sentFile:wrapper.filename forSequence:_sequence lastFile:wrapper.lastFile];
@@ -210,12 +210,12 @@
         NSURL *URL = [NSURL URLWithString:URLString];
         NSURLRequest *request = [NSURLRequest requestWithURL:URL];
         
-        DDLogDebug(@"Downloading sequence %d from from %@", (int)self.sequence, URLString);
+        //DDLogDebug(@"Downloading sequence %d from from %@", (int)self.sequence, URLString);
         CFTimeInterval startTime = CACurrentMediaTime();
         NSURLSessionDataTask *dataTask = [manager dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
             if (error)
             {
-                DDLogError(@"TransferManager receive error: %@", error);
+                //DDLogError(@"TransferManager receive error: %@", error);
                 [[AnalyticsManager sharedManager] error:error name:@"DownloadAudioFile"];
                 lastError = error;
             }
@@ -224,7 +224,7 @@
                 NSHTTPURLResponse* httpResponse = (NSHTTPURLResponse*)response;
                 
                 NSData* data = (NSData*)responseObject;
-                DDLogDebug(@"TransferManager downloaded sequence %d with %d bytes", (int)self.sequence, (int)data.length);
+                //DDLogDebug(@"TransferManager downloaded sequence %d with %d bytes", (int)self.sequence, (int)data.length);
                 lastSuccessfulReceiveDate = [NSDate date];
                 lastError = nil;
              

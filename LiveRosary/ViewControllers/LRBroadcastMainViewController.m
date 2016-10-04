@@ -67,6 +67,10 @@
     [self performSegueWithIdentifier:@"ToSchedule" sender:sender];
 }
 
+- (void)updateScreen {
+    [self update];
+}
+
 
 #pragma mark - Navigation
 

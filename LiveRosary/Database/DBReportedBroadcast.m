@@ -44,10 +44,10 @@
         else if(task.result)
         {
             AWSDynamoDBPaginatedOutput *paginatedOutput = task.result;
-            for(ReportedBroadcastModel* broadcast in paginatedOutput.items)
-            {
-                DDLogDebug(@"Reported Broadcast: %@", broadcast);
-            }
+//            for(ReportedBroadcastModel* broadcast in paginatedOutput.items)
+//            {
+//                DDLogDebug(@"Reported Broadcast: %@", broadcast);
+//            }
             
             [self logWithName:@"Reported Broadcasts SCAN" duration:duration count:paginatedOutput.items.count error:nil];
             safeBlock(completion, paginatedOutput.items, nil);

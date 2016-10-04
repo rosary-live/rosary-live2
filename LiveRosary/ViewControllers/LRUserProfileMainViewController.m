@@ -110,6 +110,8 @@
     [[UserManager sharedManager] logoutWithCompletion:^(NSError *error) {
         DDLogInfo(@"Logout complete");
         [[AnalyticsManager sharedManager] event:@"LoggedOut" info:nil];
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:LOGOUT_NOTIFICATION_NAME object:nil];
     }];
 }
 

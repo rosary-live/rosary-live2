@@ -79,7 +79,7 @@ NSString* const kAllLevels = @"_ALL_";
         else if(task.result)
         {
             UserModel* user = task.result;
-            DDLogDebug(@"User: %@", user);
+            //DDLogDebug(@"User: %@", user);
             [self logWithName:@"User byEmail" duration:duration count:1 error:nil];
             
             safeBlock(completion, user, nil);
@@ -116,10 +116,10 @@ NSString* const kAllLevels = @"_ALL_";
         else if(task.result)
         {
             AWSDynamoDBPaginatedOutput *paginatedOutput = task.result;
-            for(UserModel* user in paginatedOutput.items)
-            {
-                DDLogDebug(@"User: %@", user);
-            }
+//            for(UserModel* user in paginatedOutput.items)
+//            {
+//                DDLogDebug(@"User: %@", user);
+//            }
             
             [self logWithName:@"User byEmail" duration:duration count:paginatedOutput.items.count error:nil];
                         
@@ -156,10 +156,10 @@ NSString* const kAllLevels = @"_ALL_";
         else if(task.result)
         {
             AWSDynamoDBPaginatedOutput *paginatedOutput = task.result;
-            for(UserModel* user in paginatedOutput.items)
-            {
-                DDLogDebug(@"User: %@", user);
-            }
+//            for(UserModel* user in paginatedOutput.items)
+//            {
+//                DDLogDebug(@"User: %@", user);
+//            }
             
             [self logWithName:@"User byEmail" duration:duration count:paginatedOutput.items.count error:nil];
             
@@ -216,10 +216,10 @@ NSString* const kAllLevels = @"_ALL_";
         else if(task.result)
         {
             AWSDynamoDBPaginatedOutput *paginatedOutput = task.result;
-            for(UserModel* user in paginatedOutput.items)
-            {
-                DDLogDebug(@"User: %@", user);
-            }
+//            for(UserModel* user in paginatedOutput.items)
+//            {
+//                DDLogDebug(@"User: %@", user);
+//            }
             
             [self logWithName:@"User byEmail" duration:duration count:paginatedOutput.items.count error:nil];
             

@@ -53,8 +53,10 @@
 {
     [super viewDidAppear:animated];
     
+    [self showProgress:@"Starting Broadcast"];
     [[BroadcastManager sharedManager] startBroadcastingWithCompletion:^(NSString *brodcastId, BOOL insufficientBandwidth) {
         self.broadcastId = brodcastId;
+        [self hideProgress];
         
         if(insufficientBandwidth)
         {
@@ -120,12 +122,13 @@
                                 NSDictionary* listener = event[@"event"];
                                 if([self listenerForEmail:listener[@"email"]] == nil)
                                 {
+                                    DDLogDebug(@"Adding listener: %@", listener);
                                     [self.listeners addObject:listener];
                                     [[AnalyticsManager sharedManager] event:@"EnterBroadcast" info:@{@"bid": brodcastId}];
-                                    
                                 }
                                 else
                                 {
+                                    DDLogDebug(@"Duplicate listener: %@", listener);
                                     [[AnalyticsManager sharedManager] event:@"EnterBroadcastDuplicate" info:@{@"bid": brodcastId}];
                                 }
                             }
@@ -135,11 +138,13 @@
                                 NSDictionary* existingListener = [self listenerForEmail:listener[@"email"]];
                                 if(existingListener != nil)
                                 {
+                                    DDLogDebug(@"Removing listener: %@", listener);
                                     [[AnalyticsManager sharedManager] event:@"ExitBroadcast" info:@{@"bid": brodcastId}];
                                     [self.listeners removeObject:existingListener];
                                 }
                                 else
                                 {
+                                    DDLogDebug(@"Listener doesn't exist: %@", listener);
                                     [[AnalyticsManager sharedManager] event:@"ExitBroadcastDuplicate" info:@{@"bid": brodcastId}];
                                 }
                             }
@@ -152,18 +157,20 @@
                                     NSUInteger index = [self.listeners indexOfObject:existingListener];
                                     if(index != NSNotFound)
                                     {
+                                        DDLogDebug(@"Replacing listener: %@", listener);
                                         [[AnalyticsManager sharedManager] event:@"UpdateBroadcast" info:@{@"bid": brodcastId}];
-                                        
                                         [self.listeners replaceObjectAtIndex:index withObject:listener];
                                     }
                                     else
                                     {
+                                        DDLogDebug(@"Listener doesn't exist: %@", listener);
                                         [[AnalyticsManager sharedManager] event:@"UpdateBroadcastDuplicate" info:@{@"bid": brodcastId}];
                                     }
                                 }
                             } else if([type isEqualToString:@"terminate"]) {
                                 [UIAlertView bk_showAlertViewWithTitle:nil message:@"This broadcast has been terminated." cancelButtonTitle:@"Ok" otherButtonTitles:nil handler:^(UIAlertView *alertView, NSInteger buttonIndex) {
                                     
+                                    DDLogDebug(@"Terminate");
                                     [self stopBroadcasting];
                                     [self.navigationController popViewControllerAnimated:YES];
                                 }];

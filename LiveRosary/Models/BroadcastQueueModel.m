@@ -113,11 +113,11 @@ NSString * const kBroadcastQueueBaseURL = @"https://sqs.us-east-1.amazonaws.com/
             }
             else if(task.result != nil && [task.result isKindOfClass:[AWSSQSReceiveMessageResult class]])
             {
-                DDLogDebug(@"SQS received: %@", task.result);
-                
                 AWSSQSReceiveMessageResult* messages = (AWSSQSReceiveMessageResult*)[task result];
                 if(messages.messages != nil)
                 {
+                    DDLogDebug(@"SQS received: %@", task.result);
+                    
                     NSMutableArray* messagesForReceiver = [NSMutableArray new];
                     
                     for(AWSSQSMessage* message in messages.messages)
@@ -135,11 +135,11 @@ NSString * const kBroadcastQueueBaseURL = @"https://sqs.us-east-1.amazonaws.com/
                         [[self.sqs deleteMessage:deleteReq] continueWithBlock:^id _Nullable(AWSTask * _Nonnull task) {
                             if(task.error != nil)
                             {
-                                NSLog(@"error deleting message: %@", task.error);
+                                DDLogDebug(@"error deleting message: %@", task.error);
                             }
                             else if(task.exception != nil)
                             {
-                                NSLog(@"exception deleting message: %@", task.exception);
+                                DDLogDebug(@"exception deleting message: %@", task.exception);
                             }
                             else if(task.result)
                             {
@@ -152,7 +152,9 @@ NSString * const kBroadcastQueueBaseURL = @"https://sqs.us-east-1.amazonaws.com/
                                         
                     if(messagesForReceiver.count > 0)
                     {
-                        self.eventRecieveBlock(messagesForReceiver);
+                        if(self.eventRecieveBlock != nil) {
+                            self.eventRecieveBlock(messagesForReceiver);
+                        }
                     }
                 }
             }
@@ -233,24 +235,33 @@ NSString * const kBroadcastQueueBaseURL = @"https://sqs.us-east-1.amazonaws.com/
 
 - (void)sendMessage:(NSDictionary*)dictionary toBroadcastWithId:(NSString*)bid withRetries:(NSInteger)retries
 {
+    DDLogError(@"sendMessage sending toBroadcast %@", bid);
     [[LiveRosaryService sharedService] sendMessage:dictionary toBroadcast:bid completion:^(NSError *error) {
-        DDLogError(@"sendMessage toBroadcast %@ error: %@", bid, error);
-        
-        if(retries > 0) {
-            [self sendMessage:dictionary toBroadcastWithId:bid withRetries:retries - 1];
+        if(error != nil) {
+            DDLogError(@"sendMessage error toBroadcast %@: %@", bid, error);
+            
+            if(retries > 0) {
+                [self sendMessage:dictionary toBroadcastWithId:bid withRetries:retries - 1];
+            }
+        } else {
+            DDLogError(@"sendMessage sent toBroadcast %@", bid);
         }
     }];
 }
 
 - (void)sendMessage:(NSDictionary*)dictionary toUserWithEmail:(NSString*)email withRetries:(NSInteger)retries
 {
+    DDLogError(@"sendMessage sending toEmail %@", email);
     [[LiveRosaryService sharedService] sendMessage:dictionary toEmail:email completion:^(NSError *error) {
+        
         if(error != nil) {
-            DDLogError(@"sendMessage toEmail %@ error: %@", email, error);
+            DDLogError(@"sendMessage error toEmail %@ : %@", email, error);
             
             if(retries > 0) {
                 [self sendMessage:dictionary toUserWithEmail:email withRetries:retries - 1];
             }
+        } else {
+            DDLogError(@"sendMessage sent toEmail %@", email);
         }
     }];
 }

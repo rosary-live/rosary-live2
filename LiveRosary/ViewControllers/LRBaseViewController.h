@@ -8,6 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
+#define LOGIN_NOTIFICATION_NAME @"LOGIN_NOTIFICATION"
+#define LOGOUT_NOTIFICATION_NAME @"LOGOUT_NOTIFICATION"
+
 @protocol DrawerButtonDelegate <NSObject>
 
 - (IBAction)onDrawerButton:(id)sender;
@@ -19,5 +22,8 @@
 - (void)addDrawerButton;
 - (NSString*)screenName;
 - (BOOL)hideNavBar;
+- (void)showProgress:(NSString*)message;
+- (void)hideProgress;
+- (void)updateScreen;
 
 @end

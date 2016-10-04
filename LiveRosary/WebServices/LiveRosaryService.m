@@ -59,7 +59,7 @@ NSString* const kBaseURL = @"https://9wwr7dvesk.execute-api.us-east-1.amazonaws.
     [request setValue:kApiKey forHTTPHeaderField:@"x-api-key"];
     [request setHTTPBody:postData];
     
-    DDLogDebug(@"POST %@: %@", method, dictionary);
+    //DDLogDebug(@"POST %@: %@", method, dictionary);
     
     CFTimeInterval startTime = CACurrentMediaTime();
     NSURLSessionDataTask *dataTask = [self.manager dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
@@ -71,7 +71,7 @@ NSString* const kBaseURL = @"https://9wwr7dvesk.execute-api.us-east-1.amazonaws.
         }
         else
         {
-            DDLogDebug(@"POST %@ response: %@ %@", method, response, responseObject);
+            //DDLogDebug(@"POST %@ response: %@ %@", method, response, responseObject);
             
             NSNumber* success = responseObject[@"success"];
             NSError* errorReturn = nil;

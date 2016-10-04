@@ -10,8 +10,11 @@
 #import "MMDrawerBarButtonItem.h"
 #import <mach/mach.h>
 #import <mach/mach_host.h>
+#import <MBProgressHUD/MBProgressHUD.h>
 
 @interface LRBaseViewController ()
+
+@property (nonatomic, strong) MBProgressHUD *hud;
 
 @property (nonatomic) CFTimeInterval screenAppearTime;
 
@@ -22,11 +25,21 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Back" style:UIBarButtonItemStylePlain target:nil action:nil];
+
     self.view.backgroundColor = [UIColor colorFromHexString:@"#dcdcd8"];
     
     if([self hideNavBar]) {
         [self.navigationController setNavigationBarHidden:YES animated:NO];
     }
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateScreen) name:LOGIN_NOTIFICATION_NAME object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateScreen) name:LOGOUT_NOTIFICATION_NAME object:nil];
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:LOGIN_NOTIFICATION_NAME object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:LOGOUT_NOTIFICATION_NAME object:nil];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -111,6 +124,18 @@
 
 - (BOOL)hideNavBar {
     return NO;
+}
+
+- (void)showProgress:(NSString*)message {
+    self.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    self.hud.labelText = message;
+}
+
+- (void)hideProgress {
+    [self.hud hide:YES];
+}
+
+- (void)updateScreen {
 }
 
 @end

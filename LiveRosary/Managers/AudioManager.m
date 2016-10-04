@@ -205,12 +205,11 @@
     if(!error)
     {
         NSNumber *size = [attributes objectForKey:NSFileSize];
-        NSLog(@"*****RLT***** file size %llu", size.unsignedLongLongValue);
     }
     
     if(self.delegate != nil && [self.delegate respondsToSelector:@selector(capturedAudioFile:sequence:secondsOfAudio:lastFile:)])
     {
-        DDLogDebug(@"Completed file %@  %@", self.currentFileName, !self.isRecording ? @"LAST" : @"");
+        //DDLogDebug(@"Completed file %@  %@", self.currentFileName, !self.isRecording ? @"LAST" : @"");
         
         NSString* currentFileNameCopy = [self.currentFileName copy];
         NSInteger sequenceCopy = self.sequence;
@@ -278,7 +277,7 @@
             
             if(buffer.position >= buffer.buferList->mBuffers[0].mDataByteSize)
             {
-                NSLog(@"Popping buffer with length %d", (int)buffer.buferList->mBuffers[0].mDataByteSize);
+                //NSLog(@"Popping buffer with length %d", (int)buffer.buferList->mBuffers[0].mDataByteSize);
                 [self popPlayQueueBuffer];
                 
                 if(self.delegate != nil && [self.delegate respondsToSelector:@selector(playedAudioFile:sequence:lastFile:)])
@@ -501,7 +500,7 @@
 
         if(fileWrapper != nil && fileWrapper.filename != nil)
         {
-            DDLogDebug(@"Decompressing file %@", fileWrapper.filename);
+            //DDLogDebug(@"Decompressing file %@", fileWrapper.filename);
             self.fileReader = [[AEAudioFileLoaderOperation alloc] initWithFileURL:[NSURL fileURLWithPath:fileWrapper.filename] targetAudioDescription:rawFormat];
             
             @weakify(self);

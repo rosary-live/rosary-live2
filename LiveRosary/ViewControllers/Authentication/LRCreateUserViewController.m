@@ -38,6 +38,7 @@
 @property (nonatomic, strong) FCCurrentLocationGeocoder* geocoder;
 @property (nonatomic) CLLocationDegrees latitude;
 @property (nonatomic) CLLocationDegrees longitude;
+@property (nonatomic) BOOL gotLocation;
 
 @property (nonatomic, strong) CZPhotoPickerController* photoPicker;
 @property (nonatomic) BOOL havePhoto;
@@ -96,7 +97,7 @@
 
 - (void)populateLocation
 {
-    self.latitude = 0.0;
+//    self.latitude = 0.0;
     self.longitude = 0.0;
     
     self.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
@@ -122,6 +123,7 @@
                     
                     self.latitude = self.geocoder.location.coordinate.latitude;
                     self.longitude = self.geocoder.location.coordinate.longitude;
+                    self.gotLocation = YES;
                     
                     [[AnalyticsManager sharedManager] event:@"CreateGeocodeSuccess" info:@{@"City": self.geocoder.locationCity,
                                                                                          @"State": self.geocoder.locationPlacemark.administrativeArea,
@@ -179,6 +181,18 @@
     {
         validationErrorMsg = @"Passwords must match.";
     }
+    else if(self.city.text.length == 0)
+    {
+        validationErrorMsg = @"City is required.";
+    }
+    else if(self.state.text.length == 0)
+    {
+        validationErrorMsg = @"State is required.";
+    }
+    else if(self.country.text.length == 0)
+    {
+        validationErrorMsg = @"Country is required.";
+    }
     
     if(validationErrorMsg != nil)
     {
@@ -186,8 +200,28 @@
         return;
     }
     
+    if(self.gotLocation) {
+        [self createUser];
+    } else {
+        NSString* address = [NSString stringWithFormat:@"%@, %@, %@", self.city.text, self.state.text, self.country.text];
+        [[[CLGeocoder alloc] init] geocodeAddressString:address completionHandler:^(NSArray<CLPlacemark *> * _Nullable placemarks, NSError * _Nullable error) {
+            if(placemarks.count > 0) {
+                CLLocation* location = placemarks[0].location;
+                if(location != nil) {
+                    self.gotLocation = YES;
+                    self.latitude = location.coordinate.latitude;
+                    self.longitude = location.coordinate.longitude;
+                }
+            }
+            
+            [self createUser];
+        }];
+    }
+}
+
+- (void)createUser {
     NSDictionary* settings = @{
-                               @"email": self.email.text,
+                               @"email": [self.email.text lowercaseString],
                                @"password": self.password.text,
                                @"firstName": self.firstName.text,
                                @"lastName": self.lastName.text,
@@ -210,13 +244,14 @@
             {
                 DDLogError(@"Error creating new user %@: %@", settings, error);
                 [[AnalyticsManager sharedManager] error:error name:@"CreateUser"];
-
+                
                 [UIAlertView bk_showAlertViewWithTitle:@"Error" message:@"Error creating user." cancelButtonTitle:@"Ok" otherButtonTitles:nil handler:nil];
             }
             else
             {
+                [[NSNotificationCenter defaultCenter] postNotificationName:LOGIN_NOTIFICATION_NAME object:nil];
                 [[AnalyticsManager sharedManager] event:@"CreateUser" info:nil];
-
+                
                 if(self.havePhoto)
                 {
                     self.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
@@ -230,13 +265,13 @@
                             {
                                 DDLogError(@"Error uploading avatar image: %@", error);
                                 [[AnalyticsManager sharedManager] error:error name:@"CreateUploadAvatar"];
-
+                                
                                 [UIAlertView bk_showAlertViewWithTitle:@"Error" message:@"Error uploading photo." cancelButtonTitle:@"Ok" otherButtonTitles:nil handler:nil];
                             }
                             else
                             {
                                 [[AnalyticsManager sharedManager] event:@"CreateUploadAvatarImage" info:nil];
-
+                                
                                 [self dismissViewControllerAnimated:YES completion:nil];
                             }
                         });

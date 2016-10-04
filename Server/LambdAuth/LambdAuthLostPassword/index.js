@@ -87,11 +87,13 @@ function sendLostPasswordEmail(email, link, fn) {
 }
 
 exports.handler = function(event, context) {
+	console.log("event: %j", event);
 	var email = event.email;
 	var link = event.link;
 
 	getUser(email, function(err, emailFound) {
 		if (err) {
+			console.log('Error getting email: ' + err);
 			context.succeed({success: false, message: 'Error getting email', error: err});
 		} else if (!emailFound) {
 			console.log('User not found: ' + email);
@@ -99,10 +101,12 @@ exports.handler = function(event, context) {
 		} else {
 			storeLostToken(email, function(err, token) {
 				if (err) {
+					console.log('Error in storing token: ' + err);
 					context.succeed({success: false, message: 'Error in storing token', error: err});
 				} else {
 					sendLostPasswordEmail(email, link, function(err, data) {
 						if (err) {
+							console.log('Error sending email: ' + err);
 							context.succeed({success: false, message: 'Error sending email', error: err});
 						} else {
 							console.log('User found: ' + email);
