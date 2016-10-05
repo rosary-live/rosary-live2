@@ -9,7 +9,7 @@
         <!--Login-->
         <scene sceneID="48W-Ue-AZS">
             <objects>
-                <viewController id="Tk8-LE-BZo" customClass="LRLoginViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="Login" id="Tk8-LE-BZo" customClass="LRLoginViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="pcI-FC-AQL"/>
                         <viewControllerLayoutGuide type="bottom" id="Djz-bO-QuL"/>
@@ -2138,7 +2138,7 @@ Intention 2</string>
             <objects>
                 <navigationController storyboardIdentifier="Listen" automaticallyAdjustsScrollViewInsets="NO" id="fXM-eo-erc" userLabel="Listen Nav" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="iBB-zl-9bt">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="iBB-zl-9bt">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -2156,7 +2156,7 @@ Intention 2</string>
             <objects>
                 <navigationController storyboardIdentifier="Broadcast" automaticallyAdjustsScrollViewInsets="NO" id="Ws4-I9-VP3" userLabel="Broadcast Nav" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="D03-y5-WHa">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="D03-y5-WHa">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -2174,7 +2174,7 @@ Intention 2</string>
             <objects>
                 <navigationController storyboardIdentifier="Admin" automaticallyAdjustsScrollViewInsets="NO" id="cd3-ve-yfX" userLabel="Admin Nav" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="Bdb-UA-25G">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="Bdb-UA-25G">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -2784,7 +2784,7 @@ Intention 2</string>
             <objects>
                 <navigationController storyboardIdentifier="UserProfile" automaticallyAdjustsScrollViewInsets="NO" id="KcN-Ja-YTl" userLabel="User Profile Nav" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="j2G-AR-jOE">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="j2G-AR-jOE">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -3270,7 +3270,7 @@ test</string>
             <objects>
                 <navigationController storyboardIdentifier="Authentication" automaticallyAdjustsScrollViewInsets="NO" id="Vbb-8i-J1A" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="8fb-Hs-1U8">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="8fb-Hs-1U8">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -3288,7 +3288,7 @@ test</string>
             <objects>
                 <navigationController storyboardIdentifier="BroadcastRequest" automaticallyAdjustsScrollViewInsets="NO" id="trG-36-Z7D" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="3iw-hW-PD1">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="3iw-hW-PD1">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>

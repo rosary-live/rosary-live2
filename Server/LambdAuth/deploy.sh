@@ -30,7 +30,7 @@ for f in $(ls -1); do
    echo "Updating ${PROFILE} function $f begin..."
 	cp config.json $f/
   cd $f
-  zip -r $f.zip index.js config.json
+  zip -r $f.zip index.js config.json node_modules
   aws lambda update-function-code --profile ${PROFILE} --function-name ${f} --zip-file fileb://${f}.zip --region $REGION
 	rm config.json
 	rm $f.zip

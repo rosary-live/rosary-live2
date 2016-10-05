@@ -33,12 +33,14 @@
 
 - (NSString*)title
 {
-    return [NSString stringWithFormat:@"%@ - %@", self.b_name, self.b_language];
+    return nil;
+//    return [NSString stringWithFormat:@"%@ - %@", self.b_name, self.b_language];
 }
 
 - (NSString*)subtitle
 {
-    return [NSString stringWithFormat:@"%@", self.reason];
+    return nil;
+//    return [NSString stringWithFormat:@"%@", self.reason];
 }
 
 @end

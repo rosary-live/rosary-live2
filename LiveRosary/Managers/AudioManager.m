@@ -57,6 +57,8 @@
 
 @property (nonatomic) NSInteger audioBufferSequence;
 
+@property (nonatomic) BOOL stopRecordingOnNext;
+
 @end
 
 @implementation AudioManager
@@ -108,6 +110,7 @@
 
 - (void)stopAudio
 {
+    NSLog(@"stopAudio");
     [self.audioController stop];
     self.audioController = nil;
 }
@@ -118,6 +121,7 @@
     
     [self initializeAudio:YES];
     
+    self.stopRecordingOnNext = NO;
     self.broadcastId = broadcastId;
     self.sequence = 1;
     [self startNewRecordFile];
@@ -225,7 +229,16 @@
 - (void)stopRecording
 {
     if(!self.isRecording) return;
+    
+    DDLogDebug(@"stopRecording");
+    self.stopRecordingOnNext = YES;
+}
 
+- (void)stopRecordingFinal
+{
+//    if(!self.isRecording) return;
+    
+    DDLogDebug(@"stopRecordingFinal");
     _recording = NO;
     [self.compressCondition lock];
     [self.compressCondition broadcast];
@@ -457,8 +470,18 @@
                 
                 if(totalSecondsForFile >= self.secondsPerSegment)
                 {
-                    [self finishRecordFile];
-                    [self startNewRecordFile];
+                    if(self.stopRecordingOnNext) {
+                        DDLogDebug(@"compressThread stopRecordingOnNext");
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            _recording = NO;
+                            [self finishRecordFile];
+                            [self stopRecordingFinal];
+                        });
+                    } else {
+                        [self finishRecordFile];
+
+                        [self startNewRecordFile];
+                    }
                 }
             }
         }

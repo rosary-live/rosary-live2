@@ -47,15 +47,17 @@
 }
 
 - (void)update {
-    [[ScheduleManager sharedManager] myScheduledBroadcastsWithCompletion:^(NSArray<ScheduleModel *> *scheduledBroadcasts, NSError *error) {
-        self.scheduledBroadcasts = scheduledBroadcasts;
-        [self filterScheduledBroadcasts];
-        [self sortScheduledBroadcasts];
-        
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.tableView reloadData];
-        });
-    }];
+    if([[UserManager sharedManager] isLoggedIn]) {
+        [[ScheduleManager sharedManager] myScheduledBroadcastsWithCompletion:^(NSArray<ScheduleModel *> *scheduledBroadcasts, NSError *error) {
+            self.scheduledBroadcasts = scheduledBroadcasts;
+            [self filterScheduledBroadcasts];
+            [self sortScheduledBroadcasts];
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.tableView reloadData];
+            });
+        }];
+    }
 }
 
 - (NSString*)screenName
@@ -68,6 +70,7 @@
 }
 
 - (void)updateScreen {
+    [[ScheduleManager sharedManager] clearCache];
     [self update];
 }
 

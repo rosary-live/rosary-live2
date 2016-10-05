@@ -4,6 +4,7 @@ console.log('Loading function');
 var AWS = require('aws-sdk');
 var crypto = require('crypto');
 var config = require('./config.json');
+var async = require("async");
 
 // Get reference to AWS clients
 var dynamodb = new AWS.DynamoDB();
@@ -53,6 +54,7 @@ function getUser(email, fn) {
 }
 
 function updateUserLevel(email, level, fn) {
+	console.log("new level: " + level);
 	dynamodb.updateItem({
 			TableName: config.DDB_TABLE,
 			Key: {
@@ -63,8 +65,39 @@ function updateUserLevel(email, level, fn) {
 			AttributeUpdates: {
 				level: { Action: 'PUT', Value: { S: level } }
 			}
-		},
-		fn);
+	}, function(err, data) {
+		if(level == "banned" || level == "listener") {
+			dynamodb.scan({
+				TableName: "LiveRosarySchedule",
+				ProjectionExpression: "#user, sid",
+				FilterExpression: "#user = :email",
+				ExpressionAttributeNames: { "#user": "user" },
+				ExpressionAttributeValues: { ":email": { S: email } }
+		    }, function(err, data) {
+			    if (err) {
+			        console.log("scanError: %j", err);
+			        fn(err);
+			    } else {
+			        console.log("scan: %j", data);
+			        async.eachSeries(data.Items, function(schedule, callback) {
+			        	console.log("deleting " + schedule.sid.S);
+				  		dynamodb.deleteItem({
+				  			TableName: "LiveRosarySchedule",
+				  			Key: { sid: { S: schedule.sid.S } }
+				  		}, function(err, data) {
+							if(err) console.log("delete schedule error %j", err);
+				  			callback(null);
+				  		});			        	
+					}, function(err) {
+						//if(err) console.log("ERROR:" + util.inspect(err, { showHidden: true, depth: 10 }));
+						fn(err);
+					});
+				}
+			});
+		} else {
+			fn(err);
+		}
+	});
 }
 
 function updateUserForBroadcastApproved(email, approved, fn) {
@@ -88,8 +121,7 @@ function updateUserForBroadcastApproved(email, approved, fn) {
 				}
 			},
 			AttributeUpdates: updates
-		},
-		fn);
+		}, fn);
 }
 
 function sendEmail(email, approved, fn) {
@@ -122,6 +154,7 @@ function sendEmail(email, approved, fn) {
 }
 
 exports.handler = function(event, context) {
+	console.log("event: %j", event);
 	var email = event.email;
 	var password = event.password;
 	var updateEmail = event.updateEmail;

@@ -105,7 +105,13 @@ typedef NS_ENUM(NSUInteger, MenuOption) {
 
 - (void)userLoggedOut
 {
-    [self showAuthenticationWithCompletion:nil];
+//    [self showAuthenticationWithCompletion:nil];
+    UIStoryboard* storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    self.authNav = [storyboard instantiateViewControllerWithIdentifier:@"Authentication"];
+    UIViewController* authCreate = [storyboard instantiateViewControllerWithIdentifier:@"CreateUser"];
+    UIViewController* authLogin = [storyboard instantiateViewControllerWithIdentifier:@"Login"];
+    self.authNav.viewControllers = @[authCreate, authLogin];
+    [self presentViewController:self.authNav animated:NO completion:nil];
 }
 
 - (void)showAuthenticationWithCompletion:(void (^)())completion

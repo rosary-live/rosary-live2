@@ -15,6 +15,8 @@
 
 + (instancetype)sharedManager;
 
+- (void)clearCache;
+
 - (void)allScheduledBroadcastsWithCompletion:(void (^)(NSArray<ScheduleModel*>* scheduledBroadcasts, NSError* error))completion;
 - (void)myScheduledBroadcastsWithCompletion:(void (^)(NSArray<ScheduleModel*>* scheduledBroadcasts, NSError* error))completion;
 

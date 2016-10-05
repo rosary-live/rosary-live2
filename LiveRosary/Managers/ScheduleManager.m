@@ -36,6 +36,10 @@ NSTimeInterval const kMinIntervalBetweenUpdates = 60.0;
     return instance;
 }
 
+- (void)clearCache {
+    self.lastMyUpdate = nil;
+}
+
 - (void)allScheduledBroadcastsWithCompletion:(void (^)(NSArray<ScheduleModel*>* scheduledBroadcasts, NSError* error))completion
 {
     if(self.lastAllUpdate == nil || [[NSDate date] timeIntervalSinceDate:self.lastAllUpdate] > kMinIntervalBetweenUpdates)

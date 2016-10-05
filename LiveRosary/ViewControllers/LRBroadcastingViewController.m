@@ -84,6 +84,7 @@
                     int seconds = totalSeconds % 60;
                     
                     int totalRemainingSeconds = (int)[ConfigModel sharedInstance].maxBroadcastSeconds - totalSeconds;
+                    NSLog(@"totalRemainingSeconds %d", totalRemainingSeconds);
                     int remainingMinutes = totalRemainingSeconds / 60;
                     int remainingSeconds = totalRemainingSeconds % 60;
                     
@@ -105,6 +106,8 @@
                         });
                     }
                 }
+                
+                ++timerCounter;
             } repeats:YES];
             
             [[UIApplication sharedApplication] setIdleTimerDisabled:YES];

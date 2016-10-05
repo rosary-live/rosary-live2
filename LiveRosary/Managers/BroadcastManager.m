@@ -18,6 +18,8 @@
 @property (nonatomic) NSInteger startSequence;
 @property (nonatomic) NSInteger startingNumToBuffer;
 @property (nonatomic) NSInteger numToBuffer;
+@property (nonatomic) NSTimeInterval lastFileReceived;
+@property (nonatomic, strong) NSTimer* playerTimer;
 
 @end
 
@@ -93,6 +95,7 @@
                     _startingNumToBuffer = 2;
                     _numToBuffer = _startingNumToBuffer;
                     
+                    _lastFileReceived = [[NSDate date] timeIntervalSince1970];
                     [AudioManager sharedManager].delegate = self;
                     [AudioManager sharedManager].sampleRate = [ConfigModel sharedInstance].sampleRate;
                     [AudioManager sharedManager].channels = 1;
@@ -105,6 +108,19 @@
 //                    }
                     
                     [[AudioManager sharedManager] prepareToPlay];
+                    
+                    self.playerTimer = [NSTimer bk_scheduledTimerWithTimeInterval:1.0 block:^(NSTimer *timer) {
+                        if([[NSDate date] timeIntervalSince1970] - _lastFileReceived > 30.0) {
+                            DDLogDebug(@"Play timeout");
+                            
+                            if(self.delegate != nil && [self.delegate respondsToSelector:@selector(broadcastHasEnded)])
+                            {
+                                [self.delegate broadcastHasEnded];
+                            }
+                            
+                            [[AnalyticsManager sharedManager] event:@"Play Timeout" info:@{@"BroadcastId": broadcastId}];
+                        }
+                    } repeats:YES];
                     
                     safeBlock(completion, NO);
                 });
@@ -123,6 +139,9 @@
 {
     if(self.state == BroadcastStatePlaying)
     {
+        [self.playerTimer invalidate];
+        self.playerTimer = nil;
+        
         [[AudioManager sharedManager] stopPlaying];
         [[TransferManager sharedManager] stopReceiving];
         
@@ -201,7 +220,8 @@
 
 - (void)receivedFile:(NSString*)filename forSequence:(NSInteger)sequence lastFile:(BOOL)lastFile
 {
-    //DDLogDebug(@"Received sequence %d %@", (int)sequence, lastFile ? @"LAST" : @"");
+    _lastFileReceived = [[NSDate date] timeIntervalSince1970];
+    DDLogDebug(@"Received sequence %d %@", (int)sequence, lastFile ? @"LAST" : @"");
     
     [[AudioManager sharedManager] addAudioFileToPlay:filename sequence:sequence lastFile:lastFile];
     

@@ -58,19 +58,21 @@
 
 - (NSString*)title
 {
+    //return nil;
     return [NSString stringWithFormat:@"%@ - %@", self.name, self.language];
 }
 
 - (NSString*)subtitle
 {
-    if(self.isSingle)
-    {
-        return [NSString stringWithFormat:@"%@", [NSDateFormatter localizedStringFromDate:[self.updated dateForNumber] dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterShortStyle]];
-    }
-    else
-    {
-        return [NSString stringWithFormat:@"%@ - %@", [NSDateFormatter localizedStringFromDate:[self.from dateForNumber] dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterNoStyle], [NSDateFormatter localizedStringFromDate:[self.to dateForNumber] dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterNoStyle]];
-    }
+    return nil;
+//    if(self.isSingle)
+//    {
+//        return [NSString stringWithFormat:@"%@", [NSDateFormatter localizedStringFromDate:[self.updated dateForNumber] dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterShortStyle]];
+//    }
+//    else
+//    {
+//        return [NSString stringWithFormat:@"%@ - %@", [NSDateFormatter localizedStringFromDate:[self.from dateForNumber] dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterNoStyle], [NSDateFormatter localizedStringFromDate:[self.to dateForNumber] dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterNoStyle]];
+//    }
 }
 
 - (NSDate*)scheduledTimeForDate:(NSDate*)date

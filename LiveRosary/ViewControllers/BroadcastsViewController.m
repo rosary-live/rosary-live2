@@ -21,6 +21,7 @@
 #import "ReportCell.h"
 #import "ReportedBroadcastModel.h"
 #import "UIImageView+Utilities.h"
+#import "MapPinView.h"
 
 typedef NS_ENUM(NSUInteger, Section) {
     SectionBroadcasts,
@@ -54,6 +55,8 @@ typedef NS_ENUM(NSUInteger, Mode) {
 
 @property (nonatomic, strong) NSMutableArray<NSString*>* languages;
 @property (nonatomic, strong) CLLocation* currentLocation;
+
+@property (nonatomic, strong) MapPinView* pinView;
 
 @end
 
@@ -259,19 +262,25 @@ typedef NS_ENUM(NSUInteger, Mode) {
     {
         for(ReportedBroadcastModel* broadcast in self.reportedBroadcasts)
         {
-            [self.mapView addAnnotation:broadcast];
+            if(fabs(broadcast.b_lat.doubleValue) > 0.0 && fabs(broadcast.b_lon.doubleValue) > 0.0) {
+                [self.mapView addAnnotation:broadcast];
+            }
         }
     }
     else
     {
         for(BroadcastModel* broadcast in self.broadcasts)
         {
-            [self.mapView addAnnotation:broadcast];
+            if(fabs(broadcast.lat.doubleValue) > 0.0 && fabs(broadcast.lon.doubleValue) > 0.0) {
+                [self.mapView addAnnotation:broadcast];
+            }
         }
         
         for(ScheduleModel* schedule in self.scheduledBroadcasts)
         {
-            [self.mapView addAnnotation:schedule];
+            if(fabs(schedule.lat.doubleValue) > 0.0 && fabs(schedule.lon.doubleValue) > 0.0) {
+                [self.mapView addAnnotation:schedule];
+            }
         }
     }
 }
@@ -297,12 +306,16 @@ typedef NS_ENUM(NSUInteger, Mode) {
 
 - (void)changeToListMode
 {
+    [self.pinView removeFromSuperview];
+    
     self.tableView.hidden = NO;
     self.mapView.hidden = YES;
     self.alarmFilter.hidden = NO;
     
     [self.listMode setImage:[UIImage imageNamed:@"ListOn"] forState:UIControlStateNormal];
     [self.mapMode setImage:[UIImage imageNamed:@"MapOff"] forState:UIControlStateNormal];
+    
+    [self.tableView reloadData];
 }
 
 - (void)changeToMapMode
@@ -588,11 +601,11 @@ typedef NS_ENUM(NSUInteger, Mode) {
         {
             annotationView.image = [UIImage imageNamed:@"LiveMapPin"];
             
-            UIButton* rightButton = [UIButton buttonWithType:UIButtonTypeCustom];
-            [rightButton setTitle:@"Listen" forState:UIControlStateNormal];
-            [rightButton setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
-            rightButton.frame = CGRectMake(0, 0, 100.0, 30.0);
-            annotationView.rightCalloutAccessoryView = rightButton;
+//            UIButton* rightButton = [UIButton buttonWithType:UIButtonTypeCustom];
+//            [rightButton setTitle:@"Listen" forState:UIControlStateNormal];
+//            [rightButton setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
+//            rightButton.frame = CGRectMake(0, 0, 100.0, 30.0);
+//            annotationView.rightCalloutAccessoryView = rightButton;
         }
         else
         {
@@ -604,7 +617,7 @@ typedef NS_ENUM(NSUInteger, Mode) {
         annotationView.image = [UIImage imageNamed:@"FutureMapPin"];
     }
     
-    annotationView.canShowCallout = YES;
+    annotationView.canShowCallout = NO;
     annotationView.draggable = NO;
     annotationView.centerOffset = CGPointMake(0.0f, -18.0f);
     
@@ -614,6 +627,102 @@ typedef NS_ENUM(NSUInteger, Mode) {
 - (void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view
 {
     NSLog(@"didSelectAnnotationView");
+    
+    [self.pinView removeFromSuperview];
+
+    id annotation = view.annotation;
+    if([annotation isKindOfClass:[ScheduleModel class]] ||
+       [annotation isKindOfClass:[BroadcastModel class]] ||
+       [annotation isKindOfClass:[ReportedBroadcastModel class]]) {
+        
+        NSArray* nibViews = [[NSBundle mainBundle] loadNibNamed:@"MapPinView" owner:self options:nil];
+        self.pinView = (MapPinView*)[nibViews objectAtIndex:0];
+        
+        if([annotation isKindOfClass:[ScheduleModel class]]) {
+            ScheduleModel* scheduledBroadcast = (ScheduleModel*)annotation;
+            self.pinView.name.text = scheduledBroadcast.name;
+            self.pinView.language.text = scheduledBroadcast.language;
+            self.pinView.location.text = [NSString stringWithFormat:@"%@, %@", scheduledBroadcast.city, scheduledBroadcast.state];
+            self.pinView.flag.image = [[UserManager sharedManager] imageForCountryName:scheduledBroadcast.country];
+            
+            if(scheduledBroadcast.isSingle)
+            {
+                self.pinView.datetime.text = [NSString stringWithFormat:@"%@ %@", [NSDateFormatter localizedStringFromDate:[scheduledBroadcast.start dateForNumber] dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterNoStyle], [NSDateFormatter localizedStringFromDate:[scheduledBroadcast.start dateForNumber] dateStyle:NSDateFormatterNoStyle timeStyle:NSDateFormatterShortStyle]];
+            }
+            else
+            {
+                self.pinView.datetime.text = [NSString stringWithFormat:@"From %@ to %@\n%@ at %@", [NSDateFormatter localizedStringFromDate:[scheduledBroadcast.from dateForNumber] dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterNoStyle], [NSDateFormatter localizedStringFromDate:[scheduledBroadcast.to dateForNumber] dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterNoStyle], [scheduledBroadcast.days daysString], [scheduledBroadcast.at time]];
+            }
+            
+            NSString* urlString = [NSString stringWithFormat:@"https://s3.amazonaws.com/liverosaryavatars/%@", [scheduledBroadcast.user stringByReplacingOccurrencesOfString:@"@" withString:@"-"]];
+            [self.pinView.avatarImage sd_setImageWithURL:[NSURL URLWithString:urlString] placeholderImage:[UIImage imageNamed:@"AvatarImage"] options:0];
+            
+            if([ScheduleManager sharedManager].notificationsEnabled)
+            {
+                self.pinView.alarm.hidden = NO;
+                self.pinView.alarm.image = [[ScheduleManager sharedManager] reminderSetForBroadcastWithId:scheduledBroadcast.sid] ? [UIImage imageNamed:@"AlarmOnWhite"] : [UIImage imageNamed:@"AlarmOffWhite"];
+            }
+            else
+            {
+                self.pinView.alarm.hidden = YES;
+            }
+        } else if([annotation isKindOfClass:[BroadcastModel class]]) {
+            BroadcastModel* broadcast = (BroadcastModel*)annotation;
+            self.pinView.name.text = broadcast.name;
+            self.pinView.language.text = broadcast.language;
+            self.pinView.location.text = [NSString stringWithFormat:@"%@, %@", broadcast.city, broadcast.state];
+            self.pinView.datetime.text = [NSString stringWithFormat:@" %@ %@", [NSDateFormatter localizedStringFromDate:[broadcast.updated dateForNumber] dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterNoStyle], [NSDateFormatter localizedStringFromDate:[broadcast.updated dateForNumber] dateStyle:NSDateFormatterNoStyle timeStyle:NSDateFormatterShortStyle]];
+            //cell.live.text = broadcast.isLive ? @"LIVE" : @"ENDED";
+            self.pinView.flag.image = [[UserManager sharedManager] imageForCountryName:broadcast.country];
+            self.pinView.alarm.hidden = YES;
+            [self.pinView.rosary addRosaryAnimation];
+            [self.pinView.rosary startAnimating];
+            
+            NSString* urlString = [NSString stringWithFormat:@"https://s3.amazonaws.com/liverosaryavatars/%@", [broadcast.user stringByReplacingOccurrencesOfString:@"@" withString:@"-"]];
+            [self.pinView.avatarImage sd_setImageWithURL:[NSURL URLWithString:urlString] placeholderImage:[UIImage imageNamed:@"AvatarImage"] options:0];
+        } else if([annotation isKindOfClass:[ReportedBroadcastModel class]]) {
+            ReportedBroadcastModel* report = (ReportedBroadcastModel*)annotation;
+            self.pinView.name.text = report.b_name;
+            self.pinView.location.text = [NSString stringWithFormat:@"%@, %@", report.b_city, report.b_state];
+            self.pinView.language.text = report.b_language;
+            self.pinView.datetime.text = [NSString stringWithFormat:@" %@ %@", [NSDateFormatter localizedStringFromDate:[report.created dateForNumber] dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterNoStyle], [NSDateFormatter localizedStringFromDate:[report.created dateForNumber] dateStyle:NSDateFormatterNoStyle timeStyle:NSDateFormatterShortStyle]];
+            
+            NSString* urlString = [NSString stringWithFormat:@"https://s3.amazonaws.com/liverosaryavatars/%@", [report.b_email stringByReplacingOccurrencesOfString:@"@" withString:@"-"]];
+            [self.pinView.avatarImage sd_setImageWithURL:[NSURL URLWithString:urlString] placeholderImage:[UIImage imageNamed:@"AvatarImage"] options:0];
+        }
+        
+        CGFloat height = self.pinView.frame.size.height;
+        self.pinView.frame = CGRectMake(0, self.view.frame.size.height - height, self.view.frame.size.width, height);
+        [self.view addSubview:self.pinView];
+        
+        UITapGestureRecognizer* tap = [[UITapGestureRecognizer alloc] bk_initWithHandler:^(UIGestureRecognizer *sender, UIGestureRecognizerState state, CGPoint location) {
+            
+            if([annotation isKindOfClass:[ScheduleModel class]]) {
+                ScheduleModel* schedule = (ScheduleModel*)annotation;
+                if([[ScheduleManager sharedManager] reminderSetForBroadcastWithId:schedule.sid])
+                {
+                    [[ScheduleManager sharedManager] removeReminderForScheduledBroadcast:schedule];
+                }
+                else
+                {
+                    [[ScheduleManager sharedManager] addReminderForScheduledBroadcast:schedule broadcaster:NO];
+                }
+                
+                self.pinView.alarm.image = [[ScheduleManager sharedManager] reminderSetForBroadcastWithId:schedule.sid] ? [UIImage imageNamed:@"AlarmOnWhite"] : [UIImage imageNamed:@"AlarmOffWhite"];
+                
+            } else if([annotation isKindOfClass:[BroadcastModel class]]) {
+                [self broadcastSelected:annotation];
+            } else if([annotation isKindOfClass:[ReportedBroadcastModel class]]) {
+                [self reportedBroadcastSelected:annotation];
+
+            }
+        }];
+        [self.pinView addGestureRecognizer:tap];
+    }
+}
+
+- (void)mapView:(MKMapView *)mapView didDeselectAnnotationView:(MKAnnotationView *)view {
+    [self.pinView removeFromSuperview];
 }
 
 - (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control
