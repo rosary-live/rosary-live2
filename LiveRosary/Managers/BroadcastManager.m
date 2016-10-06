@@ -111,14 +111,18 @@
                     
                     self.playerTimer = [NSTimer bk_scheduledTimerWithTimeInterval:1.0 block:^(NSTimer *timer) {
                         if([[NSDate date] timeIntervalSince1970] - _lastFileReceived > 30.0) {
-                            DDLogDebug(@"Play timeout");
                             
-                            if(self.delegate != nil && [self.delegate respondsToSelector:@selector(broadcastHasEnded)])
-                            {
-                                [self.delegate broadcastHasEnded];
+                            if(self.state == BroadcastStatePlaying) {
+                                DDLogDebug(@"Play timeout");
+                                
+                                if(self.delegate != nil && [self.delegate respondsToSelector:@selector(broadcastHasEnded)])
+                                {
+                                    [self stopPlaying];
+                                    [self.delegate broadcastHasEnded];
+                                }
+                                
+                                [[AnalyticsManager sharedManager] event:@"Play Timeout" info:@{@"BroadcastId": broadcastId}];
                             }
-                            
-                            [[AnalyticsManager sharedManager] event:@"Play Timeout" info:@{@"BroadcastId": broadcastId}];
                         }
                     } repeats:YES];
                     
@@ -191,6 +195,7 @@
     if(lastFile && self.delegate != nil && [self.delegate respondsToSelector:@selector(broadcastHasEnded)])
     {
         [self.delegate broadcastHasEnded];
+        [self stopPlaying];
     }
 }
 

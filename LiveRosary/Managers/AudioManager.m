@@ -478,6 +478,7 @@
                             [self stopRecordingFinal];
                         });
                     } else {
+                        DDLogDebug(@"file done");
                         [self finishRecordFile];
 
                         [self startNewRecordFile];
@@ -538,6 +539,8 @@
                 bufferWrapper.lastFile = fileWrapper.lastFile;
                 bufferWrapper.sequence = fileWrapper.sequence;
                 [self pushPlayQueueBuffer:bufferWrapper];
+                
+                DDLogDebug(@"pushed sequence %d onto play queue with size %d", (int)bufferWrapper.sequence, (int)self.playQueue.count);
             };
             
             [self.fileReader start];

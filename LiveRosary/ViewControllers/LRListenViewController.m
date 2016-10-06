@@ -80,6 +80,8 @@ NSString * const kLastIntentionKey = @"LastIntention";
 @property (nonatomic, strong) NSMutableDictionary* updateDict;
 @property (nonatomic, strong) NSTimer* updateTimer;
 
+@property (nonatomic, strong) NSString* intention;
+
 @end
 
 @implementation LRListenViewController
@@ -136,6 +138,7 @@ NSString * const kLastIntentionKey = @"LastIntention";
             
             [intentionAlert addAction:[UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
                 NSString* intention = intentionAlert.textFields.firstObject.text;
+                self.intention = intention;
                 self.updateDict[@"intention"] = intention != nil ? intention : @"";
                 [[AnalyticsManager sharedManager] event:@"SetIntention" info:@{@"bid": self.broadcast.bid, @"Intention": intention}];
                 
@@ -309,7 +312,7 @@ NSString * const kLastIntentionKey = @"LastIntention";
                                         
                                         [[AnalyticsManager sharedManager] event:@"Play" info:@{@"bid": self.broadcast.bid}];
                                         NSMutableDictionary* userDict = [[UserManager sharedManager].userDictionary mutableCopy];
-                                        userDict[@"intention"] = @"";
+                                        userDict[@"intention"] = self.intention == nil ? @"" : self.intention;
                                         [[BroadcastQueueModel sharedInstance] sendEnterForBroadcastId:self.broadcast.bid toUserWithEmail:nil withDictionary:userDict];
                                         
                                         self.updateTimer = [NSTimer bk_scheduledTimerWithTimeInterval:30.0 block:^(NSTimer *timer) {

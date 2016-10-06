@@ -141,6 +141,7 @@ typedef NS_ENUM(NSUInteger, Mode) {
         [self filterBroadcasts];
         [self sortBroadcasts];
         dispatch_async(dispatch_get_main_queue(), ^{
+            DDLogDebug(@"broadcasts: %@", self.broadcasts);
             [self.tableView reloadData];
             [self addMapPins];
         });
