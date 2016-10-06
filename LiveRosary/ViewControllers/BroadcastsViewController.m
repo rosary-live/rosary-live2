@@ -587,11 +587,7 @@ typedef NS_ENUM(NSUInteger, Mode) {
     
     static NSString* AnnotationIdentifier = @"AnnotationIdentifier";
     MKAnnotationView *annotationView = [self.mapView dequeueReusableAnnotationViewWithIdentifier:AnnotationIdentifier];
-    if(annotationView)
-    {
-        return annotationView;
-    }
-    else
+    if(annotationView == nil)
     {
        annotationView = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:AnnotationIdentifier];
     }

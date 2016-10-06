@@ -33,6 +33,7 @@
 @property (nonatomic, strong) FCCurrentLocationGeocoder* geocoder;
 @property (nonatomic) CLLocationDegrees latitude;
 @property (nonatomic) CLLocationDegrees longitude;
+@property (nonatomic) BOOL gotLocation;
 
 @property (nonatomic, strong) CZPhotoPickerController* photoPicker;
 @property (nonatomic) BOOL havePhoto;
@@ -109,6 +110,7 @@
                     
                     self.latitude = self.geocoder.location.coordinate.latitude;
                     self.longitude = self.geocoder.location.coordinate.longitude;
+                    self.gotLocation = YES;
                     
                     [[AnalyticsManager sharedManager] event:@"EditGeocodeSuccess" info:@{@"City": self.geocoder.locationCity,
                                                                                      @"State": self.geocoder.locationPlacemark.administrativeArea,
@@ -192,6 +194,26 @@
         return;
     }
     
+    if(self.gotLocation) {
+        [self saveUser];
+    } else {
+        NSString* address = [NSString stringWithFormat:@"%@, %@, %@", self.city.text, self.state.text, self.country.text];
+        [[[CLGeocoder alloc] init] geocodeAddressString:address completionHandler:^(NSArray<CLPlacemark *> * _Nullable placemarks, NSError * _Nullable error) {
+            if(placemarks.count > 0) {
+                CLLocation* location = placemarks[0].location;
+                if(location != nil) {
+                    self.gotLocation = YES;
+                    self.latitude = location.coordinate.latitude;
+                    self.longitude = location.coordinate.longitude;
+                }
+            }
+            
+            [self saveUser];
+        }];
+    }
+}
+
+- (void)saveUser {
     NSDictionary* settings = @{
                                @"firstName": self.firstName.text,
                                @"lastName": self.lastName.text,
@@ -214,13 +236,13 @@
             {
                 DDLogError(@"Error creating new user %@: %@", settings, error);
                 [[AnalyticsManager sharedManager] error:error name:@"UpdateUser"];
-
+                
                 [UIAlertView bk_showAlertViewWithTitle:@"Error" message:@"Error updating user." cancelButtonTitle:@"Ok" otherButtonTitles:nil handler:nil];
             }
             else
             {
                 [[AnalyticsManager sharedManager] event:@"UpdateUser" info:nil];
-
+                
                 if(self.havePhoto)
                 {
                     self.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
@@ -234,13 +256,13 @@
                             {
                                 DDLogError(@"Error uploading avatar image: %@", error);
                                 [[AnalyticsManager sharedManager] error:error name:@"UpdateUploadAvatarImage"];
-
+                                
                                 [UIAlertView bk_showAlertViewWithTitle:@"Error" message:@"Error updating photo." cancelButtonTitle:@"Ok" otherButtonTitles:nil handler:nil];
                             }
                             else
                             {
                                 [[AnalyticsManager sharedManager] event:@"UpdateUploadAvatarImage" info:nil];
-
+                                
                                 [self.navigationController popViewControllerAnimated:YES];
                             }
                         });
