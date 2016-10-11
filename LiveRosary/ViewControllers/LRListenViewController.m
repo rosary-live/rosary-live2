@@ -26,7 +26,7 @@
 
 NSString * const kLastIntentionKey = @"LastIntention";
 
-@interface LRListenViewController () <BroadcastManagerDelegate>
+@interface LRListenViewController () <BroadcastManagerDelegate, UITextFieldDelegate>
 
 @property (nonatomic, weak) IBOutlet UIImageView* avatar;
 @property (nonatomic, weak) IBOutlet UILabel* name;
@@ -131,6 +131,10 @@ NSString * const kLastIntentionKey = @"LastIntention";
 
             [intentionAlert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
                 textField.placeholder = @"Intention";
+                textField.delegate = self;
+                textField.autocorrectionType = UITextAutocorrectionTypeYes;
+                textField.spellCheckingType = UITextSpellCheckingTypeYes;
+                textField.autocapitalizationType = UITextAutocapitalizationTypeSentences;
             }];
             
             self.updateDict =  [[UserManager sharedManager].userDictionary mutableCopy];
@@ -678,6 +682,19 @@ NSString * const kLastIntentionKey = @"LastIntention";
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return 70.0f;
+}
+
+#pragma mark - UITextFieldDelegate
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+    // Prevent crashing undo bug – see note below.
+    if(range.length + range.location > textField.text.length)
+    {
+        return NO;
+    }
+    
+    NSUInteger newLength = [textField.text length] + [string length] - range.length;
+    return newLength <= 40;
 }
 
 @end

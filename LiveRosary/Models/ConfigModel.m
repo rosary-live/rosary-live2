@@ -36,12 +36,12 @@ NSString * const UserDefaultsKeyConfigSettings = @"ConfigSettings";
         else
         {
             // Set defaults
-            _maxBroadcastSeconds = 1800;
+            _maxBroadcastSeconds = 1500;
             _sampleRate = 11025;
             _segmentSizeSeconds = 5.0;
             _slideShowStartDelay = 5;
             _slideShowChangeInterval = 10;
-            _donateURL = @"http://www.liverosaryapp.com/";
+            _donateURL = @"http://rosary.live/donate/";
         }
     }
     return self;

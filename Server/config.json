@@ -1,7 +1,7 @@
 {
 	"sampleRate": 11025,
 	"segmentSizeSeconds": 3,
-	"maxBroadcastSeconds": 1800,
+	"maxBroadcastSeconds": 1500,
 	"slideShowStartDelay": 5,
 	"slideShowChangeInterval": 10,
 	"slideImageURLs": [
@@ -12,5 +12,5 @@
 		"https://s3.amazonaws.com/liverosaryweb/slides/slide5.jpg",
 		"https://s3.amazonaws.com/liverosaryweb/slides/slide6.jpg",
 		],
-	"donateURL": "http://www.liverosaryapp.com/"
+	"donateURL": "http://rosary.live/donate/"
 }
