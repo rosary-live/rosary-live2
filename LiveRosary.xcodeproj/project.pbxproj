@@ -1285,7 +1285,7 @@
 				TargetAttributes = {
 					D820FB001C4452A9000899DB = {
 						CreatedOnToolsVersion = 7.2;
-						DevelopmentTeam = Z6Y7DNVNXR;
+						DevelopmentTeam = 4GE6A5JQL3;
 						SystemCapabilities = {
 							com.apple.SafariKeychain = {
 								enabled = 1;
@@ -1783,6 +1783,7 @@
 				CODE_SIGN_ENTITLEMENTS = LiveRosary/LiveRosary.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = 4GE6A5JQL3;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/$(PRODUCT_NAME)/PrefixHeader.pch";
 				INFOPLIST_FILE = LiveRosary/Info.plist;
@@ -1792,7 +1793,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/TestFairy",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.pocketcake.LiveRosary;
+				PRODUCT_BUNDLE_IDENTIFIER = com.liverosary.liverosary;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = 1;
@@ -1808,6 +1809,7 @@
 				CODE_SIGN_ENTITLEMENTS = LiveRosary/LiveRosary.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = 4GE6A5JQL3;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/$(PRODUCT_NAME)/PrefixHeader.pch";
 				INFOPLIST_FILE = LiveRosary/Info.plist;
@@ -1817,7 +1819,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/TestFairy",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.pocketcake.LiveRosary;
+				PRODUCT_BUNDLE_IDENTIFIER = com.liverosary.liverosary;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = 1;
