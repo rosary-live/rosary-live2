@@ -1,4 +1,6 @@
 source 'https://github.com/CocoaPods/Specs.git'
+
+target 'LiveRosary'
 pod 'AWSCore'
 pod 'AWSDynamoDB'
 pod 'AWSS3'

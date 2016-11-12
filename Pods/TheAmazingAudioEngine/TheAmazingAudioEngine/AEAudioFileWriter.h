@@ -45,9 +45,6 @@ enum {
  *  asynchronous, Core Audio thread-safe writing of arbitrary audio formats.
  */
 @interface AEAudioFileWriter : NSObject
-
-@property (nonatomic, readonly) ExtAudioFileRef audioFileRef;
-
 + (BOOL)AACEncodingAvailable;
 
 /*!

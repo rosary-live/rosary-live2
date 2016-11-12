@@ -136,7 +136,7 @@
                 }
                 else
                 {
-                    [[AnalyticsManager sharedManager] event:@"CreateGeocodeError" info:nil];
+                    [[AnalyticsManager sharedManager] event:@"CreateGeocodeError" info:@{ @"error": self.geocoder.error != nil ? self.geocoder.error.description : @"none" }];
 
                     [UIAlertView bk_showAlertViewWithTitle:nil message:@"We were unable to determine your location." cancelButtonTitle:@"Ok" otherButtonTitles:nil handler:nil];
                 }

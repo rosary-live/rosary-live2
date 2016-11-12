@@ -37,6 +37,7 @@ NSTimeInterval const kMinIntervalBetweenUpdates = 60.0;
 }
 
 - (void)clearCache {
+    self.lastAllUpdate = nil;
     self.lastMyUpdate = nil;
 }
 
@@ -88,6 +89,7 @@ NSTimeInterval const kMinIntervalBetweenUpdates = 60.0;
     [[LiveRosaryService sharedService] addScheduledBroadcastWithDictionary:dictWithSID completion:^(NSError *error) {
         if(error == nil)
         {
+            self.lastAllUpdate = nil;
             self.lastMyUpdate = nil;
         }
         
@@ -100,6 +102,7 @@ NSTimeInterval const kMinIntervalBetweenUpdates = 60.0;
     [[LiveRosaryService sharedService] updateScheduledBroadcastWithDictionary:dictionary completion:^(NSError *error) {
         if(error == nil)
         {
+            self.lastAllUpdate = nil;
             self.lastMyUpdate = nil;
         }
         
@@ -112,6 +115,7 @@ NSTimeInterval const kMinIntervalBetweenUpdates = 60.0;
     [[LiveRosaryService sharedService] removeScheduledBroadcastWithSID:sid completion:^(NSError *error) {
         if(error == nil)
         {
+            self.lastAllUpdate = nil;
             self.lastMyUpdate = nil;
         }
         

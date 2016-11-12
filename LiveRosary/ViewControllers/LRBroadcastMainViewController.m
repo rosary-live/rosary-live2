@@ -106,66 +106,84 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return self.scheduledBroadcasts.count;
+    return self.scheduledBroadcasts.count > 0 ? self.scheduledBroadcasts.count : 1;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    if(self.scheduledBroadcasts.count > 0) {
+        return 44.0f;
+    } else {
+        return 120.0f;
+    }
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    ScheduleSingleCell* cell = [tableView dequeueReusableCellWithIdentifier:@"ScheduleCell" forIndexPath:indexPath];
-    
-    ScheduleModel* schedule = self.scheduledBroadcasts[indexPath.row];
+    if(self.scheduledBroadcasts.count > 0) {
+        ScheduleSingleCell* cell = [tableView dequeueReusableCellWithIdentifier:@"ScheduleCell" forIndexPath:indexPath];
+        
+        ScheduleModel* schedule = self.scheduledBroadcasts[indexPath.row];
 
-    if(schedule.isSingle)
-    {
-        cell.schedule.text = [NSString stringWithFormat:@"%@ %@", [NSDateFormatter localizedStringFromDate:[schedule.start dateForNumber] dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterNoStyle], [NSDateFormatter localizedStringFromDate:[schedule.start dateForNumber] dateStyle:NSDateFormatterNoStyle timeStyle:NSDateFormatterShortStyle]];
-    }
-    else
-    {
-        cell.schedule.text = [NSString stringWithFormat:@"From %@ to %@\n%@ at %@", [NSDateFormatter localizedStringFromDate:[schedule.from dateForNumber] dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterNoStyle], [NSDateFormatter localizedStringFromDate:[schedule.to dateForNumber] dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterNoStyle], [schedule.days daysString], [schedule.at time]];
-    }
-    
-    if([[ScheduleManager sharedManager] reminderSetForBroadcastWithId:schedule.sid]) {
-        [cell.alarm setImage:[UIImage imageNamed:@"AlarmOnBlue"] forState:UIControlStateNormal];
-    } else {
-        [cell.alarm setImage:[UIImage imageNamed:@"AlarmOffBlue"] forState:UIControlStateNormal];
-    }
-    
-    [cell.alarm bk_addEventHandler:^(id sender) {
-        if([[ScheduleManager sharedManager] reminderSetForBroadcastWithId:schedule.sid]) {
-            [[ScheduleManager sharedManager] removeReminderForScheduledBroadcast:schedule];
-        } else {
-            [[ScheduleManager sharedManager] addReminderForScheduledBroadcast:schedule broadcaster:YES];
+        if(schedule.isSingle)
+        {
+            cell.schedule.text = [NSString stringWithFormat:@"%@ %@", [NSDateFormatter localizedStringFromDate:[schedule.start dateForNumber] dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterNoStyle], [NSDateFormatter localizedStringFromDate:[schedule.start dateForNumber] dateStyle:NSDateFormatterNoStyle timeStyle:NSDateFormatterShortStyle]];
+        }
+        else
+        {
+            cell.schedule.text = [NSString stringWithFormat:@"From %@ to %@\n%@ at %@", [NSDateFormatter localizedStringFromDate:[schedule.from dateForNumber] dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterNoStyle], [NSDateFormatter localizedStringFromDate:[schedule.to dateForNumber] dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterNoStyle], [schedule.days daysString], [schedule.at time]];
         }
         
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.tableView reloadData];
-        });
-    } forControlEvents:UIControlEventTouchUpInside];
-    
-    [cell.remove bk_addEventHandler:^(id sender) {
+        if([[ScheduleManager sharedManager] reminderSetForBroadcastWithId:schedule.sid]) {
+            [cell.alarm setImage:[UIImage imageNamed:@"AlarmOnBlue"] forState:UIControlStateNormal];
+        } else {
+            [cell.alarm setImage:[UIImage imageNamed:@"AlarmOffBlue"] forState:UIControlStateNormal];
+        }
         
-        UIAlertController* alert = [UIAlertController alertControllerWithTitle:nil message:@"Do you really want to delete the scheduled broadcast?" preferredStyle:UIAlertControllerStyleAlert];
+        [cell.alarm bk_addEventHandler:^(id sender) {
+            if([[ScheduleManager sharedManager] reminderSetForBroadcastWithId:schedule.sid]) {
+                [[ScheduleManager sharedManager] removeReminderForScheduledBroadcast:schedule];
+            } else {
+                [[ScheduleManager sharedManager] addReminderForScheduledBroadcast:schedule broadcaster:YES];
+            }
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.tableView reloadData];
+            });
+        } forControlEvents:UIControlEventTouchUpInside];
         
-        [alert addAction:[UIAlertAction actionWithTitle:@"Yes" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-            [[ScheduleManager sharedManager] removeScheduledBroadcastWithId:schedule.sid completion:^(NSError *error) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    if(error != nil) {
-                        [UIAlertView bk_alertViewWithTitle:nil message:@"Unabled to delete schedule broadcast."];
-                    } else {
-                        [[ScheduleManager sharedManager] removeReminderForScheduledBroadcast:schedule];
-                        [self update];
-                    }
-                });
-            }];
-        }]];
+        [cell.remove bk_addEventHandler:^(id sender) {
+            
+            UIAlertController* alert = [UIAlertController alertControllerWithTitle:nil message:@"Do you really want to delete the scheduled broadcast?" preferredStyle:UIAlertControllerStyleAlert];
+            
+            [alert addAction:[UIAlertAction actionWithTitle:@"Yes" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                [[ScheduleManager sharedManager] removeScheduledBroadcastWithId:schedule.sid completion:^(NSError *error) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        if(error != nil) {
+                            [UIAlertView bk_alertViewWithTitle:nil message:@"Unabled to delete schedule broadcast."];
+                        } else {
+                            [[ScheduleManager sharedManager] removeReminderForScheduledBroadcast:schedule];
+                            [self update];
+                        }
+                    });
+                }];
+            }]];
+            
+            [alert addAction:[UIAlertAction actionWithTitle:@"No" style:UIAlertActionStyleCancel handler:nil]];
+            
+            [self presentViewController:alert animated:YES completion:nil];
+            
+        } forControlEvents:UIControlEventTouchUpInside];
         
-        [alert addAction:[UIAlertAction actionWithTitle:@"No" style:UIAlertActionStyleCancel handler:nil]];
-        
-        [self presentViewController:alert animated:YES completion:nil];
-        
-    } forControlEvents:UIControlEventTouchUpInside];
-    
-    return cell;
+        return cell;
+    } else {
+        return [tableView dequeueReusableCellWithIdentifier:@"TapPlus"];
+    }
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    if(indexPath.row >= self.scheduledBroadcasts.count) {
+        [self performSegueWithIdentifier:@"ToSchedule" sender:nil];
+    }
 }
 
 - (IBAction)onLanguagePickerDone:(id)sender
